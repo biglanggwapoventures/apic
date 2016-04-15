@@ -34,6 +34,12 @@
                         <input type="text" class="form-control" value="<?= put_value($data, 'invoice_number', '')?>" name="invoice_number"/>
                     </div>
                 </div>
+                <div class="col-sm-4">
+                     <div class="form-group">
+                        <label>Sales Agent</label>
+                        <?= form_dropdown('fk_sales_agent_id', $agents, put_value($data, 'fk_sales_agent_id', FALSE), 'class="form-control"');?>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">

@@ -1,124 +1,160 @@
 <?php
 
-class Agents extends PM_Controller {
+class Agents extends PM_Controller_v2
+{
 
-    const TITLE = 'Sales';
-    const SUBTITLE = 'Agents';
-    const SUBJECT = 'agent';
-
-    private $viewpage_settings = array();
-
-    public function __construct() {
-        parent::__construct();
-        /*restrict unauthorized access*/
-        if(!has_access('sales')){
-            show_error('Authorization error', 401);
-        }
+	public function __construct()
+	{
+		parent::__construct();
+        if(!has_access('sales')) show_error('Authorization error', 401);
+        $this->set_content_title('Sales');
+        $this->set_content_subtitle('Agents');
         $this->set_active_nav(NAV_SALES);
-        $this->set_content_title(self::TITLE);
-        $this->set_content_subtitle(self::SUBTITLE);
-        $this->add_javascript(array('price-format.js', 'sales-agents.js'));
-        $this->load->model(array('sales/m_agent'));
-        $this->viewpage_settings['defaults'] = array(
-            'name' => '',
-            'area' => '',
-            'unit_quantity' => '',
-            'fk_inventory_unit_id' => '',
-            'amount' => 0
-        );
-    }
+        $this->load->model('sales/m_agent', 'agent');
+	}
 
-    private function validate() {
-        $this->form_validation->set_rules('name', 'Agent Name', 'required');
-        $this->form_validation->set_rules('area', 'Agent Area', 'required');
-        if ($this->form_validation->run()) {
-            $data = $this->input->post();
-            $data['amount'] = str_replace(",", "", $data['amount']);
-            return $this->response(FALSE, '', $data);
-        } else {
-            return $this->response(TRUE, validation_errors('<li>', '</li>'));
+    public function _search_params()
+    {
+        $search = [];
+        $wildcards = [];
+
+        $params = elements(['status', 'name', 'area'], $this->input->get(), FALSE);
+
+        if($params['status'] && in_array($params['status'], ['a', 'ia'])){
+            $search['status'] = $params['status'];
+        }elseif($params['status'] === FALSE){
+            $search['status'] = 'a';
         }
-    }
 
-    public function index() {
-        $this->viewpage_settings['url'] = base_url('sales/agents');
-        $this->viewpage_settings['default_keyword'] = $this->input->get('search_keyword');
-        $this->viewpage_settings['entries'] = $this->m_agent->get($this->viewpage_settings['default_keyword']);
-        $this->set_content('sales/agents', $this->viewpage_settings);
-        $this->generate_page();
-    }
-
-    public function add() {
-        $saved = FALSE;
-        $this->load->helper(array('view'));
-        $this->load->model(array('inventory/m_unit'));
-        $this->viewpage_settings['units'] = dropdown_format($this->m_unit->get(), 'id', array('description'), '-Choose unit-');
-        $this->viewpage_settings['url'] = base_url('sales/agents/add');
-        $this->viewpage_settings['form_title'] = 'Add new sales agent';
-
-        if ($this->input->post()) {
-            $input = $this->validate();
-            if ($input['error_flag']) {
-                $this->viewpage_settings['validation_errors'] = $input['message'];
-                $this->viewpage_settings['defaults'] = $this->input->post();
-            } else {
-                $saved = $this->m_agent->add($input['data']);
-            }
-            if ($saved) {
-                $this->session->set_flashdata('form_submission_success', $this->m_message->add_success(self::SUBJECT));
-                redirect('sales/agents');
-            } else {
-                $error = !$this->viewpage_settings['validation_errors'] ? '<li>' . $this->m_message->add_error(self::SUBJECT) . '</li>' : $this->viewpage_settings['validation_errors'] . '</li>';
-                $this->viewpage_settings['validation_errors'] = $error;
-            }
+        if($params['name'] && trim($params['name'])){
+            $wildcards['name'] = $params['name'];
         }
-        $this->set_content('sales/manage-agent', $this->viewpage_settings);
-        $this->generate_page();
-    }
-
-    public function update($agent_id) {
-        $agent_info = $this->m_agent->get(FALSE, array(M_Agent::AGENT_ID => $agent_id));
-        $saved = FALSE;
-        $this->load->helper(array('view'));
-        $this->load->model(array('inventory/m_unit'));
-        $this->viewpage_settings['defaults'] = $agent_info[0];
-        $this->viewpage_settings['units'] = dropdown_format($this->m_unit->get(), 'id', array('description'), '-Choose unit-');
-        $this->viewpage_settings['url'] = base_url("sales/agents/update/{$agent_id}");
-        $this->viewpage_settings['form_title'] = 'Update sales agent';
-        if ($this->input->post()) {
-            $input = $this->validate();
-            if ($input['error_flag']) {
-                $this->viewpage_settings['validation_errors'] = $input['message'];
-                $this->viewpage_settings['defaults'] = $this->input->post();
-            } else {
-                $saved = $this->m_agent->update($agent_id, $input['data']);
-            }
-            if ($saved) {
-                $this->session->set_flashdata('form_submission_success', $this->m_message->update_success(self::SUBJECT));
-                redirect('sales/agents');
-            } else {
-                $this->viewpage_settings['defaults'] = $this->input->post();
-                $error = !isset($this->viewpage_settings['validation_errors']) ? '<li>' . $this->m_message->update_error(self::SUBJECT) . '</li>' : $this->viewpage_settings['validation_errors'] . '</li>';
-                $this->viewpage_settings['validation_errors'] = $error;
-            }
+        if($params['area'] && trim($params['area'])){
+            $wildcards['area'] = $params['area'];
         }
-        $this->set_content('sales/manage-agent', $this->viewpage_settings);
-        $this->generate_page();
+
+        
+        return compact(['search', 'wildcards']);
     }
 
-    function a_delete() {
-        $this->form_validation->set_rules('pk', 'ID', 'required');
-        if ($this->form_validation->run()) {
-            $deleted = $this->m_agent->delete($this->input->post('pk'));
-            if ($deleted) {
-                echo json_encode($this->response(FALSE, $this->m_message->delete_success(self::SUBJECT)));
-            } else {
-                echo json_encode($this->response(TRUE, $this->m_message->delete_error(self::SUBJECT), array()));
-            }
-        } else {
-            echo json_encode($this->response(TRUE, $this->m_message->no_primary_key_error(self::SUBJECT), array()));
+	public function index() 
+	{
+        $this->add_javascript(['sales-agents/listing.js', 'plugins/sticky-thead.js']);
+
+        $params = $this->_search_params();
+
+        $this->set_content('sales/agents/listing', [
+            'items' => $this->agent->all($params['search'], $params['wildcards'])
+        ])->generate_page();
+    }
+
+    public function create() 
+    {
+        $this->add_javascript('sales-agents/manage.js');
+        $this->set_content('sales/agents/manage', [
+            'title' => 'Create new sales agent',
+            'action' => base_url('sales/agents/store'),
+            'data' => []
+        ])->generate_page();
+    }
+
+    public function edit($id = FALSE)
+    {
+        if(!$id || !$agent = $this->agent->get($id)){
+            show_404();
         }
-        exit();
+        $this->add_javascript('sales-agents/manage.js');
+        $this->set_content('sales/agents/manage', [
+            'title' => "Update sales agent: {$agent['name']}",
+            'action' => base_url("sales/agents/update/{$id}"),
+            'data' => $agent
+        ])->generate_page();
     }
 
+    public function store()
+    {
+        $this->set_action('new');
+        $this->_perform_validation();
+
+        if($this->form_validation->run()){
+            $agent = $this->_format_data();
+            $this->agent->create($agent);
+            $this->flash_message(FALSE, 'New agent has been created sucessfully!');
+            $this->generate_response(FALSE)->to_JSON();
+            return;
+        }
+
+        $this->generate_response(TRUE, $this->form_validation->errors())->to_JSON();
+    }
+
+    public function update($id = FALSE)
+    {
+
+        if(!$id || !$agent = $this->agent->get($id)){
+            $this->generate_response(TRUE, 'Please select a valid agent to update.')->to_JSON();
+            return;
+        }
+        if(!can_update($agent)){
+            $this->generate_response(TRUE, 'You are not allowed to perform the desired action.')->to_JSON();
+            return;
+        }
+        $this->id = $id;
+        $this->_perform_validation();
+        if($this->form_validation->run()){
+            $agent = $this->_format_data();
+            $this->agent->update($id, $agent);
+            $this->generate_response(FALSE)->to_JSON();
+            $this->flash_message(FALSE, 'Update successful!');
+            return;
+        }
+        $this->generate_response(TRUE, $this->form_validation->errors())->to_JSON();
+    }
+
+    public function delete($id)
+    {
+        if(!$id || !$agent = $this->agent->get($id)){
+            $this->generate_response(TRUE, 'Please select a valid agent to delete.')->to_JSON();
+            return;
+        }
+        if(!can_delete($agent)){
+            $this->generate_response(TRUE, 'Cannot perform action')->to_JSON();
+            return;
+        }
+        if($this->agent->delete($id)){
+            $this->generate_response(FALSE)->to_JSON();
+            return;
+        }
+        $this->generate_response(TRUE, 'Cannot perform action due to an unknown error. Please try again later.')->to_JSON();
+    }
+
+    public function _perform_validation()
+    {
+        if($this->action('new')){
+            $this->form_validation->set_rules('name', 'agent name', 'trim|required|is_unique[sales_agent.name]');
+        }else{
+            $this->form_validation->set_rules('name', 'agent name', 'trim|required|callback__validate_agent_name');
+        }
+        $this->form_validation->set_rules('area', 'agent area', 'trim|required');
+        $this->form_validation->set_rules('contact_number', 'agent code', 'trim|required|alpha_numeric');
+        $this->form_validation->set_rules('commission_rate', 'agent commission rate', 'trim|required|numeric');
+        if(can_set_status()){
+            $this->form_validation->set_rules('status', 'agent status', 'trim|required|in_list[a,ia]', ['in_list' => 'Please provide a valid %s']);
+        }
+        
+    }
+
+    public function _format_data()
+    {
+        $input = elements(['name', 'area', 'commission_rate', 'contact_number', 'status'], $this->input->post());
+        if(!can_set_status()){
+           unset($input['status']);
+        }
+        return $input;
+    }
+
+    public function _validate_agent_name($name)
+    {
+        $this->form_validation->set_message('_validate_unit_description', 'The %s is already in use.');
+        return $this->agent->has_unique_name($name, $this->id);
+    }
 }

@@ -26,6 +26,7 @@ class dressed_packing_list extends PM_Controller_v2
         $this->load->model('sales/dressed_packing_list_model', 'packing_list');
         $this->load->model('sales/m_sales_order', 'sales_order');
         $this->load->model('sales/m_customer', 'customer');
+        $this->load->model('sales/m_agent', 'agent');
     }
     
     function create()
@@ -33,6 +34,7 @@ class dressed_packing_list extends PM_Controller_v2
         $this->load->helper('customer');
         $truckings = $this->trucking->all(['status' => 'a']);
         $trucking_assistants = $this->assistant->all(['status' => 'a']);
+        $sales_agents = $this->agent->all(['status' => 'a']);
         $this->add_javascript([
             'plugins/moment.min.js',
             'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
@@ -43,6 +45,7 @@ class dressed_packing_list extends PM_Controller_v2
             'form_action' => base_url('sales/dressed_packing_list/store'),
             'truckings' => dropdown_format($truckings, 'id', ['trucking_name', 'plate_number'], ' ', '(', ')'),
             'trucking_assistants' => ['' => ''] + array_column($trucking_assistants, 'name', 'id'),
+            'agents' => ['' => ''] + array_column($sales_agents, 'name', 'id'),
             'data' => []
         ])->generate_page();
     }
@@ -74,6 +77,7 @@ class dressed_packing_list extends PM_Controller_v2
         $this->load->helper('customer');
         $truckings = $this->trucking->all(['status' => 'a']);
         $trucking_assistants = $this->assistant->all(['status' => 'a']);
+        $sales_agents = $this->agent->all(['status' => 'a']);
         $this->add_javascript([
             'plugins/moment.min.js',
             'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
@@ -85,6 +89,7 @@ class dressed_packing_list extends PM_Controller_v2
             'truckings' => dropdown_format($truckings, 'id', ['trucking_name', 'plate_number'], ' ', '(', ')'),
             'trucking_assistants' => ['' => ''] + array_column($trucking_assistants, 'name', 'id'),
             'data' => $packing_list,
+            'agents' => ['' => ''] + array_column($sales_agents, 'name', 'id'),
             'sales_order' => $this->sales_order->fetch_order_details($packing_list['fk_sales_order_id'], FALSE)
         ])->generate_page();
     }
@@ -132,6 +137,7 @@ class dressed_packing_list extends PM_Controller_v2
         }
         $this->form_validation->set_rules('fk_sales_order_detail_id', 'product', 'required|callback__validate_fk_sales_order_detail_id');
         $this->form_validation->set_rules('invoice_number', 'invoice number', 'required|trim');
+        $this->form_validation->set_rules('fk_sales_agent_id', 'sales agent', 'required|callback__validate_sales_agent');
         $this->form_validation->set_rules('fk_sales_trucking_id', 'trucking', 'required|callback__validate_trucking');
         $this->form_validation->set_rules('fk_trucking_assistant_id', 'trucking assistant', 'required|callback__validate_trucking_assistant');
         $this->form_validation->set_rules('date', 'departure date and time', 'required|callback__validate_datetime');
@@ -157,6 +163,7 @@ class dressed_packing_list extends PM_Controller_v2
             'invoice_number', 
             'fk_sales_trucking_id', 
             'fk_trucking_assistant_id', 
+            'fk_sales_agent_id', 
             'remarks',
             'date'
         ], $this->input->post());
@@ -220,6 +227,12 @@ class dressed_packing_list extends PM_Controller_v2
         $this->load->helper('pmdate');
         $this->form_validation->set_message('_validate_datetime', 'Please provide a valid date and time.');
         return is_valid_date($datetime, 'm/d/Y h:i A');
+    }
+
+    function _validate_sales_agent($sales_agent)
+    {
+        $this->form_validation->set_message('_validate_sales_agent', 'Please provide a valid %s');
+        return $this->agent->exists($sales_agent, TRUE);
     }
 
 

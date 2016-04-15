@@ -148,7 +148,7 @@ class Other_Disbursements extends PM_Controller_v2 {
         $this->form_validation->set_rules('check_number', 'Check Number', 'callback__validate_check_number');
         $this->form_validation->set_rules('check_date', '', 'callback__validate_check_date');
         $this->form_validation->set_rules('check_type', 'Check Type', 'callback__validate_check_type');
-        $this->form_validation->set_rules('status', 'Status', 'integer|is_callback__validate_status');
+        $this->form_validation->set_rules('status', 'Status', 'integer|callback__validate_status');
         if ($this->form_validation->run()) {
             return $this->response(FALSE, '', $this->_format_data($method));
         }
@@ -192,6 +192,7 @@ class Other_Disbursements extends PM_Controller_v2 {
      */
 
     public function _validate_liquidation($liquidation_array) {
+        $liquidation_array = $this->input->post('line');
         $this->load->helper('pmdate');
         $errors = [];
         $account_ids = [];
@@ -217,7 +218,7 @@ class Other_Disbursements extends PM_Controller_v2 {
         }
         return TRUE;
     }
-
+    
     public function _validate_date($date) {
         $this->load->helper('pmdate');
         if (is_valid_date($date)) {

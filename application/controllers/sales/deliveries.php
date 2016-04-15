@@ -20,7 +20,7 @@ class Deliveries extends PM_Controller
         $this->set_content_title(self::TITLE);
         $this->set_content_subtitle(self::SUBTITLE);
         $this->add_css('jQueryUI/jquery-ui-1.10.3.custom.min.css');
-        $this->load->model(array('sales/m_delivery', 'sales/m_customer', 'inventory/m_product'));
+        $this->load->model(array('sales/m_delivery', 'sales/m_customer', 'inventory/m_product', 'sales/m_agent'));
         $this->viewpage_settings['defaults'] = array(
             'fk_sales_order_id' => '',
             'date' => '',
@@ -29,6 +29,7 @@ class Deliveries extends PM_Controller
             'invoice_number' => '',
             'remarks' => '',
             'fk_sales_trucking_id' => '',
+            'fk_sales_agent_id' => '',
             'status' => M_Status::STATUS_DEFAULT,
             'total_amount' => 0.00,
         );
@@ -59,6 +60,7 @@ class Deliveries extends PM_Controller
         $this->load->helper('view');
         $this->viewpage_settings['products'] = $this->m_product->get(FALSE, array(M_Product::PRODUCT_CLASS => M_Product::CLASS_FINISHED));
         $this->viewpage_settings['truckers'] = $this->m_trucking->all(['status' => 'a']);
+        $this->viewpage_settings['agents'] = $this->m_agent->all(['status' => 'a']);
 
         $customers = $this->m_customer->all(['status' => 'a']);
         array_walk($customers, function(&$var){
@@ -79,7 +81,8 @@ class Deliveries extends PM_Controller
             $this->add_javascript(array('printer/printer.js', 'price-format.js', 'numeral.js', 'jquery-ui.min.js', 'jquery.form.min.js', 'sales-deliveries/manage.js'));
             $this->load->model(array('inventory/m_product', 'sales/m_trucking', 'accounting/m_bank_account'));
             $this->load->helper('view');
-            $this->viewpage_settings['truckers'] = $this->m_trucking->all();
+            $this->viewpage_settings['truckers'] = $this->m_trucking->all(['status' => 'a']);
+            $this->viewpage_settings['agents'] = $this->m_agent->all(['status' => 'a']);
             $this->viewpage_settings['defaults'] = $deliveryList[0];
             $this->viewpage_settings['url'] = base_url("sales/deliveries/a_update/{$delivery_id}");
             $this->viewpage_settings['form_title'] = "Update packing list #{$delivery_id}";
@@ -277,16 +280,18 @@ class Deliveries extends PM_Controller
         return;
     }
 
+
     private function _validate($mode = 'create')
     {
         $this->load->helper('array');
         $this->form_validation->set_rules('fk_sales_order_id', 'S.O. No.', 'required');
+        $this->form_validation->set_rules('fk_sales_agent_id', 'sales agent', 'required');
         $this->form_validation->set_rules('date', 'Date', 'required');
         $this->form_validation->set_rules('fk_sales_trucking_id', 'Delivered by', 'required');
         if ($this->form_validation->run())
         {
             $this->load->helper('pmdate');
-            $data = elements(array('fk_sales_order_id', 'date', 'fk_sales_trucking_id', 'invoice_number', 'remarks'), $this->input->post(), '');
+            $data = elements(array('fk_sales_order_id', 'date', 'fk_sales_trucking_id', 'fk_sales_agent_id', 'invoice_number', 'remarks'), $this->input->post(), '');
             $data['details'] = $this->_format_details();
             unset($data['details']['total_amount']);
             return $this->response(FALSE, '', $data);
@@ -401,6 +406,8 @@ class Deliveries extends PM_Controller
         ]);
         $this->generate_page();
     }
+
+
 
     public function ajax_create_credit_memo($pl_id){
         $validator = $this->_validate_credit_memo($pl_id);

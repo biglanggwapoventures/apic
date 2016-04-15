@@ -94,7 +94,7 @@ class Orders extends PM_Controller {
         $this->load->helper('customer');
         /* get add ons */
         $this->viewpage_settings['products'] = $this->m_customer->get_customer_products($order_info[0]['fk_sales_customer_id']);
-        $this->viewpage_settings['agents'] = dropdown_format($this->m_agent->get(), 'id', array('name'), '');
+        $this->viewpage_settings['agents'] = [];
         $this->viewpage_settings['url'] = base_url("sales/orders/update/{$order_id}");
         $this->viewpage_settings['form_title'] = 'Update sales order';
         if ($this->input->post()) {

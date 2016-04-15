@@ -54,16 +54,24 @@
                         </div>  
                     </div>
                 </div>
-                <div class="row"><div class="col-md-3">
+                <div class="row">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label for="delivered-by">Delivered by</label>
                             <?php $truckers = dropdown_format($truckers, 'id', array('trucking_name', 'plate_number')) ?>
                             <?= generate_dropdown('fk_sales_trucking_id', $truckers, (int) $defaults['fk_sales_trucking_id'], "class='form-control' id='delivered-by'", 'trucker') ?>
                         </div>  
-                    </div><div class="col-md-3">
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label for="invoice-number">Invoice No.</label>
                             <?= form_input(array('name' => 'invoice_number', 'class' => 'form-control', 'id' => 'invoice-number', 'value' => $defaults['invoice_number'])); ?>
+                        </div>  
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="delivered-by">Sales Agent</label>
+                            <?= form_dropdown('fk_sales_agent_id', ['' => ''] + array_column($agents, 'name', 'id'), $defaults['fk_sales_agent_id'], 'class="form-control"');?>
                         </div>  
                     </div>
                 </div>

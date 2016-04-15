@@ -149,7 +149,7 @@
                                     <li><a href="<?= $base_url . 'sales/deliveries' ?>" ><i class="fa fa-angle-double-right"></i> Packing List</a></li>
                                     <li><a href="<?= $base_url . 'sales/receipts' ?>" ><i class="fa fa-angle-double-right"></i> Receipts</a></li>
                                     <li><a href="<?= $base_url . 'sales/customer' ?>" ><i class="fa fa-angle-double-right"></i> Customers</a></li>
-                                    <li class="hidden"><a href="<?= $base_url . 'sales/agents' ?>"><i class="fa fa-angle-double-right"></i> Sales Agents</a></li>
+                                    <li><a href="<?= $base_url . 'sales/agents' ?>"><i class="fa fa-angle-double-right"></i> Sales Agents</a></li>
                                     <li><a href="<?= $base_url . 'sales/trucking' ?>"><i class="fa fa-angle-double-right"></i> Trucking</a></li>
                                     <li><a href="<?= $base_url . 'sales/trucking_assistants' ?>"><i class="fa fa-angle-double-right"></i> Trucking Assistants</a></li>
                                 </ul>
