@@ -81,21 +81,15 @@
                         <td width="9%"></td>
                         <td width="9%"></td>
                     </tr>
-                    <?php
-                        for($x=0; $x<count($line); $x++){
-                            $raw_date = $line[$x]['receiving_date'];
-                            $formatted_date = date_format(date_create($raw_date), "Y-m-d");
-                            echo "<tr>";
-                                echo "<td>RR# ".$line[$x]['id']."</td>";
-                                echo "<td>".$line[$x]['pr_number']."</td>";
-                                echo "<td>".$formatted_date."</td>";
-                                echo "<td>".number_format($line[$x]['amount'], 2)."</td>";
-                                echo "<td></td>";
-                                echo "<td></td>";
-                                echo "<td>".number_format($line[$x]['amount'], 2)."</td>";
-                            echo "</tr>";
-                        }
-                    ?>
+                    <tr>
+                        <td>Petty Cash</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td><?=number_format($amount, 2)?></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td><?=number_format($amount, 2)?></td>
+                    </tr>
                 </table>
             </div>
         </div> <!-- end .container-fluid -->

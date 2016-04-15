@@ -301,9 +301,8 @@ class Other_Disbursements extends PM_Controller_v2 {
             echo 'Please make sure the purchase receiving is approved before printing.';
             return;
         }
-        $this->load->view('printables/purchases/disbursement-others', [
-            'details' => $this->m_purchase_disbursement->get($id, 'others')
-        ]);
+        $data = $this->m_purchase_disbursement->get($id, 'others');
+        $this->load->view('printables/purchases/disbursement-others', $data);
     }
 
     public function ajax_print_check()
@@ -313,32 +312,8 @@ class Other_Disbursements extends PM_Controller_v2 {
             echo 'Please make sure the voucher is approved before printing.';
             return;
         }
-        $check_details = $this->m_purchase_disbursement->get_check_details($id);
-        if($check_details){
-            $view = 'printables/';
-            switch($check_details['check_type']){
-                case 'mb': 
-                    $view .= 'metrobank-check';
-                    break;
-                case 'xmb': 
-                    $view .= 'metrobank-cross-check';
-                    break;
-                case 'rcbc': 
-                    $view .= 'rcbc-check';
-                    break;
-                case 'xrcbc': 
-                    $view .= 'rcbc-cross-check';
-                    break;
-            }
-            $this->load->view($view, [
-                'date' => $check_details['check_date'],
-                'pay_to' => $this->m_purchase_disbursement->payee($id),
-                'amount' => $check_details['amount']
-            ]);
-            return;
-        }
-        echo "The voucher does not have any checks to print.";
-       
+        $data = $this->m_purchase_disbursement->get($id, 'others');
+        $this->load->view('printables/purchases/disbursement-others-check', $data);
     }
 
 

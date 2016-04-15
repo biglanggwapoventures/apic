@@ -45,149 +45,86 @@
             }
 
             @media all {
-                .page-break	{ display: none; }
+                .page-break { display: none; }
             }
 
             @media print {
-                .page-break	{ display: block; page-break-before: always; }
+                .page-break { display: block; page-break-before: always; }
             }
         </style>
     </head>
     <body>
-        <?php $maxDetailsCount = 20; ?>
-        <?php $detailsCursor = 0; ?>
-        <?php $detailsCount = count($details['liquidation']); ?>
-        <?php $tempDetailsCount = $detailsCount; ?>
-        <?php $pageTotal = 0; ?>
-        <?php if ($detailsCount <= $maxDetailsCount): ?>
-            <?php $pageTotal = 1; ?>
-        <?php elseif (($detailsCount > $maxDetailsCount) && ($detailsCount % $maxDetailsCount !== 0)): ?>
-            <?php $pageTotal = (int) ($detailsCount / $maxDetailsCount + 1); ?>
-        <?php elseif (($detailsCount > $maxDetailsCount) && ($detailsCount % $maxDetailsCount === 0)): ?>
-            <?php $pageTotal = (int) ($detailsCount / $maxDetailsCount); ?>
-        <?php endif; ?>
-        <?php $pageCounter = 1; ?>
-        <?php $margin = '' ?>
-        <?php while ($pageCounter <= $pageTotal): ?>
-            <?php if ($pageCounter > 1): ?>
-                <?php $margin = "style='margin-top:5px;'" ?>
-            <?php endif; ?>
-            <div class="container-fluid content" style="height:5in;">
-                <div class="row header" <?= $margin ?>> 
-                    <div class="col-xs-8 col-xs-offset-2 text-center">
-                        <strong>PROVERA NUTRITIONAL SOLUTIONS CORPORATION</strong><br>
-                        GY Warehouse Complex, Unit L3, A. Bacaltos Sr. St., Lawaan 1, Talisay City, Cebu<br>
-                        Tel No.: 514-8890 | Fax No.: 491-3485 | Email: provera.feedmill@gmail.com<br>
-                        <h4>C H E C K&nbsp;&nbsp;V O U C H E R</h4>
-                    </div>
-                    <div class="col-xs-2"><p class="text-right"> Page <?= "{$pageCounter} of {$pageTotal}" ?></p></div>
-                </div> 
-                <div class="row customer" style='border:1px solid #000;border-radius: 5px'>
-                    <div class="col-xs-8">
-                        <table>
-                            <tbody>
-                                <tr><td class="labels">Pay to:</td><td class='customer-info'><strong><?= $details['payee'] ?></strong></td></tr>
-                                <tr><td class="labels">Check No.:</td><td class='customer-info'><strong><?= "{$details['bank']}#{$details['check_number']}" ?></strong></td></tr>
-                                <tr><td class="labels">Check Date:</td><td class='customer-info'><strong><?= $details['check_date'] ?></strong></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-xs-4">
-                        <table>
-                            <tbody>
-                                <tr><td class="labels">Voucher No.</td><td class='text-center customer-info'><strong ><?= str_pad($details['id'], 4, 0, STR_PAD_LEFT) ?></strong></td></tr>
-                                <tr><td class="labels">Date:</td><td class='text-center customer-info'><strong><?= $details['date'] ?></strong></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+        <div class="container-fluid content" style="height:5in;">
+            <div class="row header"> 
+                <div class="col-xs-8 col-xs-offset-2 text-center">
+                    <strong>PROVERA NUTRITIONAL SOLUTIONS CORPORATION</strong><br>
+                    GY Warehouse Complex, Unit L3, A. Bacaltos Sr. St., Lawaan 1, Talisay City, Cebu<br>
+                    Tel No.: 514-8890 | Fax No.: 491-3485 | Email: provera.feedmill@gmail.com<br>
+                    <h4>C H E C K&nbsp;&nbsp;V O U C H E R</h4>
                 </div>
-                <div class='row products'>
-                    <div class='col-xs-12'>
-                        <table style="width:100%">
-                            <thead>
-                                <tr>
-                                    <td>Date</td><td>Account</td><td>Description</td><td>Amount</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $pageTotalPrice = 0; ?>
-                                <?php $detailsToDisplay = 0; ?>
-                                <?php if ($tempDetailsCount > $maxDetailsCount): ?>
-                                    <?php $detailsToDisplay = $maxDetailsCount; ?>
-                                    <?php $tempDetailsCount = $tempDetailsCount - $maxDetailsCount; ?>
-                                <?php else: ?>
-                                    <?php $detailsToDisplay = $tempDetailsCount; ?>
-                                <?php endif; ?>
-                                <?php if ($pageCounter === $pageTotal && ($detailsCount % 20 <= 14 || $detailsCount % 20 <= 0 || $detailsCount - 20 <= 0)): ?>
-                                    <?php $ctr = 14 ?>
-                                <?php else: ?>
-                                    <?php $ctr = $maxDetailsCount ?>
-                                <?php endif; ?>
-                                <?php for ($innerCursor = 0; $innerCursor < $ctr; $innerCursor++): ?>
-                                    <?php if (array_key_exists($detailsCursor, $details['liquidation'])): ?>
-                                        <tr>
-                                            <td><?= $details['liquidation'][$detailsCursor]['date'] ?></td>
-                                            <td><?= $details['liquidation'][$detailsCursor]['account'] ?></td>
-                                            <td><?= $details['liquidation'][$detailsCursor]['description'] ?></td>
-                                            <?php $netAmount = $details['liquidation'][$detailsCursor]['amount']; ?>
-                                            <td><?= number_format($netAmount, 2) ?></td>
-                                            <?php $pageTotalPrice+=($netAmount); ?>
-                                            <?php $detailsCursor++; ?>
-                                        </tr>
-                                        <?php if ($detailsCursor === $detailsCount): ?>
-                                            <tr><td colspan="4" class="text-center">*************NOTHING FOLLOWS*************</td></tr>
-                                        <?php endif; ?>
-                                    <?php else: ?>
-                                        <tr><td colspan="4">&nbsp;</td></tr>
-                                    <?php endif; ?>
-                                <?php endfor; ?>
-                            </tbody>
-                        </table>
-                    </div>
+            </div> <!-- end .row header -->
+            <div class="row customer" style='border:1px solid #000;border-radius: 5px'>
+                <div class="col-xs-8">
+                    <table>
+                        <tbody>
+                            <tr><td class="labels">Pay to:</td><td class='customer-info'><strong><?= $payee ?></strong></td></tr>
+                            <tr><td class="labels">Check No.:</td><td class='customer-info'><strong><?= "{$bank}#{$check_number}" ?></strong></td></tr>
+                            <tr><td class="labels">Check Date:</td><td class='customer-info'><strong><?= $check_date ?></strong></td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div id='footer' style="margin-top:20px">
-                    <?php if ($pageCounter === $pageTotal): ?>
-                        <div class='row'> 
-                            <div class='col-xs-9'>
-                                <p>AMOUNT: <strong><?= convertCurrencyToWords(number_format($details['amount'], 2, '.', '')); ?></strong></p>
-                            </div>
-                            <div class='col-xs-3'>
-                                <p class='text-right'>TOTAL(Php): <strong ><?= number_format($details['amount'], 2) ?></strong></p>
+                <div class="col-xs-4">
+                    <table>
+                        <tbody>
+                            <tr><td class="labels">Voucher No.</td><td class='text-center customer-info'><strong ><?= str_pad($id, 4, 0, STR_PAD_LEFT) ?></strong></td></tr>
+                            <tr><td class="labels">Date:</td><td class='text-center customer-info'><strong><?= $date ?></strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> <!-- end .row customer -->
+            <div class='row products'>
+                <div class='col-xs-12'>
+                    <table style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Date</td><td>Account</td><td>Description</td><td>Amount</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                for($x=0; $x<count($liquidation); $x++){
+                                    echo "<tr>";
+                                        echo "<td>".$liquidation[$x]['date']."</td>";
+                                        echo "<td>".$liquidation[$x]['account']."</td>";
+                                        echo "<td>".$liquidation[$x]['description']."</td>";
+                                        echo "<td>".number_format($liquidation[$x]['amount'], 2)."</td>";
+                                    echo "</tr>";
+                                }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div> <!-- end .row products -->
+            <div id='footer' style="margin-top:20px">
+                <?php if (!empty($liquidation)): ?>
+                    <div class='row'> 
+                        <div class='col-xs-9'>
+                            <p>AMOUNT: <strong><?= convertCurrencyToWords(number_format($amount, 2, '.', '')); ?></strong></p>
+                        </div>
+                        <div class='col-xs-3'>
+                            <p class='text-right'>TOTAL(Php): <strong ><?= number_format($amount, 2) ?></strong></p>
+                        </div>
+                    </div>
+                    <div class='row'> 
+                        <div class='col-xs-2'>
+                            <div class="form-group">
+                                <label>Prepared by:</label>
+                                <p class="form-control-static"><?= $this->session->userdata('name') ?></p>
                             </div>
                         </div>
-                        <div class='row'> 
-                            <div class='col-xs-2'>
-                                <div class="form-group">
-                                    <label>Prepared by:</label>
-                                    <p class="form-control-static"><?= $this->session->userdata('name') ?></p>
-                                </div>
-                            </div>
-                            <div class='col-xs-2'>
-                                <div class="form-group">
-                                    <label>Checked by:</label>
-                                    <p class="form-control-static  text-right" style="border-bottom:1px solid black;"></p>
-                                    <span class="help-block text-center">Mr Gerald Campos</span>
-                                </div>
-                            </div>
-                            <div class='col-xs-2'>
-                                <div class="form-group">
-                                    <label>Approved by:</label>
-                                    <p class="form-control-static  text-right" style="border-bottom:1px solid black;"></p>
-                                    <span class="help-block text-center">Mr Gilbert Yap</span>
-                                </div>
-                            </div>
-                            <div class='col-xs-6'>
-                                <div class="form-group">
-                                    <label>Received the full payment amount described above by</label>
-                                    <p class="form-control-static  text-right" style="border-bottom:1px solid black;"></p>
-                                    <span class="help-block text-center">Name & signature / date</span>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <?php $pageCounter++; ?>
-        <?php endwhile; ?>
+                    </div>
+                <?php endif; ?>
+            </div> <!-- end #footer -->
+        </div> <!-- end .container-fluid content -->
     </body>
 </html>
