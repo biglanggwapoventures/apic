@@ -7,9 +7,9 @@
         tbody = $('table#master-list tbody'),
         deleteTemplate = '<a class="btn btn-danger btn-flat btn-xs delete">Delete</a>',
 
-        printTemplate = '<a class="btn btn-primary btn-flat btn-xs print">Print</a>';
+        printTemplate = '<a class="btn btn-primary btn-flat btn-xs print">Print</a>',
 
-        btnViewMore = '#btn-view-more'
+        btnViewMore = '#btn-view-more',
 
         page = 1,
 
