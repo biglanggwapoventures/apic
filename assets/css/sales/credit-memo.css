@@ -1,0 +1,4 @@
+table#credit-memo-returns > tbody > tr > td:nth-child(4),td:nth-child(5),td:nth-child(7), 
+table#credit-memo-others > tbody > tr > td:nth-child(3) > input
+{text-align: right;}
+

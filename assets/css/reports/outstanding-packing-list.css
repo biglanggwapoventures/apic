@@ -1,0 +1,10 @@
+.full-width{width: 100%;}
+.font-16{font-size: 16px!important}
+table#oplr td{font-family: 'Tahoma'; font-size: 12px;}
+table#oplr td{vertical-align: middle;}
+.text-underline{text-decoration: underline;}
+.vertical-align-mid{vertical-align: middle!important;}
+tr.borderless, tr.borderless>td{border:none!important;}
+table.borderless{border:none;}
+tr:nth-child(1), tr:nth-child(2), tr:nth-child(3), tr:nth-child(4), tr:nth-child(5), tr:nth-child(6){font-weight: bold;}
+.font-normal{font-weight: normal!important;}

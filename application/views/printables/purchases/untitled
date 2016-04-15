@@ -1,0 +1,11 @@
+<tr>
+                                            <td><?= str_pad($details['line'][$detailsCursor]['fk_purchase_receiving_id'], 4, 0, STR_PAD_LEFT) ?></td>
+                                            <td><?= $details['line'][$detailsCursor]['pr_number'] ?></td>
+                                            <td><?= $details['line'][$detailsCursor]['receiving_date'] ?></td>
+                                            <?php $netAmount = $details['line'][$detailsCursor]['amount']; ?>
+                                            <td><?= number_format($netAmount, 2) ?></td>
+                                            <?php $pageTotalPrice+=($netAmount); ?>
+                                            <?php $detailsCursor++; ?>
+                                        </tr>
+
+                                        <td>RR No.</td><td>SI/DR No.</td><td>Date</td><td>Amount</td>
