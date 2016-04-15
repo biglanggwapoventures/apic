@@ -30,7 +30,8 @@
 
                 <table id="master-list" class="table table-striped table-condensed promix" data-edit-url="<?= $url . '/manage?do=update-purchase-disbursement&id=' ?>"
                        data-master-list-url='<?= $url . '/ajax_master_list' ?>'
-                       data-delete-url='<?= $url . '/a_do_action/delete' ?>'>
+                       data-delete-url='<?= $url . '/a_do_action/delete' ?>'
+                       data-print-url='<?=base_url('purchases/disbursements/do_print')?>'>
                     <thead>
                         <tr class="info">
                             <th>CV#</th>

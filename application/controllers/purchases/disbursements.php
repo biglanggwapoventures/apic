@@ -469,7 +469,7 @@ class Disbursements extends PM_Controller_v2 {
     /* END OF FORM VALIDATION CALLBACKS */
 
     //print
-    public function do_print() {
+    public function _do_print() {
         $type = $this->input->get('disbursement_type');
         $id = $this->input->get('id');
         if (!is_numeric($id) || !$this->m_purchase_disbursement->is_approved($id) || ! in_array($type, ['rr', 'advance'])) {
@@ -491,6 +491,13 @@ class Disbursements extends PM_Controller_v2 {
             ]);
         }
         
+    }
+
+    public function do_print(){
+        $this->load->model('purchases/m_purchase_disbursement');
+        $check_voucher_id = $this->input->get('check_voucher_id');
+        $data = $this->m_purchase_disbursement->get($check_voucher_id);
+        $this->load->view('printables/purchases/check', $data);
     }
 
     public function ajax_print_check()

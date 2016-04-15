@@ -7,7 +7,7 @@
         tbody = $('table#master-list tbody'),
         deleteTemplate = '<a class="btn btn-danger btn-flat btn-xs delete">Delete</a>',
 
-        printTemplate = '<a class="btn btn-primary btn-flat btn-xs" data-toggle="modal" data-target="#print">Print</a> ';
+        printTemplate = '<a class="btn btn-primary btn-flat btn-xs print">Print</a>';
 
         btnViewMore = '#btn-view-more'
 
@@ -69,6 +69,10 @@
             }else{
                 $(btnViewMore).closest('tr').removeClass('hidden');
             }
+            console.log(printUrl);
+            $('.print').attr("href", function(){
+                return printUrl+'?check_voucher_id='+$(this).closest('tr').data('pk');
+            }).unbind().printPage();
         },
 
         deleteItem = function(){
@@ -122,16 +126,6 @@
             $(btnViewMore).closest('tr').removeClass('hidden');
             page = 1;
             getData(getSearchParams(), true);
-        });
-        $('#print').on('show.bs.modal', function(e){
-            var row = $(e.relatedTarget).closest('tr'),
-                id = row.data('pk'),
-                po_id = row.data('po'),
-                type = row.data('type');
-
-            $('.print').attr('href', function(){
-                return $(this).data('url')+id+'&po='+po_id+'&disbursement_type='+type;
-            }).unbind().printPage();  
         });
         $('.datepicker').datepicker({dateFormat:'mm/dd/yy'})
         $('table.promix').stickyTableHeaders({fixedOffset: $('.content-header')});

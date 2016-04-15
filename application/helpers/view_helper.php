@@ -138,9 +138,9 @@ function convertCurrencyToWords($number)
     $out = convertIntegerToWords($nums[0]) . ' pesos';
     if (isset($nums[1]) && (int)$nums[1])
     {
-        $out .= ' and ' . number_format($nums[1]) . ' / 100';
+        $out .= ' & ' . $nums[1] . ' / 100';
     }
-    return $out;
+    return ucwords($out);
 }
 
 function group_dropdown($name_attr, $options_array, $value_key, $text_key, $selected, $grouping_key = FALSE, $attrs = '')

@@ -152,7 +152,7 @@ class M_Purchase_Disbursement extends CI_Model {
         }
         
         // get disbursement details
-        $this->db->select('pmt.*, bank.bank_name AS bank');
+        $this->db->select('pmt.*, bank.account_number, bank.bank_name AS bank');
         $this->db->from('purchase_disbursement_payments AS pmt');
         $this->db->join('accounting_bank_account AS bank', 'bank.id = pmt.fk_accounting_bank_account_id', 'left');
         $this->db->where('pmt.fk_purchase_disbursement_id', $disbursement_id);
