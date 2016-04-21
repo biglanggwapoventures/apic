@@ -284,7 +284,6 @@ class Deliveries extends PM_Controller
     {
         $this->load->helper('array');
         $this->form_validation->set_rules('fk_sales_order_id', 'S.O. No.', 'required');
-        $this->form_validation->set_rules('fk_sales_agent_id', 'sales agent', 'required');
         $this->form_validation->set_rules('date', 'Date', 'required');
         $this->form_validation->set_rules('fk_sales_trucking_id', 'Delivered by', 'required');
         if ($this->form_validation->run())
