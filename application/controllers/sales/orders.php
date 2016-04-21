@@ -255,7 +255,6 @@ class Orders extends PM_Controller_v2 {
     {
         $this->form_validation->set_rules('fk_sales_customer_id', 'customer', 'required|callback__validate_customer');
         $this->form_validation->set_rules('date', 'Date', 'required|callback__validate_date');
-        $this->form_validation->set_rules('is_approved', 'Status', 'callback__validate_status');
         $this->form_validation->set_rules('fk_sales_agent_id', 'sales agent', 'required|callback__validate_sales_agent');
         if(!$this->form_validation->run()){
             $this->validation_errors += array_values($this->form_validation->error_array());
@@ -319,12 +318,6 @@ class Orders extends PM_Controller_v2 {
     {
         $this->form_validation->set_message('_validate_sales_agent', 'Please select a valid %s');
         return $this->m_agent->exists($sales_agent, TRUE);
-    }
-
-    function _validate_status($status) 
-    {
-         $this->form_validation->set_rules('_validate_status', sprintf('You do not have the privilege to approve a ', self::SUBJECT));
-         return can_set_status();
     }
 
     function _validate_date($date)
