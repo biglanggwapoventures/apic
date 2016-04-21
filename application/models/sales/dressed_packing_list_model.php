@@ -62,12 +62,13 @@ class dressed_packing_list_model extends CI_Model
 
 	function get($id)
 	{
-		$packing_list = $this->db->select('so.po_number, customer.company_name, customer.address, customer.customer_code, truck.plate_number, truck.driver, assistant.name AS assistant, pl.*')
+		$packing_list = $this->db->select('so.po_number, customer.company_name, customer.address, customer.customer_code, truck.plate_number, truck.driver, assistant.name AS assistant, pl.*, agent.name AS sales_agent')
 			->from('sales_delivery AS pl')
 			->join('sales_order AS so', 'so.id = pl.fk_sales_order_id')
 			->join('sales_customer AS customer', 'customer.id = so.fk_sales_customer_id')
 			->join('sales_trucking AS truck', 'truck.id = pl.fk_sales_trucking_id')
 			->join('trucking_assistants AS assistant', 'assistant.id = pl.fk_trucking_assistant_id')
+			->join('sales_agent AS agent', 'agent.id = so.fk_sales_agent_id', 'left')
 			->get_where($this->table, ['pl.id' => $id, 'pl.type' => 'd'])->row_array();
 
 		if(!$packing_list){

@@ -65,6 +65,15 @@ class M_customer extends CI_Model {
         $this->db->where('status', 'a');
         return (bool)$this->find($id);
     }
+
+    public function exists($id, $active = FALSE)
+    {
+        if($active === TRUE){
+            $this->db->where('status', 'a');
+        }
+        return $this->db->select('id')->from($this->table)->where('id', $id)->get()->num_rows() > 0;
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -327,15 +336,16 @@ class M_customer extends CI_Model {
             ->where('so.fk_sales_customer_id', $customer_id)
             ->get()->result_array();
 
-        $this->db->select('id')
-            ->from('sales_order')
-            ->where('fk_sales_customer_id', $customer_id);
+            $this->db->select('s_order.id, agent.name AS sales_agent')
+                ->from('sales_order AS s_order')
+                ->join('sales_agent AS agent', 'agent.id = s_order.fk_sales_agent_id')
+                ->where('s_order.fk_sales_customer_id', $customer_id);
 
-        if($delivered_so){
-            $this->db->where_not_in('id', array_column($delivered_so, 'id'));
-        }
+            if($delivered_so){
+                $this->db->where_not_in('s_order.id', array_column($delivered_so, 'id'));
+            }
 
-        return $this->db->get()->result_array();
+            return $this->db->get()->result_array();
 
 
     }

@@ -18,45 +18,40 @@
             <div class="box-header bg-light-blue-gradient" style="color:#fff!important;">
                 <h3 class="box-title"><?= $form_title; ?></h3>
             </div>
-            <?= form_open($url, array('role' => 'form')) ?>
+            <?= form_open('', array('role' => 'form', 'data-action' => $url)) ?>
             <div class="box-body">
-                <?php if (isset($validation_errors)): ?>
-                    <div class="callout callout-danger">
-                        <h4>Errors!</h4>
-                        <ul class="list-unstyled"><?= $validation_errors ?></ul>
-                    </div>
-                <?php endif; ?>
-                <?php if (isset($form_submission_success)): ?>
-                    <div class="callout callout-info">
-                        <h4>Success</h4>
-                        <ul class="list-unstyled"><?= $form_submission_success ?></ul>
-                    </div>
-                <?php endif; ?>
+                <div class="callout callout-danger hidden" id="messages">
+                    <h4>Oops!</h4>
+                    <ul class="list-unstyled"></ul>
+                </div>
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="customer-name">Customer</label>
                             <input type="hidden" name="data-price-list-url" disabled="disabled" value="<?= base_url('sales/customers/a_get_registered_products') ?>"/>
                             <?php $attr = 'class="form-control" id="customer-name"'; ?>
-                            <?php if ($defaults['fk_sales_customer_id']): ?>
-                                <?= form_hidden('fk_sales_customer_id', $defaults['fk_sales_customer_id']); ?>
-                                <p class="form-control-static"><?= $defaults['customer'] ?></p>
-                            <?php else: ?>
-                                <?= form_dropdown('fk_sales_customer_id', $customers, FALSE, $attr) ?>
-                            <?php endif; ?>
+                            <?= form_dropdown('fk_sales_customer_id', $customers, $defaults['fk_sales_customer_id'], $attr) ?>
                         </div>  
                     </div>
                     <div class="col-sm-3">
                         <div class="form-group">
                             <label for="po-number">P.O. No.</label>
-                            <?= form_input(array('name' => 'po_number', 'class' => 'form-control', 'id' => 'po-number', 'required' => 'required', 'value' => $defaults['po_number'])); ?>
+                            <?= form_input(array('name' => 'po_number', 'class' => 'form-control', 'id' => 'po-number', 'value' => $defaults['po_number'])); ?>
                         </div>  
                     </div>
                     <div class="col-sm-3 col-sm-offset-2">
                         <div class="form-group">
                             <label for="date">Date</label>
-                            <?= form_input(array('name' => 'date', 'class' => 'form-control datepicker', 'id' => 'date', 'required' => 'required', 'value' => $defaults['date'])); ?>
+                            <?= form_input(array('name' => 'date', 'class' => 'form-control datepicker', 'id' => 'date', 'value' => $defaults['date'])); ?>
                         </div>  
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Sale agent</label>
+                            <?= form_dropdown('fk_sales_agent_id', ['' => ''] + array_column($agents, 'name', 'id'),  $defaults['fk_sales_agent_id'], 'class="form-control"')?>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -68,8 +63,7 @@
                     </div>
                 </div>
                 <hr>
-                <div class="row" id="no-customer-selected-overlay"><div class="col-md-12"><p class="text-center bg-red">Please select a customer first.</p></div></div>
-                <div class="row hidden" id="sales-order-details">
+                <div class="row" id="sales-order-details">
                     <div class="col-md-12 table-responsive">
                         <div class="callout callout-info">
                             <strong><i class="fa fa-bullhorn"></i> Note:</strong> The discount field below refers to discount per unit.
@@ -108,10 +102,10 @@
                                         <span class="unit"> <?= $defaults['details']['unit_description'][0] ?></span>
                                     </td>
                                     <td>
-                                        <?= form_input(array('name' => 'details[product_quantity][]', 'type' => 'number', 'step' => '0.01', 'class' => 'form-control  input-clear for-calculation product-quantity', 'required' => 'required', 'value' => $defaults['details']['product_quantity'][0])); ?>
+                                        <?= form_input(array('name' => 'details[product_quantity][]', 'type' => 'number', 'step' => '0.01', 'class' => 'form-control  input-clear for-calculation product-quantity', 'value' => $defaults['details']['product_quantity'][0])); ?>
                                     </td>
                                     <td>
-                                        <?= form_input(['name' => 'details[total_units][]', 'type' => 'number', 'step' => '0.01', 'class' => 'form-control  input-clear', 'required' => 'required', 'value' => $defaults['details']['total_units'][0]]); ?>
+                                        <?= form_input(['name' => 'details[total_units][]', 'type' => 'number', 'step' => '0.01', 'class' => 'form-control  input-clear', 'value' => (float)$defaults['details']['total_units'][0] ?: '']); ?>
                                     </td>
                                     <td >
                                         <?= form_input(array('name' => 'details[unit_price][]', 'class' => 'form-control  unit-price text-right has-amount for-calculation input-clear', 'value' => number_format($defaults['details']['unit_price'][0], 2))); ?>
@@ -154,10 +148,10 @@
                                              <?= $defaults['details']['unit_description'][$x] ?>
                                         </td>
                                         <td>
-                                            <?= form_input(array('name' => 'details[product_quantity][]', 'type' => 'number', 'step' => '0.01', 'class' => 'form-control  input-clear for-calculation product-quantity', 'required' => 'required', 'value' => $defaults['details']['product_quantity'][$x])); ?>
+                                            <?= form_input(array('name' => 'details[product_quantity][]', 'type' => 'number', 'step' => '0.01', 'class' => 'form-control  input-clear for-calculation product-quantity','value' => $defaults['details']['product_quantity'][$x])); ?>
                                         </td>
                                         <td>
-                                        <?= form_input(['name' => 'details[total_units][]', 'type' => 'number', 'step' => '0.01', 'class' => 'form-control  input-clear', 'required' => 'required', 'value' => $defaults['details']['total_units'][$x]]); ?>
+                                        <?= form_input(['name' => 'details[total_units][]', 'type' => 'number', 'step' => '0.01', 'class' => 'form-control  input-clear', 'value' => (float)$defaults['details']['total_units'][$x] ?: '']); ?>
                                     </td>
                                         <td>
                                             <?= form_input(array('name' => 'details[unit_price][]', 'class' => 'form-control  unit-price text-right has-amount for-calculation input-clear', 'value' => number_format($defaults['details']['unit_price'][$x], 2))); ?>
@@ -191,15 +185,16 @@
                         </table>
                     </div>
                 </div>
+                <?php if(can_set_status()):?>
+                    <div class="checkbox">
+                        <?php $checked = $defaults['status'] == M_Status::STATUS_APPROVED ? 'checked="checked"' : '';?>
+                        <label><input type="checkbox" name="is_approved" <?= $checked?>/> Mark this sales order as <b>approved</b></label>
+                    </div>
+                <?php endif;?>
             </div>
             <div class="box-footer clearfix">
-                <?= form_button(array('type' => 'submit', 'name' => 'status', 'value' => M_Status::STATUS_DEFAULT, 'class' => 'btn btn-primary btn-flat', 'content' => 'Save')); ?>
-                <?php if (($this->session->userdata('type_id') == M_Account::TYPE_ADMIN) && ($defaults['status'] != M_Status::STATUS_APPROVED)): ?>
-                    <?= form_button(array('type' => 'submit', 'name' => 'status', 'value' => M_Status::STATUS_APPROVED, 'class' => 'btn btn-success  btn-flat', 'content' => 'Save and approve')); ?>
-                <?php elseif ($this->session->userdata('type_id') == M_Account::TYPE_ADMIN && $defaults['status'] == M_Status::STATUS_APPROVED): ?>
-                    <?= form_button(array('type' => 'submit', 'name' => 'status', 'value' => M_Status::STATUS_CANCELLED, 'class' => 'btn btn-warning btn-flat', 'content' => 'Cancel this order')); ?>
-                <?php endif; ?>
-                <a href="<?= base_url('sales/orders') ?>" class="btn btn-danger pull-right  btn-flat">Go back</a>
+                <button type="submit" class="btn btn-success btn-flat">Submit</button>
+                <a class="btn btn-default btn-flat pull-right" href="<?= base_url('sales/orders')?>" id="cancel">Go back</a>
             </div>
             <?= form_close() ?>
         </div>

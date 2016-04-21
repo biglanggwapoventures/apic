@@ -70,8 +70,8 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label for="delivered-by">Sales Agent</label>
-                            <?= form_dropdown('fk_sales_agent_id', ['' => ''] + array_column($agents, 'name', 'id'), $defaults['fk_sales_agent_id'], 'class="form-control"');?>
+                            <label >Sales Agent</label>
+                            <p class="form-control-static" id="sales-agent"><?= put_value($defaults, 'sales_agent', '')?></p>
                         </div>  
                     </div>
                 </div>

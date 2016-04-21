@@ -29,7 +29,6 @@ class Deliveries extends PM_Controller
             'invoice_number' => '',
             'remarks' => '',
             'fk_sales_trucking_id' => '',
-            'fk_sales_agent_id' => '',
             'status' => M_Status::STATUS_DEFAULT,
             'total_amount' => 0.00,
         );

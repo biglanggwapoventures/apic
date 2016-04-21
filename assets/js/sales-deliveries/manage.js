@@ -35,7 +35,7 @@ $(document).ready(function () {
                     var options = [];
                     $("select[name=fk_sales_order_id]").html("<option value=''>Please select S.O. No.</option>");
                     $(so).each(function (i) {
-                        options.push("<option value='" + so[i].id + "'>SO NO. " + so[i].id + "</option>");
+                        options.push("<option data-agent=\""+so[i].sales_agent+"\" value='" + so[i].id + "'>SO NO. " + so[i].id + "</option>");
                     });
                     $("select[name=fk_sales_order_id]").append(options.join(""));
                 })
@@ -49,6 +49,7 @@ $(document).ready(function () {
             $("tbody#pl-details").html("<tr><td colspan='7' class='text-center'>Please select a customer and his/her corresponding S.O. No.</td></tr>");
             return;
         }
+        $('#sales-agent').text($(this).find('option:selected').data('agent'));
         $.getJSON($("input[name=data-so-details-url]").val(), {order_id: id})
                 .done(function (details) {
                     var tbodyContent = [];

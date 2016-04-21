@@ -232,11 +232,11 @@ class M_Delivery extends CI_Model
     {
         $this->load->library('subquery');
         $this->load->model('inventory/m_product');
-        $this->db->select(' delivery.*, DATE_FORMAT(delivery.date, "%M %d, %Y") as formatted_date, truck.trucking_name, customer.company_name, customer.id AS customer_id, customer.address, s_order.id as order_id,  '
-                . 'delivery.status, s_order.po_number', FALSE);
+        $this->db->select(' delivery.*, DATE_FORMAT(delivery.date, "%M %d, %Y") as formatted_date, truck.trucking_name, customer.company_name, customer.id AS customer_id, customer.address, s_order.id as order_id,delivery.status, s_order.po_number, agent.name AS sales_agent', FALSE);
         $this->db->from('sales_delivery as delivery');
         $this->db->join('sales_trucking as truck', 'truck.id = delivery.fk_sales_trucking_id', 'left');
         $this->db->join('sales_order as s_order', 's_order.id = delivery.fk_sales_order_id');
+        $this->db->join('sales_agent as agent', 'agent.id = s_order.fk_sales_agent_id', 'left');
         $this->db->join('sales_customer as customer', 'customer.id = s_order.fk_sales_customer_id');
         $this->db->join('sales_delivery_detail as deliv_detail', 'deliv_detail.fk_sales_delivery_id = delivery.id');
         $this->db->group_by('delivery.id');

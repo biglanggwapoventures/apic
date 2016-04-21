@@ -37,7 +37,7 @@
                 <div class="col-sm-4">
                      <div class="form-group">
                         <label>Sales Agent</label>
-                        <?= form_dropdown('fk_sales_agent_id', $agents, put_value($data, 'fk_sales_agent_id', FALSE), 'class="form-control"');?>
+                        <p class="form-control-static" id="sales-agent"><?= put_value($data, 'sales_agent', '')?></p>
                     </div>
                 </div>
             </div>
@@ -204,8 +204,8 @@
                 var options = ['<option></option>'];
 
                 if(response.length){
-                     $.each(response, function(i, v){
-                        options.push('<option value="'+v.id+'">SO# '+v.id+'</option>');
+                    $.each(response, function(i, v){
+                        options.push('<option data-agent="'+v.sales_agent+'" value="'+v.id+'">SO# '+v.id+'</option>');
                     });
                 }
                 
@@ -225,6 +225,8 @@
             if(!SONumber){
                 productSelect.empty();
             }
+
+            $('#sales-agent').text(that.find('option:selected').data('agent'));
 
             $.getJSON(SODetailsURL, {order_id:SONumber})
             .done(function(response){

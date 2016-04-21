@@ -1,12 +1,14 @@
 <?php
 
-class Orders extends PM_Controller {
+class Orders extends PM_Controller_v2 {
 
     const TITLE = 'Sales';
     const SUBTITLE = 'Orders';
     const SUBJECT = 'sales order';
 
     private $viewpage_settings = array();
+
+    protected $validation_errors = [];
 
     public function __construct() {
         parent::__construct();
@@ -18,9 +20,10 @@ class Orders extends PM_Controller {
         $this->set_content_title(self::TITLE);
         $this->set_content_subtitle(self::SUBTITLE);
         $this->add_javascript(array());
-        $this->load->model(array('sales/m_sales_order', 'sales/m_customer', 'inventory/m_product'));
+        $this->load->model(array('sales/m_sales_order', 'sales/m_customer', 'inventory/m_product', 'sales/m_agent'));
         $this->viewpage_settings['defaults'] = array(
             'fk_sales_customer_id' => '',
+            'fk_sales_agent_id' => FALSE,
             'po_number' => '',
             'date' => '',
             'remarks' => '',
@@ -88,14 +91,25 @@ class Orders extends PM_Controller {
 
     public function update($order_id) {
         $order_info = $this->m_sales_order->get(FALSE, array('s_order.id' => $order_id));
-        $this->load->model(array('inventory/m_product', 'sales/m_agent', 'sales/m_customer'));
+        $this->load->model(array('inventory/m_product', 'sales/m_customer'));
         $this->add_css('jQueryUI/jquery-ui-1.10.3.custom.min.css');
         $this->add_javascript(array('manage-sales-orders.js', 'price-format.js', 'numeral.js', 'jquery-ui.min.js'));
         $this->load->helper('customer');
+
+        $customers = $this->m_customer->all(['status' => 'a']);
+        array_walk($customers, function(&$var){
+            $var['name'] = "[{$var['customer_code']}] {$var['company_name']}";
+        });
+        $this->viewpage_settings['customers'] = dropdown_format($customers, 'id', 'name', '');
+
+
         /* get add ons */
         $this->viewpage_settings['products'] = $this->m_customer->get_customer_products($order_info[0]['fk_sales_customer_id']);
-        $this->viewpage_settings['agents'] = [];
-        $this->viewpage_settings['url'] = base_url("sales/orders/update/{$order_id}");
+        
+        // get agents list
+        $this->viewpage_settings['agents'] = $this->m_agent->all(['status' => 'a']);
+
+        $this->viewpage_settings['url'] = base_url("sales/orders/update_order/{$order_id}");
         $this->viewpage_settings['form_title'] = 'Update sales order';
         if ($this->input->post()) {
             $saved = FALSE;
@@ -125,7 +139,7 @@ class Orders extends PM_Controller {
     }
 
     public function add() {
-        $this->load->model(array('inventory/m_product', 'sales/m_agent', 'inventory/m_medications'));
+        $this->load->model(array('inventory/m_product', 'inventory/m_medications'));
         $this->add_css('jQueryUI/jquery-ui-1.10.3.custom.min.css');
         $this->add_javascript(array('manage-sales-orders.js', 'price-format.js', 'numeral.js', 'jquery-ui.min.js'));
         $this->load->helper('view');
@@ -135,8 +149,11 @@ class Orders extends PM_Controller {
             $var['name'] = "[{$var['customer_code']}] {$var['company_name']}";
         });
         $this->viewpage_settings['customers'] = dropdown_format($customers, 'id', 'name', '');
+
+        // get agents list
+        $this->viewpage_settings['agents'] = $this->m_agent->all(['status' => 'a']);
         
-        $this->viewpage_settings['url'] = base_url('sales/orders/add');
+        $this->viewpage_settings['url'] = base_url('sales/orders/store');
         $this->viewpage_settings['form_title'] = 'Add new sales order';
         if ($this->input->post()) {
             $saved = FALSE;
@@ -162,6 +179,7 @@ class Orders extends PM_Controller {
         $this->form_validation->set_rules('fk_sales_customer_id', 'Customer', 'required');
         $this->form_validation->set_rules('date', 'Date', 'required');
         $this->form_validation->set_rules('status', 'Status', 'callback__validate_status');
+        $this->form_validation->set_rules('fk_sales_agent_id', 'sales agent', 'required|callback__validate_sales_agent');
         if ($this->form_validation->run()) {
             $data = $this->input->post();
             $data['details'] = $this->_format_details();
@@ -196,13 +214,127 @@ class Orders extends PM_Controller {
         return $formatted_details;
     }
 
-    function _validate_status($status) {
-        if ($status == M_Status::STATUS_APPROVED && $this->session->userdata('type_id') != M_Account::TYPE_ADMIN) {
-            $this->form_validation->set_rules('_validate_status', sprintf('You do not have the privilege to approve a ', self::SUBJECT));
-            return FALSE;
+    /////////////------------
+
+    function update_order($id)
+    {
+        $this->load->model('sales/sales_order_model', 'order');
+        $this->_perform_validation();
+        if(!empty($this->validation_errors)){
+            $this->generate_response(TRUE, $this->validation_errors)->to_JSON();
+            return;
         }
-        return TRUE;
+        $data = $this->_format_data();
+        $success = $this->order->update($id, $data['sales_order'], $data['order_line']);
+        if($success){
+            $this->generate_response(FALSE)->to_JSON();
+            return;
+        }
+        $this->generate_response(TRUE, 'Unable to perform action due to an unknown error.')->to_JSON();
     }
+
+    function store()
+    {
+        $this->load->model('sales/sales_order_model', 'order');
+        $this->_perform_validation();
+        if(!empty($this->validation_errors)){
+            $this->generate_response(TRUE, $this->validation_errors)->to_JSON();
+            return;
+        }
+        $data = $this->_format_data();
+        $success = $this->order->create($data['sales_order'], $data['order_line']);
+        if($success){
+            $this->generate_response(FALSE)->to_JSON();
+            return;
+        }
+        $this->generate_response(TRUE, 'Unable to perform action due to an unknown error.')->to_JSON();
+    }
+
+    
+    function _perform_validation()
+    {
+        $this->form_validation->set_rules('fk_sales_customer_id', 'customer', 'required|callback__validate_customer');
+        $this->form_validation->set_rules('date', 'Date', 'required|callback__validate_date');
+        $this->form_validation->set_rules('status', 'Status', 'callback__validate_status');
+        $this->form_validation->set_rules('fk_sales_agent_id', 'sales agent', 'required|callback__validate_sales_agent');
+        if(!$this->form_validation->run()){
+            $this->validation_errors += array_values($this->form_validation->error_array());
+        }
+        $details = $this->input->post('details');
+        if(!isset($details['fk_inventory_product_id']) 
+            || !is_array($details['fk_inventory_product_id']) 
+            || empty($details['fk_inventory_product_id'])
+            || !$this->m_product->is_valid($details['fk_inventory_product_id'])){
+            $this->validation_errors[] = 'Please select at least one product for the order.';
+            return;
+        }
+        foreach($details['fk_inventory_product_id'] AS $key => $value){
+            $line = $key + 1;
+            if(!isset($details['product_quantity'][$key]) || !is_numeric($details['product_quantity'][$key])){
+                $this->validation_errors[] = "Please provide an order quantity for line # {$line}";
+            }
+            if(!isset($details['total_units'][$key]) || ($details['total_units'][$key] && !is_numeric($details['total_units'][$key]))){
+                $this->validation_errors[] = "Heads / pieces count for line # {$line} must be numeric";
+            }
+            if(!isset($details['unit_price'][$key]) || !is_numeric(str_replace(',', '', $details['unit_price'][$key]))){
+                $this->validation_errors[] = "Unit price for line # {$line} must be numeric";
+            }
+            if(!isset($details['discount'][$key]) || ($details['discount'][$key] && !is_numeric(str_replace(',', '', $details['discount'][$key])))){
+                $this->validation_errors[] = "Discount for line # {$line} must be numeric";
+            }
+        }
+    }
+
+    function _format_data()
+    {
+        $sales_order = elements(['po_number', 'date', 'remarks', 'fk_sales_agent_id', 'fk_sales_customer_id'], $this->input->post());
+        if(can_set_status()){
+            $sales_order['status'] = $this->input->post('is_approved') ? M_Status::STATUS_APPROVED : M_Status::STATUS_DEFAULT;
+        }
+        $order_line = [];
+        $details = $this->input->post('details');
+        foreach($details['fk_inventory_product_id'] AS $key => $value){
+            $temp = [
+                'fk_inventory_product_id' => $value,
+                'product_quantity' => $details['product_quantity'][$key],
+                'total_units' => $details['total_units'][$key] ?: 0,
+                'unit_price' => str_replace(',', '', $details['unit_price'][$key]),
+                'discount' => str_replace(',', '', $details['discount'][$key]) ?: 0,
+            ];
+            if(isset($details['id'][$key])){
+                $temp['id'] = $details['id'][$key];
+            }
+            $order_line[] = $temp;
+        }
+        return compact(['sales_order', 'order_line']);
+    }
+
+
+    function _validate_customer($customer)
+    {
+        $this->form_validation->set_message('_validate_customer', 'Please select a valid %s');
+        return $this->m_customer->exists($customer, TRUE);
+    }
+    function _validate_sales_agent($sales_agent)
+    {
+        $this->form_validation->set_message('_validate_sales_agent', 'Please select a valid %s');
+        return $this->m_agent->exists($sales_agent, TRUE);
+    }
+
+    function _validate_status($status) 
+    {
+         $this->form_validation->set_rules('_validate_status', sprintf('You do not have the privilege to approve a ', self::SUBJECT));
+         return can_set_status();
+    }
+
+    function _validate_date($date)
+    {
+        $this->load->helper('pmdate');
+        $this->form_validation->set_message('validate_date', 'Date must be in format YYYY-MM-DD');
+        return is_valid_date($date, 'Y-m-d');
+    }
+
+
 
     /* =====================
       NEW FUNCTIONS 01-14-15
