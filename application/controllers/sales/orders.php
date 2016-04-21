@@ -178,7 +178,7 @@ class Orders extends PM_Controller_v2 {
     private function _validate() {
         $this->form_validation->set_rules('fk_sales_customer_id', 'Customer', 'required');
         $this->form_validation->set_rules('date', 'Date', 'required');
-        $this->form_validation->set_rules('status', 'Status', 'callback__validate_status');
+        $this->form_validation->set_rules('status', 'status', 'callback__validate_status');
         $this->form_validation->set_rules('fk_sales_agent_id', 'sales agent', 'required|callback__validate_sales_agent');
         if ($this->form_validation->run()) {
             $data = $this->input->post();
@@ -255,7 +255,7 @@ class Orders extends PM_Controller_v2 {
     {
         $this->form_validation->set_rules('fk_sales_customer_id', 'customer', 'required|callback__validate_customer');
         $this->form_validation->set_rules('date', 'Date', 'required|callback__validate_date');
-        $this->form_validation->set_rules('status', 'Status', 'callback__validate_status');
+        $this->form_validation->set_rules('is_approved', 'Status', 'callback__validate_status');
         $this->form_validation->set_rules('fk_sales_agent_id', 'sales agent', 'required|callback__validate_sales_agent');
         if(!$this->form_validation->run()){
             $this->validation_errors += array_values($this->form_validation->error_array());
