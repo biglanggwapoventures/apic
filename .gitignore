@@ -1,5 +1,5 @@
-.htaccess
-application/config/database.php
-index.php
+/.htaccess
+/application/config/database.php
+/index.php
 /nbproject/private/
-assets/uploads/
+/assets/uploads/
