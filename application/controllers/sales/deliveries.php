@@ -289,7 +289,7 @@ class Deliveries extends PM_Controller
         if ($this->form_validation->run())
         {
             $this->load->helper('pmdate');
-            $data = elements(array('fk_sales_order_id', 'date', 'fk_sales_trucking_id', 'fk_sales_agent_id', 'invoice_number', 'remarks'), $this->input->post(), '');
+            $data = elements(array('fk_sales_order_id', 'date', 'fk_sales_trucking_id', 'invoice_number', 'remarks'), $this->input->post(), '');
             $data['details'] = $this->_format_details();
             unset($data['details']['total_amount']);
             return $this->response(FALSE, '', $data);

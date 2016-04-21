@@ -338,7 +338,7 @@ class M_customer extends CI_Model {
 
             $this->db->select('s_order.id, agent.name AS sales_agent')
                 ->from('sales_order AS s_order')
-                ->join('sales_agent AS agent', 'agent.id = s_order.fk_sales_agent_id')
+                ->join('sales_agent AS agent', 'agent.id = s_order.fk_sales_agent_id', 'left')
                 ->where('s_order.fk_sales_customer_id', $customer_id);
 
             if($delivered_so){
