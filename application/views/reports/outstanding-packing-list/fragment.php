@@ -11,7 +11,7 @@
         <tr>
             <td class="text-center" colspan="2" rowspan="<?= $payment_count ?>"><?= $row['date'] ?></td>
             <td class="text-center" rowspan="<?= $payment_count ?>"><a target="_blank" href="<?="{$pl_link}/{$row['fk_sales_delivery_id']}"?>"><?= $row['fk_sales_delivery_id'] ?></a></td>
-            <td class="text-center"><?=$row['invoice_number'] ?></td>
+            <td class="text-center" rowspan="<?= $payment_count ?>"><?=$row['invoice_number'] ?></td>
             <td class="text-right" colspan="2"><?= number_format($row['total_amount'], 2) ?></td>
             <?php if ($has_payment): ?>
                 <?php foreach ($row['payments'] as $index => $payment): ?>

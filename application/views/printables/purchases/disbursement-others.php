@@ -57,9 +57,9 @@
         <div class="container-fluid content" style="height:5in;">
             <div class="row header"> 
                 <div class="col-xs-8 col-xs-offset-2 text-center">
-                    <strong>PROVERA NUTRITIONAL SOLUTIONS CORPORATION</strong><br>
-                    GY Warehouse Complex, Unit L3, A. Bacaltos Sr. St., Lawaan 1, Talisay City, Cebu<br>
-                    Tel No.: 514-8890 | Fax No.: 491-3485 | Email: provera.feedmill@gmail.com<br>
+                    <strong>ARDITEZZA POULTRY INTEGRATION CORPORATION</strong><br>
+                    Ultima Residences Tower 3, Unit 1018, Osmena Blvrd., Cebu City<br>
+                        Tel/Fax Nos.: (032) 253-4570 to 71 / 414-3312 / 512-3067<br>
                     <h4>C H E C K&nbsp;&nbsp;V O U C H E R</h4>
                 </div>
             </div> <!-- end .row header -->

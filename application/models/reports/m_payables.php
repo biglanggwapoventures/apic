@@ -45,11 +45,11 @@ class M_payables extends CI_Model
 		$amounts = array_column($this->db->get()->result_array(), 'amount', 'id');
 
 		// distribute amount to rrs
-		$now = date_create(date('Y-m-d'));
+		$now = date_create();
 		foreach($undisbursed AS $row)	
 		{
 			$row['amount'] = $amounts[$row['id']];
-			$rr_date = date_create(date('Y-m-d', strtotime($row['date'])));
+			$rr_date = date_create($row['date']);
 			$diff = date_diff($now, $rr_date)->format('%a');
 			if($diff <= 30)
 			{

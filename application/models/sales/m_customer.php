@@ -305,7 +305,7 @@ class M_customer extends CI_Model {
         //SUBQUERY START
         $sub = $this->subquery->start_subquery('JOIN', 'LEFT', 'payments.pl_id = delivery.id');
         $sub->select('receipt_detail.fk_sales_delivery_id as pl_id');
-        if ($pdc_is_paid === FALSE) {
+        if (!$pdc_is_paid) {
             $sub->select('SUM((CASE WHEN receipt_detail.payment_method = "Cash" THEN receipt_detail.amount ELSE 0 END) + (CASE WHEN check_trans.amount IS NOT NULL AND DATE(check_trans.deposit_date) <= CURDATE() THEN check_trans.amount ELSE 0 END)) as total_paid', FALSE);
         } else {
             $sub->select('SUM((CASE WHEN receipt_detail.payment_method = "Cash" THEN receipt_detail.amount ELSE 0 END) + (CASE WHEN check_trans.amount IS NOT NULL THEN check_trans.amount ELSE 0 END)) as total_paid', FALSE);
