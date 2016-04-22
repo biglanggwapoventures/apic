@@ -51,7 +51,7 @@
             </div> <!-- end .row -->
             <br/><br/><br/><br/><br/><br/><br/><br/><br/>
             <div class="row">
-                <div class="col-xs-offset-1 col-xs-5" style="padding-left:30px;">
+                <div class="col-xs-offset-1 col-xs-5" style="padding-left:30px; padding-top:3px;">
                     <table>
                         <tr><td><?=$id?></td></tr>
                         <tr><td>&nbsp;</td></tr>
@@ -70,7 +70,7 @@
         </div> <!-- end .container -->
         <br/><br/><br/>
         <div class="container-fluid" style="height: 303px;">
-            <div class="row">
+            <div class="row" style="padding-top:-3px;">
                 <table style="width:100%" id="reference">
                     <tr>
                         <td width="9%"></td>
@@ -92,7 +92,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="row" style="padding-top: 200px;">
+            <div class="row" style="padding-top: 180px;">
                 <div class="col-xs-4 text-center">
                     <div style="border-bottom: 1px solid black;"><?= strtoupper($this->session->userdata('name')) ?> / <?= strtoupper($this->session->userdata('name')) ?></div>
                     <div>PREPARED BY / PRINTED BY</div>
@@ -107,14 +107,14 @@
                 </div>
             </div> <!-- end .row -->
         </div> <!-- end .container-fluid -->
-        <div class="container" style="padding-top:3px;">
+        <div class="container">
             <div class="row">
                 <div class="col-xs-offset-1 col-xs-7">*** <?=(!empty(trim($payee)) ? trim($payee) : trim($supplier))?> ***</div>
-                <div class="col-xs-1"><div style="padding-left:20px"><?=number_format($amount, 2)?></div></div>
+                <div class="col-xs-1"><div style="padding-left:25px; padding-top:3px;"><?=number_format($amount, 2)?></div></div>
             </div>
             <br/>
             <div class="row">
-                <div class="col-xs-offset-1 col-xs-11"><div><?=convertCurrencyToWords("{$amount}")?></div></div>
+                <div class="col-xs-11"><div style="padding-left:25px; padding-top:-3px">*** <?=convertCurrencyToWords("{$amount}")?> ***</div></div>
             </div>
         </div>
     </body>
