@@ -15,6 +15,19 @@
              <div class="row">
                 <div class="col-md-8">
                     <div class="row">
+                        <div class="col-sm-6">
+                            <?php if( isset($receipts_prev_info) ) { ?>
+                            <?= ($receipts_prev_info) ? '<a href="'.$receipts_prev_info.'"><i class="fa fa-arrow-left"></i> Go to SR # '.$receipts_prev_id.'</a>' : '' ?>
+                            <?php } ?>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <?php if(isset($receipts_next_info)) { ?>
+                            <?= ($receipts_next_info) ? '<a href="'.$receipts_next_info.'">Go to SR # '.$receipts_next_id.' <i class="fa fa-arrow-right"></i></a>' : '' ?>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <?= ( (isset($receipts_prev_info) || isset($receipts_next_info)) && (!empty($receipts_prev_info) || !empty($receipts_next_info)) ) ? "<hr/>" : "" ?>
+                    <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="date">Date</label>

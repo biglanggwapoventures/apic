@@ -10,6 +10,14 @@ class M_Receipts extends CI_Model {
     protected $details_table = 'sales_receipt_detail';
     protected $check_transactions_table = 'sales_receipt_check_transaction';
 
+    public function get_next_row_id($receipts_id, $mode) {
+        if(!strcmp($mode, "next")){
+            $query = "SELECT id FROM pm_sales_receipt WHERE id > {$receipts_id} ORDER BY id ASC LIMIT 1";
+        }else{
+            $query = "SELECT id FROM pm_sales_receipt WHERE id < {$receipts_id} ORDER BY id DESC LIMIT 1";
+        }
+        return $this->db->query($query)->result_array();
+    }
 
     public function create($data)
     {

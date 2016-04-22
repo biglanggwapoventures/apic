@@ -29,7 +29,7 @@
             }
         </style>
     </head>
-    <body>
+    <body style="padding-top:3px;">
         <br/><br/><br/><br/>
         <div class="container" style="padding-top:12px;">
             <div class="row">
@@ -85,17 +85,31 @@
                         <td>Petty Cash</td>
                         <td>-</td>
                         <td>-</td>
-                        <td><?=number_format($amount, 2)?></td>
+                        <td class='text-center'><?=number_format($amount, 2)?></td>
                         <td>-</td>
                         <td>-</td>
                         <td><?=number_format($amount, 2)?></td>
                     </tr>
                 </table>
             </div>
+            <div class="row" style="padding-top: 200px;">
+                <div class="col-xs-4 text-center">
+                    <div style="border-bottom: 1px solid black;"><?= strtoupper($this->session->userdata('name')) ?> / <?= strtoupper($this->session->userdata('name')) ?></div>
+                    <div>PREPARED BY / PRINTED BY</div>
+                </div>
+                <div class="col-xs-4 text-center">
+                    <div style="border-bottom: 1px solid black;">EVELYN MINOZA</div>
+                    <div>CHECKED BY</div>
+                </div>
+                <div class="col-xs-4 text-center">
+                    <div style="border-bottom: 1px solid black;">GERALD N. CAMPOS</div>
+                    <div>APPROVED BY</div>
+                </div>
+            </div> <!-- end .row -->
         </div> <!-- end .container-fluid -->
         <div class="container" style="padding-top:3px;">
             <div class="row">
-                <div class="col-xs-offset-1 col-xs-7">*** <?=$payee?> ***</div>
+                <div class="col-xs-offset-1 col-xs-7">*** <?=(!empty(trim($payee)) ? trim($payee) : trim($supplier))?> ***</div>
                 <div class="col-xs-1"><div style="padding-left:20px"><?=number_format($amount, 2)?></div></div>
             </div>
             <br/>

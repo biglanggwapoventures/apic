@@ -19,6 +19,19 @@
                     <ul class="list-unstyled"></ul>
                 </div>
                 <div class="row">
+                    <div class="col-sm-6">
+                        <?php if(isset($receiving_prev_info)){ ?>
+                        <?= ($receiving_prev_info) ? '<a href="'.$receiving_prev_info.'"><i class="fa fa-arrow-left"></i> Go to RR # '.$receiving_prev_id.'</a>' : '' ?>
+                        <?php } ?>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <?php if(isset($receiving_next_info)){ ?>
+                        <?= ($receiving_next_info) ? '<a href="'.$receiving_next_info.'">Go to RR # '.$receiving_next_id.' <i class="fa fa-arrow-right"></i></a>' : '' ?>
+                        <?php } ?>
+                    </div>
+                </div>
+                <?= ( (isset($receiving_prev_info) || isset($receiving_next_info)) && ( !empty($receiving_prev_info) || !empty($receiving_next_info) ) ) ? "<hr/>" : "" ?>
+                <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="customer-name">Supplier</label>

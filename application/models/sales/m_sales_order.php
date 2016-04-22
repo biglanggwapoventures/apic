@@ -2,6 +2,15 @@
 
 class M_Sales_Order extends CI_Model {
 
+    public function get_next_row_id($order_id, $mode) {
+        if(!strcmp($mode, "next")){
+            $query = "SELECT id FROM pm_sales_order WHERE id > {$order_id} ORDER BY id ASC LIMIT 1";
+        }else{
+            $query = "SELECT id FROM pm_sales_order WHERE id < {$order_id} ORDER BY id DESC LIMIT 1";
+        }
+        return $this->db->query($query)->result_array();
+    }
+
     public function master_list($arr = array()) {
         $this->load->library('subquery');
         $this->db->select('s_order.id, s_order.po_number, DATE_FORMAT(s_order.date, "%M %d, %Y") as date, customer.company_name, '

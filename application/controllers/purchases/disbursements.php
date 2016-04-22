@@ -168,6 +168,26 @@ class Disbursements extends PM_Controller_v2 {
             $this->viewpage_settings['suppliers'] = dropdown_format($this->m_supplier->all(), 'id', 'name');
         } elseif ($this->input->get('do') === 'update-purchase-disbursement' && $this->m_purchase_disbursement->is_valid($this->input->get('id'))) {
             $id = $this->input->get('id');
+
+            $disbursement_next_id = $this->m_purchase_disbursement->get_next_row_id($id, "next", "rr");
+            $disbursement_prev_id = $this->m_purchase_disbursement->get_next_row_id($id, "prev", "rr");
+
+            if(!empty($disbursement_next_id)){
+                $_id = $disbursement_next_id[0]['id'];
+                $this->viewpage_settings['disbursement_next_info'] = base_url("purchases/disbursements/manage?do=update-purchase-disbursement&id={$_id}");
+                $this->viewpage_settings['disbursement_next_id'] = $_id;
+            }else{
+                $this->viewpage_settings['disbursement_next_info'] = 0;
+            }
+
+            if(!empty($disbursement_prev_id)){
+                $_id = $disbursement_prev_id[0]['id'];
+                $this->viewpage_settings['disbursement_prev_info'] = base_url("purchases/disbursements/manage?do=update-purchase-disbursement&id={$_id}");
+                $this->viewpage_settings['disbursement_prev_id'] = $_id;
+            }else{
+                $this->viewpage_settings['disbursement_prev_info'] = 0;
+            }
+
             $this->setTabTitle("Update purchase disbursement # {$id}");
             $this->viewpage_settings['defaults'] = $this->m_purchase_disbursement->get($id);
             $this->viewpage_settings['form_title'] = sprintf('Update %s # %d', self::SUBJECT, $id);

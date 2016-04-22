@@ -7,6 +7,15 @@ class M_Purchase_Disbursement extends CI_Model {
     const TABLE_NAME_DETAIL = 'purchase_disbursement_detail';
     const TABLE_NAME_CHECK_TRANSACTION = 'purchase_disbursement_check_transaction';
 
+    public function get_next_row_id($disbursement_id, $mode, $type) {
+        if(!strcmp($mode, "next")){
+            $query = "SELECT id FROM pm_purchase_disbursement WHERE id > {$disbursement_id} AND disbursement_type='{$type}' ORDER BY id ASC LIMIT 1";
+        }else{
+            $query = "SELECT id FROM pm_purchase_disbursement WHERE id < {$disbursement_id} AND disbursement_type='{$type}' ORDER BY id DESC LIMIT 1";
+        }
+        return $this->db->query($query)->result_array();
+    }
+
     public function add($general, $details, $payment) {
         $this->db->trans_begin();
         if ($general['status'] == M_Status::STATUS_APPROVED) {

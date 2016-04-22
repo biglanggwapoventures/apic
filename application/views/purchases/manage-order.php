@@ -16,6 +16,19 @@
                     <ul class="list-unstyled"></ul>
                 </div>
                 <div class="row">
+                    <div class="col-sm-6">
+                        <?php if(isset($purchase_prev_info)){ ?>
+                        <?= ($purchase_prev_info) ? '<a href="'.$purchase_prev_info.'"><i class="fa fa-arrow-left"></i> Go to SO # '.$purchase_prev_id.'</a>' : '' ?>
+                        <?php } ?>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <?php if(isset($purchase_next_info)){ ?>
+                        <?= ($purchase_next_info) ? '<a href="'.$purchase_next_info.'">Go to SO # '.$purchase_next_id.' <i class="fa fa-arrow-right"></i></a>' : '' ?>
+                        <?php } ?>
+                    </div>
+                </div>
+                <?= ( (isset($purchase_prev_info) || isset($purchase_next_info)) && ( !empty($purchase_prev_info) || !empty($purchase_next_info) ) ) ? "<hr/>" : "" ?>
+                <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="customer-name">Supplier</label>

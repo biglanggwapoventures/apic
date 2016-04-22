@@ -19,11 +19,24 @@
                 <h3 class="box-title"><?= $form_title; ?></h3>
             </div>
             <?= form_open('', array('role' => 'form', 'data-action' => $url)) ?>
-            <div class="box-body">
+            <div class="box-body clearfix">
                 <div class="callout callout-danger hidden" id="messages">
                     <h4>Oops!</h4>
                     <ul class="list-unstyled"></ul>
                 </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <?php if(isset($order_prev_info)){ ?>
+                        <?= ($order_prev_info) ? '<a href="'.$order_prev_info.'"><i class="fa fa-arrow-left"></i> Go to SO # '.$order_prev_id.'</a>' : '' ?>
+                        <?php } ?>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <?php if(isset($order_next_info)){ ?>
+                        <?= ($order_next_info) ? '<a href="'.$order_next_info.'">Go to SO # '.$order_next_id.' <i class="fa fa-arrow-right"></i></a>' : '' ?>
+                        <?php } ?>
+                    </div>
+                </div>
+                <?= ( (isset($order_prev_info) || isset($order_next_info)) && (!empty($order_prev_info) || !empty($order_next_info)) ) ? "<hr/>" : "" ?>
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">

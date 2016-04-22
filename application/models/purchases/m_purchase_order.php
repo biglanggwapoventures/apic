@@ -5,6 +5,14 @@ class M_Purchase_Order extends CI_Model {
     const TABLE_NAME_GENERAL = 'purchase_order';
     const TABLE_NAME_DETAIL = 'purchase_order_detail';
 
+    public function get_next_row_id($purchase_id, $mode) {
+        if(!strcmp($mode, "next")){
+            $query = "SELECT id FROM pm_purchase_order WHERE id > {$purchase_id} ORDER BY id ASC LIMIT 1";
+        }else{
+            $query = "SELECT id FROM pm_purchase_order WHERE id < {$purchase_id} ORDER BY id DESC LIMIT 1";
+        }
+        return $this->db->query($query)->result_array();
+    }
 
     public function all($page = 1, $params = FALSE)
     {

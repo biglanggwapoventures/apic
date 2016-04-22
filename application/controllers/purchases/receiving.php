@@ -137,6 +137,26 @@ class Receiving extends PM_Controller_v2 {
             $this->viewpage_settings['is_locked'] = FALSE;
         } elseif ($this->input->get('do') === 'update-purchase-receiving' && $this->m_purchase_receiving->is_valid($this->input->get('id'))) {
             $id = $this->input->get('id');
+
+            $receiving_next_id = $this->m_purchase_receiving->get_next_row_id($id, "next");
+            $receiving_prev_id = $this->m_purchase_receiving->get_next_row_id($id, "prev");
+
+            if(!empty($receiving_next_id)){
+                $_id = $receiving_next_id[0]['id'];
+                $this->viewpage_settings['receiving_next_info'] = base_url("purchases/receiving/manage?do=update-purchase-receiving&id={$_id}");
+                $this->viewpage_settings['receiving_next_id'] = $_id;
+            }else{
+                $this->viewpage_settings['receiving_next_info'] = 0;
+            }
+
+            if(!empty($receiving_prev_id)){
+                $_id = $receiving_prev_id[0]['id'];
+                $this->viewpage_settings['receiving_prev_info'] = base_url("purchases/receiving/manage?do=update-purchase-receiving&id={$_id}");
+                $this->viewpage_settings['receiving_prev_id'] = $_id;
+            }else{
+                $this->viewpage_settings['receiving_prev_info'] = 0;
+            }
+
             $this->setTabTitle("Update purchases receiving # {$id}");
             $receivingList = $this->m_purchase_receiving->get(TRUE, FALSE, array('receiving.id' => $id));
             $this->viewpage_settings['defaults'] = $receivingList[0];

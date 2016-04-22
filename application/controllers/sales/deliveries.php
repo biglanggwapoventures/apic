@@ -84,8 +84,28 @@ class Deliveries extends PM_Controller
             $this->viewpage_settings['agents'] = $this->m_agent->all(['status' => 'a']);
             $this->viewpage_settings['defaults'] = $deliveryList[0];
             $this->viewpage_settings['url'] = base_url("sales/deliveries/a_update/{$delivery_id}");
-            $this->viewpage_settings['form_title'] = "Update packing list #{$delivery_id}";
+            $this->viewpage_settings['form_title'] = "Update packing list # {$delivery_id}";
             $this->viewpage_settings['credit_memo'] = $this->m_delivery->credit_memo_summary($delivery_id);
+
+            $delivery_next_id = $this->m_delivery->get_next_row_id($delivery_id, "next");
+            $delivery_prev_id = $this->m_delivery->get_next_row_id($delivery_id, "prev");
+
+            if(!empty($delivery_next_id)){
+                $id = $delivery_next_id[0]['id'];
+                $this->viewpage_settings['delivery_next_info'] = base_url("sales/deliveries/update/{$id}");
+                $this->viewpage_settings['delivery_next_id'] = $id;
+            }else{
+                $this->viewpage_settings['delivery_next_info'] = 0;
+            }
+
+            if(!empty($delivery_prev_id)){
+                $id = $delivery_prev_id[0]['id'];
+                $this->viewpage_settings['delivery_prev_info'] = base_url("sales/deliveries/update/{$id}");
+                $this->viewpage_settings['delivery_prev_id'] = $id;
+            }else{
+                $this->viewpage_settings['delivery_prev_info'] = 0;
+            }
+
             $this->set_content('sales/manage-delivery', $this->viewpage_settings);
             $this->generate_page();
             return;

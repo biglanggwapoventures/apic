@@ -29,7 +29,7 @@
             }
         </style>
     </head>
-    <body>
+    <body style="padding-top:3px;">
         <br/><br/><br/><br/>
         <div class="container" style="padding-top:12px;">
             <div class="row">
@@ -82,26 +82,37 @@
                         <td width="9%"></td>
                     </tr>
                     <?php
+                        $total = 0;
                         for($x=0; $x<count($line); $x++){
                             $raw_date = $line[$x]['receiving_date'];
                             $formatted_date = date_format(date_create($raw_date), "Y-m-d");
                             echo "<tr>";
                                 echo "<td>RR# ".$line[$x]['id']."</td>";
                                 echo "<td>".$line[$x]['pr_number']."</td>";
-                                echo "<td>".$formatted_date."</td>";
-                                echo "<td>".number_format($line[$x]['amount'], 2)."</td>";
+                                echo "<td class='text-center'>".$formatted_date."</td>";
+                                echo "<td class='text-center'>".number_format($line[$x]['amount'], 2)."</td>";
                                 echo "<td></td>";
                                 echo "<td></td>";
                                 echo "<td>".number_format($line[$x]['amount'], 2)."</td>";
                             echo "</tr>";
+                            $total += $line[$x]['amount'];
                         }
                     ?>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="border-top:1px solid black;"><?=number_format($total, 2)?></td>
+                    </tr>
                 </table>
             </div>
         </div> <!-- end .container-fluid -->
         <div class="container" style="padding-top:3px;">
             <div class="row">
-                <div class="col-xs-offset-1 col-xs-7">*** <?=$payee?> ***</div>
+                <div class="col-xs-offset-1 col-xs-7">*** <?=(!empty(trim($payee)) ? trim($payee) : trim($supplier))?> ***</div>
                 <div class="col-xs-1"><div style="padding-left:20px"><?=number_format($amount, 2)?></div></div>
             </div>
             <br/>

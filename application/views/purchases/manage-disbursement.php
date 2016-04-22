@@ -19,6 +19,19 @@
                     <ul class="list-unstyled"></ul>
                 </div>
                 <div class="row">
+                    <div class="col-sm-6">
+                        <?php if(isset($disbursement_prev_info)) { ?>
+                        <?= ($disbursement_prev_info) ? '<a href="'.$disbursement_prev_info.'"><i class="fa fa-arrow-left"></i> Go to CV # '.$disbursement_prev_id.'</a>' : '' ?>
+                        <?php } ?>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <?php if(isset($disbursement_next_info)){ ?>
+                        <?= ($disbursement_next_info) ? '<a href="'.$disbursement_next_info.'">Go to CV # '.$disbursement_next_id.' <i class="fa fa-arrow-right"></i></a>' : '' ?>
+                        <?php } ?>
+                    </div>
+                </div>
+                <?= ( (isset($disbursement_prev_info) && isset($disbursement_next_info)) && (!empty($disbursement_prev_info) || !empty($disbursement_next_info)) ) ? "<hr/>" : "" ?>
+                <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for='payment-type'>Disbursement Type</label>

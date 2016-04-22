@@ -101,12 +101,34 @@ class Receipts extends PM_Controller_v2 {
         $this->load->helper('customer');
         $this->add_javascript(['price-format.js' ,'numeral.js','sales-receipts/manage.js']);
         $this->setTabTitle('Sales - Update sales receipt #'.$id);
-        $this->set_content('sales/receipts/manage', [
-            'form_title' => 'Update sales receipt',
-            'form_action' => base_url("sales/receipts/ajax_update/{$id}"),
-            'bank_accounts' => $this->bank_account->get(),
-            'data' => $this->receipts->get($id)
-        ]); 
+
+        $viewpage_settings = array();
+
+        $receipts_next_id = $this->receipts->get_next_row_id($id, "next");
+        $receipts_prev_id = $this->receipts->get_next_row_id($id, "prev");
+
+        if(!empty($receipts_next_id)){
+            $_id = $receipts_next_id[0]['id'];
+            $viewpage_settings['receipts_next_info'] = base_url("sales/receipts/update/{$_id}");
+            $viewpage_settings['receipts_next_id'] = $_id;
+        }else{
+            $viewpage_settings['receipts_next_info'] = 0;
+        }
+
+        if(!empty($receipts_prev_id)){
+            $_id = $receipts_prev_id[0]['id'];
+            $viewpage_settings['receipts_prev_info'] = base_url("sales/receipts/update/{$_id}");
+            $viewpage_settings['receipts_prev_id'] = $_id;
+        }else{
+            $viewpage_settings['receipts_prev_info'] = 0;
+        }
+
+        $viewpage_settings['form_title'] = 'Update sales receipt # '.$id;
+        $viewpage_settings['form_action'] = base_url("sales/receipts/ajax_update/{$id}");
+        $viewpage_settings['bank_accounts'] = $this->bank_account->get();
+        $viewpage_settings['data'] = $this->receipts->get($id);
+
+        $this->set_content('sales/receipts/manage', $viewpage_settings); 
         $this->generate_page();
     }
 

@@ -21,6 +21,19 @@
                     <ul class="list-unstyled error-list"></ul>
                 </div>
                 <div class="row">
+                    <div class="col-sm-6">
+                        <?php if( isset($delivery_prev_info) ){ ?>
+                        <?= ($delivery_prev_info) ? '<a href="'.$delivery_prev_info.'"><i class="fa fa-arrow-left"></i> Go to PL # '.$delivery_prev_id.'</a>' : '' ?>
+                        <?php } ?>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <?php if( isset($delivery_next_info) ){ ?>
+                        <?= ($delivery_next_info) ? '<a href="'.$delivery_next_info.'">Go to PL # '.$delivery_next_id.' <i class="fa fa-arrow-right"></i></a>' : '' ?>
+                        <?php } ?>
+                    </div>
+                </div>
+                <?= ( (isset($delivery_prev_info) || isset($delivery_next_info)) && (!empty($delivery_prev_info) || !empty($delivery_next_info)) ) ? "<hr/>" : "" ?>
+                <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="customer-name">Customer</label>

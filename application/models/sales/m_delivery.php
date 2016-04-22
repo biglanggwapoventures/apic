@@ -6,6 +6,15 @@ class M_Delivery extends CI_Model
     const TABLE_NAME_GENERAL = 'sales_delivery';
     const TABLE_NAME_DETAIL = 'sales_delivery_detail';
 
+    public function get_next_row_id($delivery_id, $mode) {
+        if(!strcmp($mode, "next")){
+            $query = "SELECT id FROM pm_sales_delivery WHERE id > {$delivery_id} ORDER BY id ASC LIMIT 1";
+        }else{
+            $query = "SELECT id FROM pm_sales_delivery WHERE id < {$delivery_id} ORDER BY id DESC LIMIT 1";
+        }
+        return $this->db->query($query)->result_array();
+    }
+
     public function master_list($arr = array())
     {
         $this->load->library('subquery');

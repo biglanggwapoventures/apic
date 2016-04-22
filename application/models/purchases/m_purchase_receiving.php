@@ -5,6 +5,15 @@ class M_Purchase_Receiving extends CI_Model {
     const TABLE_NAME_GENERAL = 'purchase_receiving';
     const TABLE_NAME_DETAIL = 'purchase_receiving_detail';
 
+    public function get_next_row_id($receiving_id, $mode) {
+        if(!strcmp($mode, "next")){
+            $query = "SELECT id FROM pm_purchase_receiving WHERE id > {$receiving_id} ORDER BY id ASC LIMIT 1";
+        }else{
+            $query = "SELECT id FROM pm_purchase_receiving WHERE id < {$receiving_id} ORDER BY id DESC LIMIT 1";
+        }
+        return $this->db->query($query)->result_array();
+    }
+
     public function add($general, $details) {
         $this->db->trans_begin();
         if ($general['status'] == M_Status::STATUS_RECEIVED) {

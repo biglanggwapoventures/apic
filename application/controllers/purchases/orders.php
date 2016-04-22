@@ -129,6 +129,26 @@ class Orders extends PM_Controller_v2 {
             $this->viewpage_settings['mode'] = 'new';
         } elseif ($this->input->get('do') === 'update-purchase-order' && $this->m_purchase_order->is_valid($this->input->get('id'))) {
             $id = $this->input->get('id');
+
+            $purchase_next_id = $this->m_purchase_order->get_next_row_id($id, "next");
+            $purchase_prev_id = $this->m_purchase_order->get_next_row_id($id, "prev");
+
+            if(!empty($purchase_next_id)){
+                $_id = $purchase_next_id[0]['id'];
+                $this->viewpage_settings['purchase_next_info'] = base_url("purchases/orders/manage?do=update-purchase-order&id={$_id}");
+                $this->viewpage_settings['purchase_next_id'] = $_id;
+            }else{
+                $this->viewpage_settings['purchase_next_info'] = 0;
+            }
+
+            if(!empty($purchase_prev_id)){
+                $_id = $purchase_prev_id[0]['id'];
+                $this->viewpage_settings['purchase_prev_info'] = base_url("purchases/orders/manage?do=update-purchase-order&id={$_id}");
+                $this->viewpage_settings['purchase_prev_id'] = $_id;
+            }else{
+                $this->viewpage_settings['purchase_prev_info'] = 0;
+            }
+
             $this->setTabTitle("Update purchases order # {$id}");
             $order_info = $this->m_purchase_order->get(TRUE, FALSE, array('p_order.id' => $id));
             $this->viewpage_settings['defaults'] = $order_info[0];

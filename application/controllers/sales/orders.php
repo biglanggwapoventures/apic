@@ -91,6 +91,10 @@ class Orders extends PM_Controller_v2 {
 
     public function update($order_id) {
         $order_info = $this->m_sales_order->get(FALSE, array('s_order.id' => $order_id));
+        if(empty($order_info)){
+            show_404();
+            return;
+        }
         $this->load->model(array('inventory/m_product', 'sales/m_customer'));
         $this->add_css('jQueryUI/jquery-ui-1.10.3.custom.min.css');
         $this->add_javascript(array('manage-sales-orders.js', 'price-format.js', 'numeral.js', 'jquery-ui.min.js'));
@@ -110,7 +114,7 @@ class Orders extends PM_Controller_v2 {
         $this->viewpage_settings['agents'] = $this->m_agent->all(['status' => 'a']);
 
         $this->viewpage_settings['url'] = base_url("sales/orders/update_order/{$order_id}");
-        $this->viewpage_settings['form_title'] = 'Update sales order';
+        $this->viewpage_settings['form_title'] = 'Update sales order # '.$order_id;
         if ($this->input->post()) {
             $saved = FALSE;
             $input = $this->_validate();
@@ -134,6 +138,26 @@ class Orders extends PM_Controller_v2 {
             $this->setTabTitle("Sales - Update S.O. # {$order_id}");
             $this->viewpage_settings['defaults'] = $order_info[0];
         }
+
+        $order_next_id = $this->m_sales_order->get_next_row_id($order_id, "next");
+        $order_prev_id = $this->m_sales_order->get_next_row_id($order_id, "prev");
+
+        if(!empty($order_next_id)){
+            $id = $order_next_id[0]['id'];
+            $this->viewpage_settings['order_next_info'] = base_url("sales/orders/update/{$id}");
+            $this->viewpage_settings['order_next_id'] = $id;
+        }else{
+            $this->viewpage_settings['order_next_info'] = 0;
+        }
+
+        if(!empty($order_prev_id)){
+            $id = $order_prev_id[0]['id'];
+            $this->viewpage_settings['order_prev_info'] = base_url("sales/orders/update/{$id}");
+            $this->viewpage_settings['order_prev_id'] = $id;
+        }else{
+            $this->viewpage_settings['order_prev_info'] = 0;
+        }
+
         $this->set_content('sales/manage-order', $this->viewpage_settings);
         $this->generate_page();
     }
