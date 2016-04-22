@@ -82,6 +82,25 @@ class Other_Disbursements extends PM_Controller_v2 {
                 $view_data['data'] = $this->m_purchase_disbursement->get($id, 'others');
                 $view_data['form_title'] = "Update check voucher # {$id}";
                 $view_data['action'] = base_url("purchases/other_disbursements/ajax_do_action/update/{$id}");
+
+                $disbursement_next_id = $this->m_purchase_disbursement->get_next_row_id($id, "next", "others");
+                $disbursement_prev_id = $this->m_purchase_disbursement->get_next_row_id($id, "prev", "others");
+
+                if(!empty($disbursement_next_id)){
+                    $_id = $disbursement_next_id[0]['id'];
+                    $view_data['disbursement_next_info'] = base_url("purchases/disbursements/manage?do=update-purchase-disbursement&id={$_id}");
+                    $view_data['disbursement_next_id'] = $_id;
+                }else{
+                    $view_data['disbursement_next_info'] = 0;
+                }
+
+                if(!empty($disbursement_prev_id)){
+                    $_id = $disbursement_prev_id[0]['id'];
+                    $view_data['disbursement_prev_info'] = base_url("purchases/disbursements/manage?do=update-purchase-disbursement&id={$_id}");
+                    $view_data['disbursement_prev_id'] = $_id;
+                }else{
+                    $view_data['disbursement_prev_info'] = 0;
+                }
                 break;
             default:
                 show_404();
@@ -91,25 +110,6 @@ class Other_Disbursements extends PM_Controller_v2 {
         $view_data['suppliers'] = dropdown_format($this->m_supplier->all(), 'id', 'name');
         $view_data['suppliers'] = dropdown_format($this->m_supplier->all(), 'id', 'name');
         $view_data['bank_accounts'] = dropdown_format($this->m_bank_account->get(), 'id', ['bank_name', 'bank_branch']);
-        
-        $disbursement_next_id = $this->m_purchase_disbursement->get_next_row_id($id, "next", "others");
-        $disbursement_prev_id = $this->m_purchase_disbursement->get_next_row_id($id, "prev", "others");
-
-        if(!empty($disbursement_next_id)){
-            $_id = $disbursement_next_id[0]['id'];
-            $view_data['disbursement_next_info'] = base_url("purchases/disbursements/manage?do=update-purchase-disbursement&id={$_id}");
-            $view_data['disbursement_next_id'] = $_id;
-        }else{
-            $view_data['disbursement_next_info'] = 0;
-        }
-
-        if(!empty($disbursement_prev_id)){
-            $_id = $disbursement_prev_id[0]['id'];
-            $view_data['disbursement_prev_info'] = base_url("purchases/disbursements/manage?do=update-purchase-disbursement&id={$_id}");
-            $view_data['disbursement_prev_id'] = $_id;
-        }else{
-            $view_data['disbursement_prev_info'] = 0;
-        }
 
         $this->set_content('purchases/disbursement/others/manage', $view_data);
         $this->add_javascript(['numeral.js', 'price-format.js']);
