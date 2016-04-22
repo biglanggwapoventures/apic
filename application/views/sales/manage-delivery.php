@@ -53,7 +53,9 @@
                             <input type="hidden" name="data-so-details-url" value="<?= base_url('sales/orders/a_fetch_details') ?>" disabled="disabled"/>
                             <?php if ($defaults['fk_sales_order_id']): ?>
                                 <input type="hidden" name="fk_sales_order_id" value="<?= $defaults['fk_sales_order_id'] ?>"/>
-                                <p class="form-control-static"><?= str_pad($defaults['fk_sales_order_id'], 4, "0", STR_PAD_LEFT) ?></p>
+                                <p class="form-control-static">
+                                    <a target="_blank" href="<?= base_url("sales/orders/update/{$defaults['fk_sales_order_id']}")?>"><?= str_pad($defaults['fk_sales_order_id'], 4, "0", STR_PAD_LEFT) ?></a>
+                                </p>
                             <?php else: ?>
                                 <?php $attr = 'class="form-control" id="so-number" required="required"'; ?>
                                 <?= form_dropdown('fk_sales_order_id', array('' => 'Please select a customer.'), FALSE, $attr) ?>
