@@ -13,7 +13,8 @@ class Collection_report extends PM_Controller_v2
 
 	function index()
 	{
-		$this->add_javascript('plugins/sticky-thead.js');
+		$this->add_css('bootstrap-editable.css');
+		$this->add_javascript(['plugins/sticky-thead.js', 'bootstrap-editable.min.js']);
 		// load necessary models 
 		$this->load->model('sales/m_customer', 'customer');
 		$this->load->model('sales/m_agent', 'agent');

@@ -107,6 +107,7 @@
                                              <?php if(in_array($defaults['details']['fk_inventory_product_id'][0], $ids)):?>
                                                 <?= generate_customer_product_dropdown('details[fk_inventory_product_id][]', $products, 'product_id', 'description', $defaults['details']['fk_inventory_product_id'][0], FALSE, 'class="form-control product-list select-clear"') ?>
                                             <?php else:?>
+                                                <?= form_hidden('details[fk_inventory_product_id][]', $defaults['details']['fk_inventory_product_id'][0]); ?>
                                                 <p class="form-control-static"><?= "{$defaults['details']['product_description'][0]}"?><span class="text-danger"> ** INACTIVE **</span></p>
                                             <?php endif;?>
                                         <?php endif; ?>
@@ -152,6 +153,7 @@
                                             <?php if(in_array($defaults['details']['fk_inventory_product_id'][$x], $ids)):?>
                                                 <?= generate_customer_product_dropdown('details[fk_inventory_product_id][]', $products, 'product_id', 'description', $defaults['details']['fk_inventory_product_id'][$x], FALSE, 'class="form-control product-list select-clear"') ?>
                                             <?php else:?>
+                                                <?= form_hidden('details[fk_inventory_product_id][]', $defaults['details']['fk_inventory_product_id'][$x]); ?>
                                                 <p class="form-control-static"><?= "{$defaults['details']['product_description'][$x]}"?><span class="text-danger"> ** INACTIVE **</span></p>
                                             <?php endif;?>
                                             
@@ -210,6 +212,9 @@
                 <a class="btn btn-default btn-flat pull-right" href="<?= base_url('sales/orders')?>" id="cancel">Go back</a>
             </div>
             <?= form_close() ?>
+            <pre>
+            <?php print_r($products)?>
+            </pre>
         </div>
     </div>
 </div>

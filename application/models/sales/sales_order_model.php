@@ -23,7 +23,8 @@ class Sales_order_model extends CI_Model
 		return $this->db->trans_status();
 	}
 
-	public function update($id, $sales_order, $order_line)
+	 
+	 function update($id, $sales_order, $order_line)
 	{
 		$this->db->trans_start();
 
@@ -57,5 +58,10 @@ class Sales_order_model extends CI_Model
 		$this->db->trans_complete();
 
 		return $this->db->trans_status();
+	}
+
+	function set_agent($id, $agent_id)
+	{
+		return $this->db->update($this->table, ['fk_sales_agent_id' => $agent_id], ['id' => $id]);
 	}
 }

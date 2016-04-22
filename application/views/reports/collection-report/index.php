@@ -1,5 +1,5 @@
 <style type="text/css">
-    i{
+    th i{
         margin-left: 10px;
     }
     tbody td{
@@ -48,7 +48,9 @@
                             <?php $total += $row['amount'] ?>
                             <tr>
                                 <td><a target="_blank" href="<?= "{$sr_url}/{$row['id']}"?>">SR# <?= $row['id']?></a></td>
-                                <td><?= $row['sales_agent']?></td>
+                                <td>
+                                    <a class="editable" data-pk="<?= $row['so_id']?>"><?= $row['sales_agent'] ?: (TOGGLE_SALES_AGENT ? '<em class="text-warning"><small>None</em></small>': '')?></a>
+                                </td>
                                 <td><?= date_create($row['deposit_date'])->format('M d, Y')?></td>
                                 <td><?= $row['customer_name']?></td>
                                 <td><a target="_blank" href="<?= "{$pl_url}/{$row['fk_sales_delivery_id']}"?>">PL# <?= $row['fk_sales_delivery_id']?></a></td>
@@ -105,8 +107,32 @@
 <script type="text/javascript">
     (function($){
         $(document).ready(function(){
+
+            var agentSrc = [];
+            $('[name=sales_agent] option').each(function(){
+                var id = $(this).attr('value'),
+                    text = $(this).text();
+                if(id){
+                    agentSrc.push({
+                        value: id,
+                        text: text
+                    });
+                }
+            });
+
             $('table').stickyTableHeaders({fixedOffset: $('.content-header')});
             $('.datepicker').datepicker({dateFormat:'yy-mm-dd'});
+            $('.editable').editable({
+                type: 'select',
+                source: agentSrc,
+                url: "<?= base_url('sales/orders/set_agent')?>",
+                success: function(response){
+                    if(response.error_flag){
+                        return response.message[0];
+                    }
+                },
+                placement:'right'
+            });
         })
     })(jQuery)
 </script>

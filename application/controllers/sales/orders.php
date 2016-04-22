@@ -351,6 +351,21 @@ class Orders extends PM_Controller_v2 {
         return is_valid_date($date, 'Y-m-d');
     }
 
+    public function set_agent()
+    {
+        if(TOGGLE_SALES_AGENT){
+            $this->load->model('sales/m_agent', 'agent');
+            $this->load->model('sales/sales_order_model', 'order');
+            $data = elements(['pk', 'value'], $this->input->post());
+            if($this->agent->exists($data['value'], TRUE)){
+                $success = $this->order->set_agent($data['pk'], $data['value']);
+                $this->generate_response(!$success)->to_JSON();
+            }else{
+                $this->generate_response(TRUE, ['Please provide a valid sales agent'])->to_JSON();
+            }
+        }
+    }
+
 
 
     /* =====================
