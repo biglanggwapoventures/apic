@@ -123,6 +123,9 @@
                                         <label>Check Date</label>
                                         <input value="<?= isset($check_date) ? $check_date : '' ?>" type="text" class="form-control pay-opt-cash-disabled datepicker" required="required" name="check_date" <?= $disabled ?>/>
                                     </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="print_check_date" value="1" <?php if(isset($data['print_check_date'])){ echo ($data['print_check_date']) ? "checked" : ""; }else ""; ?> > Include 'Check Date' in print</label>
+                                    </div>
                                 </div><!-- /.box-body -->
                             </div>
                         </div>

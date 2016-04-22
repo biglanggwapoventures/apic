@@ -245,7 +245,7 @@ class Disbursements extends PM_Controller_v2 {
         $line_temp = array_key_exists('disbursement_details', $data) ? $data['disbursement_details'] : [];
         $line = array();
         //separate the payment
-        $payment = elements(['payment_type', 'check_date', 'check_number', 'fk_accounting_bank_account_id', 'check_type'], $data, NULL);
+        $payment = elements(['payment_type', 'check_date', 'check_number', 'fk_accounting_bank_account_id', 'check_type', 'print_check_date'], $data, NULL);
         $payment['amount'] = str_replace(',', '', $data['amount']);
         //destroy variables not used in the db table
         unset($data['disbursement_details'], $data['payment']);

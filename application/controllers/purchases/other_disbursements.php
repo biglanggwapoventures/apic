@@ -203,7 +203,7 @@ class Other_Disbursements extends PM_Controller_v2 {
             $data['general']['is_locked'] = 0;
             $data['general']['status'] = M_Status::STATUS_DEFAULT;
         }
-        $data['payment'] = elements(['payment_type', 'check_type', 'fk_accounting_bank_account_id', 'check_number', 'check_date'], $input, NULL);
+        $data['payment'] = elements(['payment_type', 'check_type', 'fk_accounting_bank_account_id', 'check_number', 'check_date', 'print_check_date'], $input, NULL);
         $data['payment']['amount'] = str_replace(',', '', $input['amount']);
         $data['liquidation'] = array_map(function($var) USE ($method) {
             $temp = elements(['date', 'account_id', 'description'], $var);

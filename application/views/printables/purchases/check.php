@@ -45,7 +45,7 @@
                     <table>
                         <tr><td>&nbsp;</td></tr>
                         <tr><td>&nbsp;</td></tr>
-                        <tr><td style="padding-left:30px;"><!-- Check Date --></td></tr>
+                        <tr><td style="padding-left:30px;"><?= ($print_check_date) ? $check_date : "" ?></td></tr>
                     </table>
                 </div>
             </div> <!-- end .row -->

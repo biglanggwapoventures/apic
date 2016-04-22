@@ -45,7 +45,7 @@
                     <table>
                         <tr><td>&nbsp;</td></tr>
                         <tr><td>&nbsp;</td></tr>
-                        <tr><td style="padding-left:30px;"><!-- Check Date --></td></tr>
+                        <tr><td style="padding-left:30px;"><?= ($print_check_date) ? $check_date : "" ?></td></tr>
                     </table>
                 </div>
             </div> <!-- end .row -->
@@ -94,16 +94,16 @@
             </div>
             <div class="row" style="padding-top: 180px;">
                 <div class="col-xs-4 text-center">
-                    <div style="border-bottom: 1px solid black;"><?= strtoupper($this->session->userdata('name')) ?> / <?= strtoupper($this->session->userdata('name')) ?></div>
-                    <div>PREPARED BY / PRINTED BY</div>
+                    <div style="border-bottom: 1px solid black;"><small><?= strtoupper($this->session->userdata('name')) ?> / <?= strtoupper($this->session->userdata('name')) ?></small></div>
+                    <div><small>PREPARED BY / PRINTED BY</small></div>
                 </div>
                 <div class="col-xs-4 text-center">
-                    <div style="border-bottom: 1px solid black;">EVELYN MINOZA</div>
-                    <div>CHECKED BY</div>
+                    <div style="border-bottom: 1px solid black;"><small>EVELYN MINOZA</small></div>
+                    <div><small>CHECKED BY</small></div>
                 </div>
                 <div class="col-xs-4 text-center">
-                    <div style="border-bottom: 1px solid black;">GERALD N. CAMPOS</div>
-                    <div>APPROVED BY</div>
+                    <div style="border-bottom: 1px solid black;"><small>GERALD N. CAMPOS</small></div>
+                    <div><small>APPROVED BY</small></div>
                 </div>
             </div> <!-- end .row -->
         </div> <!-- end .container-fluid -->
