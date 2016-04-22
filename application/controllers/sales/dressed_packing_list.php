@@ -157,7 +157,6 @@ class dressed_packing_list extends PM_Controller_v2
             'invoice_number', 
             'fk_sales_trucking_id', 
             'fk_trucking_assistant_id', 
-            'fk_sales_agent_id', 
             'remarks',
             'date'
         ], $this->input->post());
