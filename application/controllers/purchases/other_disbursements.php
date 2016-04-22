@@ -103,7 +103,7 @@ class Other_Disbursements extends PM_Controller_v2 {
 
                 if(!empty($disbursement_next_id)){
                     $_id = $disbursement_next_id[0]['id'];
-                    $view_data['disbursement_next_info'] = base_url("purchases/disbursements/manage?do=update-purchase-disbursement&id={$_id}");
+                    $view_data['disbursement_next_info'] = base_url("purchases/other_disbursements/manage?do=update-check-voucher&id={$_id}");
                     $view_data['disbursement_next_id'] = $_id;
                 }else{
                     $view_data['disbursement_next_info'] = 0;
@@ -111,7 +111,7 @@ class Other_Disbursements extends PM_Controller_v2 {
 
                 if(!empty($disbursement_prev_id)){
                     $_id = $disbursement_prev_id[0]['id'];
-                    $view_data['disbursement_prev_info'] = base_url("purchases/disbursements/manage?do=update-purchase-disbursement&id={$_id}");
+                    $view_data['disbursement_prev_info'] = base_url("purchases/other_disbursements/manage?do=update-check-voucher&id={$_id}");
                     $view_data['disbursement_prev_id'] = $_id;
                 }else{
                     $view_data['disbursement_prev_info'] = 0;
