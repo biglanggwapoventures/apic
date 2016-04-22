@@ -87,8 +87,23 @@ class Deliveries extends PM_Controller
             $this->viewpage_settings['form_title'] = "Update packing list # {$delivery_id}";
             $this->viewpage_settings['credit_memo'] = $this->m_delivery->credit_memo_summary($delivery_id);
 
-            $delivery_next_id = $this->m_delivery->get_next_row_id($delivery_id, "next");
-            $delivery_prev_id = $this->m_delivery->get_next_row_id($delivery_id, "prev");
+            if($this->m_delivery->get_max_id()[0]['id'] == $delivery_id){
+                $delivery_next_id = $this->m_delivery->get_min_id();
+                if($delivery_next_id[0]['id'] == $delivery_id){
+                    $delivery_next_id = array();
+                }
+            }else{
+                $delivery_next_id = $this->m_delivery->get_next_row_id($delivery_id, "next");
+            }
+
+            if($this->m_delivery->get_min_id()[0]['id'] == $delivery_id){
+                $delivery_prev_id = $this->m_delivery->get_max_id();
+                if($delivery_prev_id[0]['id'] == $delivery_id){
+                    $delivery_prev_id = array();
+                }
+            }else{
+                $delivery_prev_id = $this->m_delivery->get_next_row_id($delivery_id, "prev");
+            }
 
             if(!empty($delivery_next_id)){
                 $id = $delivery_next_id[0]['id'];

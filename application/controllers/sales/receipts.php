@@ -104,8 +104,23 @@ class Receipts extends PM_Controller_v2 {
 
         $viewpage_settings = array();
 
-        $receipts_next_id = $this->receipts->get_next_row_id($id, "next");
-        $receipts_prev_id = $this->receipts->get_next_row_id($id, "prev");
+        if($this->receipts->get_max_id()[0]['id'] == $id){
+            $receipts_next_id = $this->receipts->get_min_id();
+            if($receipts_next_id[0]['id'] == $id){
+                $receipts_next_id = array();
+            }
+        }else{
+            $receipts_next_id = $this->receipts->get_next_row_id($id, "next");
+        }
+
+        if($this->receipts->get_min_id()[0]['id'] == $id){
+            $receipts_prev_id = $this->receipts->get_max_id();
+            if($receipts_prev_id[0]['id'] == $id){
+                $receipts_prev_id = array();
+            }
+        }else{
+            $receipts_prev_id = $this->receipts->get_next_row_id($id, "prev");
+        }
 
         if(!empty($receipts_next_id)){
             $_id = $receipts_next_id[0]['id'];

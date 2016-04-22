@@ -11,6 +11,14 @@ class M_Sales_Order extends CI_Model {
         return $this->db->query($query)->result_array();
     }
 
+    public function get_min_id(){
+        return $this->db->query("SELECT MIN(id) as id FROM pm_sales_order")->result_array();
+    }
+
+    public function get_max_id(){
+        return $this->db->query("SELECT MAX(id) as id FROM pm_sales_order")->result_array();
+    }
+
     public function master_list($arr = array()) {
         $this->load->library('subquery');
         $this->db->select('s_order.id, s_order.po_number, DATE_FORMAT(s_order.date, "%M %d, %Y") as date, customer.company_name, '

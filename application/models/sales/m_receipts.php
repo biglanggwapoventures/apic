@@ -19,6 +19,14 @@ class M_Receipts extends CI_Model {
         return $this->db->query($query)->result_array();
     }
 
+    public function get_min_id(){
+        return $this->db->query("SELECT MIN(id) as id FROM pm_sales_receipt")->result_array();
+    }
+
+    public function get_max_id(){
+        return $this->db->query("SELECT MAX(id) as id FROM pm_sales_receipt")->result_array();
+    }
+
     public function create($data)
     {
         $check_trans = [];

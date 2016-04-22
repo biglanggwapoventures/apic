@@ -83,8 +83,23 @@ class Other_Disbursements extends PM_Controller_v2 {
                 $view_data['form_title'] = "Update check voucher # {$id}";
                 $view_data['action'] = base_url("purchases/other_disbursements/ajax_do_action/update/{$id}");
 
-                $disbursement_next_id = $this->m_purchase_disbursement->get_next_row_id($id, "next", "others");
-                $disbursement_prev_id = $this->m_purchase_disbursement->get_next_row_id($id, "prev", "others");
+                if($this->m_purchase_disbursement->get_max_id("others")[0]['id'] == $id){
+                    $disbursement_next_id = $this->m_purchase_disbursement->get_min_id("others");
+                    if($disbursement_next_id[0]['id'] == $id){
+                        $disbursement_next_id = array();
+                    }
+                }else{
+                    $disbursement_next_id = $this->m_purchase_disbursement->get_next_row_id($id, "next", "others");
+                }
+
+                if($this->m_purchase_disbursement->get_min_id("others")[0]['id'] == $id){
+                    $disbursement_prev_id = $this->m_purchase_disbursement->get_max_id("others");
+                    if($disbursement_prev_id[0]['id'] == $id){
+                        $disbursement_prev_id = array();
+                    }
+                }else{
+                    $disbursement_prev_id = $this->m_purchase_disbursement->get_next_row_id($id, "prev", "others");
+                }
 
                 if(!empty($disbursement_next_id)){
                     $_id = $disbursement_next_id[0]['id'];

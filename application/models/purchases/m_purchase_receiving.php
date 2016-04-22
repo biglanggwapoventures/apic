@@ -14,6 +14,14 @@ class M_Purchase_Receiving extends CI_Model {
         return $this->db->query($query)->result_array();
     }
 
+    public function get_min_id(){
+        return $this->db->query("SELECT MIN(id) as id FROM pm_purchase_receiving")->result_array();
+    }
+
+    public function get_max_id(){
+        return $this->db->query("SELECT MAX(id) as id FROM pm_purchase_receiving")->result_array();
+    }
+
     public function add($general, $details) {
         $this->db->trans_begin();
         if ($general['status'] == M_Status::STATUS_RECEIVED) {

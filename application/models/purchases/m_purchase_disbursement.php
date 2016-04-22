@@ -16,6 +16,14 @@ class M_Purchase_Disbursement extends CI_Model {
         return $this->db->query($query)->result_array();
     }
 
+    public function get_min_id($type){
+        return $this->db->query("SELECT MIN(id) as id FROM pm_purchase_disbursement WHERE disbursement_type='{$type}'")->result_array();
+    }
+
+    public function get_max_id($type){
+        return $this->db->query("SELECT MAX(id) as id FROM pm_purchase_disbursement WHERE disbursement_type='{$type}'")->result_array();
+    }
+
     public function add($general, $details, $payment) {
         $this->db->trans_begin();
         if ($general['status'] == M_Status::STATUS_APPROVED) {

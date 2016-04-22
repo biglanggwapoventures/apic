@@ -135,11 +135,26 @@ class Receiving extends PM_Controller_v2 {
             $this->viewpage_settings['form_title'] = sprintf('Add new %s', self::SUBJECT);
             $this->viewpage_settings['action'] = $this->_segment_url('a_do_action/add');
             $this->viewpage_settings['is_locked'] = FALSE;
-        } elseif ($this->input->get('do') === 'update-purchase-receiving' && $this->m_purchase_receiving->is_valid($this->input->get('id'))) {
+        } else if ($this->input->get('do') === 'update-purchase-receiving' && $this->m_purchase_receiving->is_valid($this->input->get('id'))) {
             $id = $this->input->get('id');
 
-            $receiving_next_id = $this->m_purchase_receiving->get_next_row_id($id, "next");
-            $receiving_prev_id = $this->m_purchase_receiving->get_next_row_id($id, "prev");
+            if($this->m_purchase_receiving->get_max_id()[0]['id'] == $id){
+                $receiving_next_id = $this->m_purchase_receiving->get_min_id();
+                if($receiving_next_id[0]['id'] == $id){
+                    $receiving_next_id = array();
+                }
+            }else{
+                $receiving_next_id = $this->m_purchase_receiving->get_next_row_id($id, "next");
+            }
+
+            if($this->m_purchase_receiving->get_min_id()[0]['id'] == $id){
+                $receiving_prev_id = $this->m_purchase_receiving->get_max_id();
+                if($receiving_prev_id[0]['id'] == $id){
+                    $receiving_prev_id = array();
+                }
+            }else{
+                $receiving_prev_id = $this->m_purchase_receiving->get_next_row_id($id, "prev");
+            }
 
             if(!empty($receiving_next_id)){
                 $_id = $receiving_next_id[0]['id'];

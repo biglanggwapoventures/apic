@@ -15,6 +15,14 @@ class M_Delivery extends CI_Model
         return $this->db->query($query)->result_array();
     }
 
+    public function get_min_id(){
+        return $this->db->query("SELECT MIN(id) as id FROM pm_sales_delivery")->result_array();
+    }
+
+    public function get_max_id(){
+        return $this->db->query("SELECT MAX(id) as id FROM pm_sales_delivery")->result_array();
+    }
+
     public function master_list($arr = array())
     {
         $this->load->library('subquery');

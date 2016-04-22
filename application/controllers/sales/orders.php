@@ -139,8 +139,23 @@ class Orders extends PM_Controller_v2 {
             $this->viewpage_settings['defaults'] = $order_info[0];
         }
 
-        $order_next_id = $this->m_sales_order->get_next_row_id($order_id, "next");
-        $order_prev_id = $this->m_sales_order->get_next_row_id($order_id, "prev");
+        if($this->m_sales_order->get_max_id()[0]['id'] == $order_id){
+            $order_next_id = $this->m_sales_order->get_min_id();
+            if($order_next_id[0]['id'] == $order_id){
+                $order_next_id = array();
+            }
+        }else{
+            $order_next_id = $this->m_sales_order->get_next_row_id($order_id, "next");
+        }
+
+        if($this->m_sales_order->get_min_id()[0]['id'] == $order_id){
+            $order_prev_id = $this->m_sales_order->get_max_id();
+            if($order_prev_id[0]['id'] == $order_id){
+                $order_prev_id = array();
+            }
+        }else{
+            $order_prev_id = $this->m_sales_order->get_next_row_id($order_id, "prev");
+        }
 
         if(!empty($order_next_id)){
             $id = $order_next_id[0]['id'];

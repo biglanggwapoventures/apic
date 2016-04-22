@@ -130,8 +130,23 @@ class Orders extends PM_Controller_v2 {
         } elseif ($this->input->get('do') === 'update-purchase-order' && $this->m_purchase_order->is_valid($this->input->get('id'))) {
             $id = $this->input->get('id');
 
-            $purchase_next_id = $this->m_purchase_order->get_next_row_id($id, "next");
-            $purchase_prev_id = $this->m_purchase_order->get_next_row_id($id, "prev");
+            if($this->m_purchase_order->get_max_id()[0]['id'] == $id){
+                $purchase_next_id = $this->m_purchase_order->get_min_id();
+                if($purchase_next_id[0]['id'] == $id){
+                    $purchase_next_id = array();
+                }
+            }else{
+                $purchase_next_id = $this->m_purchase_order->get_next_row_id($id, "next");
+            }
+
+            if($this->m_purchase_order->get_min_id()[0]['id'] == $id){
+                $purchase_prev_id = $this->m_purchase_order->get_max_id();
+                if($purchase_prev_id[0]['id'] == $id){
+                    $purchase_prev_id = array();
+                }
+            }else{
+                $purchase_prev_id = $this->m_purchase_order->get_next_row_id($id, "prev");
+            }
 
             if(!empty($purchase_next_id)){
                 $_id = $purchase_next_id[0]['id'];

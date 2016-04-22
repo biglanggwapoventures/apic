@@ -169,8 +169,23 @@ class Disbursements extends PM_Controller_v2 {
         } elseif ($this->input->get('do') === 'update-purchase-disbursement' && $this->m_purchase_disbursement->is_valid($this->input->get('id'))) {
             $id = $this->input->get('id');
 
-            $disbursement_next_id = $this->m_purchase_disbursement->get_next_row_id($id, "next", "rr");
-            $disbursement_prev_id = $this->m_purchase_disbursement->get_next_row_id($id, "prev", "rr");
+            if($this->m_purchase_disbursement->get_max_id("rr")[0]['id'] == $id){
+                $disbursement_next_id = $this->m_purchase_disbursement->get_min_id("rr");
+                if($disbursement_next_id[0]['id'] == $id){
+                    $disbursement_next_id = array();
+                }
+            }else{
+                $disbursement_next_id = $this->m_purchase_disbursement->get_next_row_id($id, "next", "rr");
+            }
+
+            if($this->m_purchase_disbursement->get_min_id("rr")[0]['id'] == $id){
+                $disbursement_prev_id = $this->m_purchase_disbursement->get_max_id("rr");
+                if($disbursement_prev_id[0]['id'] == $id){
+                    $disbursement_prev_id = array();
+                }
+            }else{
+                $disbursement_prev_id = $this->m_purchase_disbursement->get_next_row_id($id, "prev", "rr");
+            }
 
             if(!empty($disbursement_next_id)){
                 $_id = $disbursement_next_id[0]['id'];
