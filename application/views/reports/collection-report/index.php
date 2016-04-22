@@ -6,7 +6,7 @@
         padding: 5px;
         border: 1px solid black;
     }
-    tbody > tr > td:nth-child(4){
+    tbody > tr > td:nth-child(6){
         text-align: right;
     }
     thead > tr:nth-child(3) > th{
@@ -25,9 +25,9 @@
             <div class="col-sm-12">
                 <table class="table-striped" style="width:100%">
                     <thead>
-                        <tr><th colspan="5" class="text-center"><h4 style="margin-bottom:0">COLLECTION REPORT</h4></th></tr>
+                        <tr><th colspan="7" class="text-center"><h4 style="margin-bottom:0">COLLECTION REPORT</h4></th></tr>
                         <tr>
-                            <th colspan="5" class="text-center text-primary" style="padding-bottom:20px">
+                            <th colspan="7" class="text-center text-primary" style="padding-bottom:20px">
                                 <a data-toggle="modal" data-target="#select-date">
                                 <?= "<i class=\"fa fa-clock-o\"></i> {$params['start_date']} - {$params['end_date']} <i class=\"fa fa-shopping-cart\"></i> Customer: {$params['customer']} <i class=\"fa fa-user\"></i> Sales Agent: {$params['sales_agent']}"?>
                                 </a>
@@ -35,7 +35,7 @@
                         </tr>
                         
                         <tr class="active">
-                            <th>SR#</th> <th>Customer</th> <th>PL#</th> <th>AMOUNT</th> <th>DAYS COLLECTED</th>
+                            <th>SR#</th><th>DEPOSIT<br>DATE</th><th>CUSTOMER</th> <th>PL#</th> <th>PL DATE</th> <th>AMOUNT</th> <th>DAYS COLLECTED</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,18 +45,20 @@
                             $pl_url = base_url('sales/deliveries/update');
                         ?>
                         <?php foreach($data AS $row):?>
-                            <?php $total += $row['amount']?>
+                            <?php $total += $row['amount'] ?>
                             <tr>
                                 <td><a target="_blank" href="<?= "{$sr_url}/{$row['id']}"?>">SR# <?= $row['id']?></a></td>
+                                <td><?= date_create($row['deposit_date'])->format('M d, Y')?></td>
                                 <td><?= $row['customer_name']?></td>
-                                <td><a target="_blank" href="<?= "{$pl_url}/{$row['id']}"?>">PL# <?= $row['fk_sales_delivery_id']?></a></td>
+                                <td><a target="_blank" href="<?= "{$pl_url}/{$row['fk_sales_delivery_id']}"?>">PL# <?= $row['fk_sales_delivery_id']?></a></td>
+                                <td><?= date_create($row['delivery_date'])->format('M d, Y')?></td>
                                 <td><?= number_format($row['amount'], 2)?></td>
-                                <td><?= $row['days_collected']?> days</td>
-                            </tr>
+                                <td><?= $row['days_collected']?> day(s)</td>
+                            </tr>   
                         <?php endforeach;?>
                     </tbody>
                     <tfoot>
-                        <tr><td colspan="2"></td><td class="text-center active ">TOTAL AMOUNT</td><td colspan="1" class="text-right active text-bold"><?= number_format($total, 2)?></td></tr>
+                        <tr><td colspan="4"></td><td class="text-center active ">TOTAL AMOUNT</td><td class="text-right active text-bold"><?= number_format($total, 2)?></td></tr>
                     </tfoot>
                 </table>
                 Time elapsed: <?= $this->benchmark->elapsed_time();?>s
