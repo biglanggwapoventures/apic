@@ -73,7 +73,7 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                        <a href="#" id="update-profile-btn" class="btn btn-default btn-flat" data-url="<?= base_url( 'user_accounts/get_user/'.$this->session->userdata('user_id') ) ?>" data-toggle="modal" data-target="#updateUser">Profile</a>
                                     </div>
                                     <div class="pull-right">
                                         <a href="<?= $base_url . 'login/do_logout' ?>" class="btn btn-default btn-flat">Sign out</a>
@@ -255,6 +255,73 @@
             </aside><!-- /.right-side -->
         </div><!-- ./wrapper -->
 
+        <div class="modal fade" id="updateUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form class="form-horizontal" id="personal-information" action="<?= base_url('user_accounts/ajax_update/'.$this->session->userdata('user_id')) ?>" method="post" enctype="multipart/form-data">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">Update <strong><?= $this->session->userdata('name') ?></strong></h4>
+                        </div> <!-- end .modal-header -->
+                        <div class="modal-body">
+                                <div class="callout callout-danger hidden">
+                                    <ul class="list-unstyled">
+                                    </ul>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Username *</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static"><?= $this->session->userdata('username') ?></p>
+                                    </div>   
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">First Name *</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="" name="firstname"/>
+                                    </div>   
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Last Name *</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="" name="lastname"/>
+                                    </div>   
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Email Address</label>
+                                    <div class="col-sm-8">
+                                        <input type="email" class="form-control" value="" name="email"/>
+                                    </div>   
+                                </div>
+                                <hr/>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Password</label>
+                                    <div class="col-sm-8">
+                                        <input type="password" class="form-control"  name="password"/>
+                                    </div>   
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Confirm Password</label>
+                                    <div class="col-sm-8">
+                                        <input type="password" class="form-control" name="confirm_password"/>
+                                    </div>   
+                                </div>
+                                <hr/>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Display photo</label>
+                                    <div class="col-sm-8">
+                                        <input type="file" name="dp"/>
+                                         <span class="help-block">Max dimension: 1024x768 px | Max filesize: 2MB | Accepts only: jpeg,png,jpg</span>
+                                    </div>
+                                </div>
+                        </div> <!-- end .modal-body -->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success btn-flat pull-left">Save</button>
+                            <button type="button" class="btn btn-warning btn-flat" data-dismiss="modal" aria-model="Close">Cancel</button>
+                        </div> <!-- end .modal-footer -->
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <!-- Bootstrap -->
         <script src="<?= $js_url . 'bootstrap.min.js' ?>" type="text/javascript"></script>
         <!-- AdminLTE App -->
@@ -263,8 +330,8 @@
         <script src="<?= $js_url . 'plugins/growl/jquery.growl.js' ?>" type="text/javascript"></script>
         <!-- Main App -->
         <script src="<?= $js_url . 'main.js' ?>" type="text/javascript"></script>
-
-
+        <script src="<?= $js_url . 'jquery.form.min.js' ?>" type="text/javascript"></script>
+        <script src="<?= $js_url . 'update-profile.js' ?>" type="text/javascript"></script>
 
         <?php isset($data_javascript) ? include_js($data_javascript) : NULL; ?>
     </body>

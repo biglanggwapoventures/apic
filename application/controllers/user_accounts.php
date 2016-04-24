@@ -49,6 +49,10 @@ class User_accounts extends PM_Controller_v2
 		$this->generate_page();
 	}
 
+	public function get_user($id){
+		echo json_encode($this->user->get($id, FALSE));
+	}
+
 	public function ajax_update($id)
 	{
 		$this->validate('update');
