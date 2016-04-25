@@ -3,7 +3,6 @@ $(document).ready(function(){
 	$('#update-profile-btn').click(function(){
 		$.post($(this).data('url'), function(data){
 			var new_data = JSON.parse(data);
-			console.log(new_data);
 			$('[name=firstname]').val(new_data.FirstName);
 			$('[name=lastname]').val(new_data.LastName);
 			$('[name=email]').val(new_data.Email);

@@ -60,14 +60,14 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="glyphicon glyphicon-user"></i>
-                                <span> <?= $user_info['name'] ?><i class="caret"></i></span>
+                                <span> <?= $this->session->userdata('name')  ?><i class="caret"></i></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header bg-light-blue">
-                                    <img src="<?= $user_info['avatar'] ? "{$uploads_url}/{$user_info['avatar']}" :  "{$img_url}display-photo-placeholder.png" ?>" class="img-circle" alt="User Image" />
+                                    <img src="<?= $this->session->userdata('avatar') ? "{$uploads_url}/{$this->session->userdata('avatar')}" :  "{$img_url}display-photo-placeholder.png" ?>" class="img-circle" alt="User Image" />
                                     <p>
-                                        <?= $user_info['name'] ?>   
+                                        <?= $this->session->userdata('name') ?>   
                                     </p>
                                 </li>
                                 <!-- Menu Footer-->
@@ -93,10 +93,10 @@
                     <!-- Sidebar user panel -->
                     <div class="user-panel">
                         <div class="pull-left image">
-                            <img src="<?= $user_info['avatar'] ? "{$uploads_url}/{$user_info['avatar']}" :  "{$img_url}display-photo-placeholder.png" ?>" class="img-circle" alt="User Image" />
+                            <img src="<?= $this->session->userdata('avatar') ? "{$uploads_url}/{$this->session->userdata('avatar')}" :  "{$img_url}display-photo-placeholder.png" ?>" class="img-circle" alt="User Image" />
                         </div>
                         <div class="pull-left info" style="text-overflow:ellipses;">
-                            <p><?= isset($user_info['name']) ? $user_info['name'] : 'Unknown User' ?></p>
+                            <p><?= $this->session->userdata('name') ? $this->session->userdata('name') : 'Unknown User' ?></p>
 
                             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                         </div>
