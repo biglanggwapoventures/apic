@@ -166,7 +166,8 @@
                                     <li><a href="<?= $base_url . 'purchases/receiving' ?>" ><i class="fa fa-angle-double-right"></i> Receiving</a></li>
                                     <li><a href="<?= $base_url . 'purchases/disbursements' ?>" ><i class="fa fa-angle-double-right"></i> Disbursement</a></li>
                                     <li><a href="<?= $base_url . 'purchases/other_disbursements' ?>" ><i class="fa fa-angle-double-right"></i> Disbursements (Others)</a></li>
-                                    <li class="<?= $this->uri->segment(2) === 'suppliers' ? 'active' : '' ?>"><a href="<?= $base_url . 'maintainable/suppliers' ?>" ><i class="fa fa-angle-double-right"></i> Suppliers</a></li>
+                                    <li class="<?= $this->uri->segment(2) === 'purchases' ? 'active' : '' ?>"><a href="<?= $base_url . 'purchases/suppliers' ?>" ><i class="fa fa-angle-double-right"></i> Suppliers</a></li>
+                                    <li class="<?= $this->uri->segment(2) === 'purchases' ? 'active' : '' ?>"><a href="<?= $base_url . 'purchases/chart_of_accounts' ?>" ><i class="fa fa-angle-double-right"></i> Chart of accounts</a></li>
                                 </ul>
                             </li>
                         <?php endif; ?>
@@ -193,12 +194,12 @@
                                 </a>
                                 <ul class="treeview-menu">
                                     <li><a  href="<?= $base_url . 'accounting/bank_accounts' ?>"><i class="fa fa-angle-double-right"></i> Bank Accounts</a></li>
-                                    <li><a  href="<?= $base_url . 'accounting/dummy_checks' ?>"><i class="fa fa-angle-double-right"></i> Dummy Checks</a></li>
-                                    <li><a  href="<?= $base_url . 'accounting/print_checks' ?>"><i class="fa fa-angle-double-right"></i> Print Checks</a></li>
+                                    <li class="hidden"><a  href="<?= $base_url . 'accounting/dummy_checks' ?>"><i class="fa fa-angle-double-right"></i> Dummy Checks</a></li>
+                                    <li class="hidden"><a  href="<?= $base_url . 'accounting/print_checks' ?>"><i class="fa fa-angle-double-right"></i> Print Checks</a></li>
                                 </ul>
                             </li>
                         <?php endif; ?>
-                        <li class="treeview <?= $data_nav === NAV_MAINTAINABLE ? 'active' : '' ?>">
+                        <li class="hidden treeview <?= $data_nav === NAV_MAINTAINABLE ? 'active' : '' ?>">
                             <a href="#">
                                 <i class="fa fa-cubes"></i> <span>Maintainable</span>
                                 <i class="fa fa-angle-left pull-right"></i>
@@ -232,6 +233,13 @@
                                 </a>
                             </li>
                         <?php endif; ?>
+                        <?php if($is_admin): ?>
+                            <li class="">
+                                <a href="<?= base_url('backup/database') ?>" target="_blank">
+                                    <i class="fa fa-download"></i> <span>Download DB Backup</span>
+                                </a>
+                            </li>
+                        <?php endif ?>
                     </ul>
                 </section>
                 <!-- /.sidebar -->
@@ -276,19 +284,19 @@
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">First Name *</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" value="" name="firstname"/>
+                                        <input type="text" class="form-control" value="" name="firstname" disabled/>
                                     </div>   
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">Last Name *</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" value="" name="lastname"/>
+                                        <input type="text" class="form-control" value="" name="lastname" disabled/>
                                     </div>   
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">Email Address</label>
                                     <div class="col-sm-8">
-                                        <input type="email" class="form-control" value="" name="email"/>
+                                        <input type="email" class="form-control" value="" name="email" disabled/>
                                     </div>   
                                 </div>
                                 <hr/>

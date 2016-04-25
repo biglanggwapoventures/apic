@@ -6,7 +6,7 @@
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <meta name='site-developer' content='Adrian Natabio'>
         <meta name='site-designer' content='Adrian Natabio'>
-        <title>Provera Nutritional Solutions Corp. | Log in</title>
+        <title>Arditezza Poultry Intergration Corp. | Log in</title>
         <?php include_css(array('AdminLTE.css', 'bootstrap.min.css', 'font-awesome.min.css')) ?>
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

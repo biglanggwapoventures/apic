@@ -96,7 +96,7 @@
 
             _description = descriptionField.val();
 
-            var request = $.post("<?= base_url('maintainable/chart_of_accounts/ajax_add') ?>", {
+            var request = $.post("<?= base_url('purchases/chart_of_accounts/ajax_add') ?>", {
                 'description': _description
             });
 
@@ -134,7 +134,7 @@
                 return;
             }
 
-            var request = $.post("<?= base_url('maintainable/chart_of_accounts/ajax_delete') ?>", {
+            var request = $.post("<?= base_url('purchases/chart_of_accounts/ajax_delete') ?>", {
                 'id': _id
             });
 
@@ -156,7 +156,7 @@
             type: 'text',
             selector: 'tr td a.editable',
             placement: 'right',
-            url: "<?= base_url('maintainable/chart_of_accounts/ajax_update') ?>",
+            url: "<?= base_url('purchases/chart_of_accounts/ajax_update') ?>",
             pk: function () {
                 return $(this).closest('tr').data('pk');
             },

@@ -15,8 +15,8 @@ class Chart_of_accounts extends PM_Controller_v2 {
 
     public function __construct() {
         parent::__construct();
-        $this->set_active_nav(NAV_MAINTAINABLE);
-        $this->set_content_title('Maintainable');
+        $this->set_active_nav(NAV_PURCHASES);
+        $this->set_content_title('Purchases');
         $this->set_content_subtitle('Chart of accounts');
         $this->load->model('maintainable/m_chart', 'chart');
     }
@@ -24,8 +24,8 @@ class Chart_of_accounts extends PM_Controller_v2 {
     public function index() {
         $this->add_css('bootstrap-editable.css');
         $this->add_javascript('bootstrap-editable.min.js');
-        $this->setTabTitle('Maintainable :: Chart of accounts');
-        $this->set_content('maintainable/charts', [
+        $this->setTabTitle('Purchases :: Chart of accounts');
+        $this->set_content('purchases/charts', [
             'listing' => $this->chart->all()
         ]);
         $this->generate_page();

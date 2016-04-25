@@ -53,13 +53,17 @@ class User_accounts extends PM_Controller_v2
 		echo json_encode($this->user->get($id, FALSE));
 	}
 
-	private function update_session($id){
+	private function update_session($id, $new_data){
 		if($id != $this->session->userdata('user_id')) return;
-		$user = $this->user->get($id);
-		$this->session->set_userdata('name', $user['FirstName']." ".$user['LastName']);
-		$this->session->set_userdata('type_id', $user['TypeID']);
-		$this->session->set_userdata('role', $user['role']);
-		$this->session->set_userdata('avatar', $user['Avatar']);
+		if(isset($new_data['user']['Password'])){
+			$this->session->sess_destroy();
+		}else{
+			$user = $this->user->get($id);
+			$this->session->set_userdata('name', $user['FirstName']." ".$user['LastName']);
+			$this->session->set_userdata('type_id', $user['TypeID']);
+			$this->session->set_userdata('role', $user['role']);
+			$this->session->set_userdata('avatar', $user['Avatar']);
+		}
 	}
 
 	public function ajax_update($id)
@@ -77,7 +81,7 @@ class User_accounts extends PM_Controller_v2
 			{
 				$this->session->set_flashdata('FLASH_NOTIF', json_encode($this->response(FALSE, "User has been successfully updated!")));
 				$this->generate_response(FALSE)->to_JSON();
-				$this->update_session($id);
+				$this->update_session($id, $user);
 				return;
 			}
 			$this->generate_response(TRUE, ['Unable to update user. Please try again later.'])->to_JSON();

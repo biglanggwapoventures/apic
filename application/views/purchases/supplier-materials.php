@@ -10,7 +10,7 @@
                 <h3 class="box-title">Assign materials to: <?= $supplier['name'] ?></h3>
                 <!-- tools box -->
             </div><!-- /.box-header -->
-            <form method="POST" action="<?= base_url('maintainable/suppliers/save_assigned_materials/' . $supplier['id']) ?>">
+            <form method="POST" action="<?= base_url('purchases/suppliers/save_assigned_materials/' . $supplier['id']) ?>">
                 <div class="box-body">
                     <?php $save = $this->session->flashdata('save_success');?>
                     <?php if (is_array($save) && $save['result'] === TRUE): ?>
@@ -58,7 +58,7 @@
                 </div><!-- /.box-body -->  
                 <div class="box-footer clearfix">
                     <button type="submit" class="btn btn-success btn-flat"><i class="fa fa-check"></i> Save</button>
-                    <a href="<?= base_url('maintainable/suppliers') ?>" class="btn btn-warning btn-flat pull-right">Go back to suppliers list</a>
+                    <a href="<?= base_url('purchases/suppliers') ?>" class="btn btn-warning btn-flat pull-right">Go back to suppliers list</a>
                 </div>
             </form>
         </div>
