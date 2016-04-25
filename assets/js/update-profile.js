@@ -3,9 +3,9 @@ $(document).ready(function(){
 	$('#update-profile-btn').click(function(){
 		$.post($(this).data('url'), function(data){
 			var new_data = JSON.parse(data);
-			$('[name=firstname]').val(new_data.FirstName);
-			$('[name=lastname]').val(new_data.LastName);
-			$('[name=email]').val(new_data.Email);
+			$('#fname').text(new_data.FirstName);
+			$('#lname').text(new_data.LastName);
+			$('#email').text(new_data.Email);
 		})
 	});
 
