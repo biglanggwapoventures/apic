@@ -6,6 +6,9 @@ $(document).ready(function(){
 			$('#fname').text(new_data.FirstName);
 			$('#lname').text(new_data.LastName);
 			$('#email').text(new_data.Email);
+            $('[name=firstname]').val(new_data.FirstName);
+            $('[name=lastname]').val(new_data.LastName);
+            $('[name=email]').val(new_data.Email)
 		})
 	});
 

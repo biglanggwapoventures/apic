@@ -285,18 +285,21 @@
                                     <label class="control-label col-sm-3">First Name *</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-static" id="fname"></p>
+                                        <input type="hidden" name="firstname" value=""/>
                                     </div>   
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">Last Name *</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-static" id="lname"></p>
+                                        <input type="hidden" name="lastname" value=""/>
                                     </div>   
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">Email Address</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-static" id="email"></p>
+                                        <input type="hidden" name="email" value=""/>
                                     </div>   
                                 </div>
                                 <hr/>
