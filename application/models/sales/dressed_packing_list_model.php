@@ -66,8 +66,8 @@ class dressed_packing_list_model extends CI_Model
 			->from('sales_delivery AS pl')
 			->join('sales_order AS so', 'so.id = pl.fk_sales_order_id')
 			->join('sales_customer AS customer', 'customer.id = so.fk_sales_customer_id')
-			->join('sales_trucking AS truck', 'truck.id = pl.fk_sales_trucking_id')
-			->join('trucking_assistants AS assistant', 'assistant.id = pl.fk_trucking_assistant_id')
+			->join('sales_trucking AS truck', 'truck.id = pl.fk_sales_trucking_id', 'left')
+			->join('trucking_assistants AS assistant', 'assistant.id = pl.fk_trucking_assistant_id', 'left')
 			->join('sales_agent AS agent', 'agent.id = so.fk_sales_agent_id', 'left')
 			->get_where($this->table, ['pl.id' => $id, 'pl.type' => 'd'])->row_array();
 
