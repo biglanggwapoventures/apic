@@ -18,7 +18,7 @@ class Backup extends PM_Controller_v2 {
         $CI =& get_instance();
         $CI->load->database();
 
-        $cmd = 'c:\xampp\mysql\bin\mysqldump --opt -u '.$CI->db->username.' -p'.$CI->db->password.' -h'.$CI->db->hostname.' '.$CI->db->database.' > assets/dbbackup/'.$fileName;
+        $cmd = 'mysqldump --opt -u '.$CI->db->username.' -p'.$CI->db->password.' -h'.$CI->db->hostname.' '.$CI->db->database.' > assets/dbbackup/'.$fileName;
         exec($cmd);
 
         $data = file_get_contents(base_url()."assets/dbbackup/".$fileName);

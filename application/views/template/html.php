@@ -299,8 +299,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">Email Address</label>
                                     <div class="col-sm-8">
-                                        <p class="form-control-static" id="email"></p>
-                                        <input type="hidden" name="email" value=""/>
+                                        <input class="form-control" type="text" name="email" value=""/>
                                     </div>   
                                 </div>
                                 <hr/>
