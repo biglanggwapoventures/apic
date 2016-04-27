@@ -77,11 +77,8 @@ $(document).ready(function(){
                             [{
                                 tag: 'a', 
                                 class: function(){
-                                    if((parseInt(this.status) === 6 && parseInt(this.is_printed) === 0) || isAdmin){
-                                        if(this.type === 'd'){
-                                            return 'btn btn-primary btn-xs btn-flat print-doc-dressed';
-                                        }
-                                        return 'btn btn-primary btn-xs btn-flat print-doc';
+                                    if(this.type === 'd' && ((parseInt(this.status) === 6 && parseInt(this.is_printed) === 0) || isAdmin)){
+                                        return 'btn btn-primary btn-xs btn-flat print-doc-dressed';
                                     }
                                     return 'btn btn-primary btn-xs btn-flat disabled';
                                 }, 
