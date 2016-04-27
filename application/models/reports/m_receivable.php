@@ -108,7 +108,9 @@ class M_Receivable extends CI_Model {
             $balance = $row['packing_list_amount'] - $payment;
 
             if($balance <= 0){
-                insert($age, $row['packing_list_customer'], 'overpayment', abs($balance));
+                if($balance < 0){
+                    insert($age, $row['packing_list_customer'], 'overpayment', abs($balance));
+                }
                 continue;
             }
 
