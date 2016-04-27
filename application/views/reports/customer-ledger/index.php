@@ -109,7 +109,7 @@
                             <th >DESCRIPTION</th>
                             <th>DEBIT AMOUNT</th> 
                             <th colspan="2">CREDIT AMOUNT</th>
-                            <th>AMOUNT BALANCE</th>
+                            <th>RUNNING BALANCE</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -118,6 +118,7 @@
                             <tr><td colspan="7" class="text-center">Choose a customer and date to start</td></tr>
                         <?php else:?>
                             <?php 
+                                $now = date_create();
                                 $amount_balance = $data['balance']; 
                                 $sr_url = base_url('sales/receipts/update/');
                                 $pl_url = base_url('sales/deliveries/update/')
@@ -141,7 +142,8 @@
                                                 $amount_balance -= $row['amount'];
                                             }else{
                                                 $pdc = 'style="background:#fcf8e3"';
-                                                $note = "<br><small>(clearing in {$row['pdc']} days)</small>";
+                                                $clear_date = $now->modify("{$row['pdc']} days")->format('M d, Y');
+                                                $note = "<br><small>clearing in {$row['pdc']} day(s): {$clear_date}</small>";
                                             }
                                             $url = "{$sr_url}/{$row['id']}";
                                         }else{
@@ -152,7 +154,16 @@
                                 ?>
                                 <tr <?= $pdc?>>
                                     <td colspan="2"><?= date_create($row['date'])->format('M d, Y')?></td>
-                                    <td ><a href="<?= $url?>" target="_blank"><?= "{$row['description']}# {$row['id']}"?></a></td>
+                                    <td>
+                                        <a href="<?= $url?>" target="_blank">
+                                            <?= "{$row['description']}# {$row['id']}"?>
+                                            <?php if($row['description'] === 'PL' && is_numeric($row['ref_number'])):?>
+                                                <?= "(SI # {$row['ref_number']})"?>
+                                            <?php elseif($row['description'] === 'SR' && is_numeric($row['ref_number'])):?>
+                                                 <?= "(CR # {$row['ref_number']})"?>
+                                            <?php endif;?>
+                                        </a>
+                                    </td>
                                     <td>
                                         <?= $debit_amount;?>
                                     </td>
@@ -165,6 +176,23 @@
                         <?php endif;?>
                         
                     </tbody>
+                    <tfoot class="noScreen">
+                        <tr>
+                            <td colspan="7"  style="padding-top:15px">Note: This will serve as your statement of account</td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">Make all checks payable to: <span style="text-decoration: underline;">ARDITEZZA POULTRY INTEGRATION CORP.</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="padding-top:20px">Prepared by: <b><?= $this->session->userdata('name') ?></b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="padding-top:20px">Received by: ____________________________________________</td>
+                        </tr>
+                        <tr>
+                            <td class="text" colspan="7" style="padding-top:10px"><small>Printed on: <?= date('M d, Y h:i A')?></small></td>
+                        </tr>
+                    </tfoot>
                 </table>
                 <small>Process time: <?= $this->benchmark->elapsed_time();?> second(s)</small>
             </div>

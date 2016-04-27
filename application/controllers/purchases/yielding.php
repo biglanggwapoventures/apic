@@ -29,7 +29,7 @@ class Yielding extends PM_Controller_v2 {
     		'form_action' => base_url("purchases/yielding/save/{$rr_no}"),
     		'product_list' => $this->product->get_list(),
     		'data' => $data[0],
-            'yielding' => $this->
+            // 'yielding' => $this->
 		])->generate_page();
     }
 

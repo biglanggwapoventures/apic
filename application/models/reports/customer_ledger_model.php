@@ -64,7 +64,7 @@ class Customer_ledger_model extends CI_Model
 		$credit_memos = [];
 
 		// GET ALL PACKING LIST ON AND AFTER THE START DATE SPECIFIED
-		$deliveries =  $this->db->select('"PL" AS description, delivery.id, DATE(delivery.date) AS date, SUM((order_detail.unit_price * delivery_detail.this_delivery) - (order_detail.discount * delivery_detail.this_delivery)) AS amount', FALSE)
+		$deliveries =  $this->db->select('"PL" AS description, delivery.id, DATE(delivery.date) AS date, SUM((order_detail.unit_price * delivery_detail.this_delivery) - (order_detail.discount * delivery_detail.this_delivery)) AS amount, delivery.invoice_number AS ref_number', FALSE)
 			->from('sales_delivery AS delivery')
 			->join('sales_delivery_detail AS delivery_detail', 'delivery_detail.fk_sales_delivery_id = delivery.id')
 			->join('sales_order_detail AS order_detail', 'order_detail.id = delivery_detail.fk_sales_order_detail_id')
@@ -78,7 +78,7 @@ class Customer_ledger_model extends CI_Model
 			->get()
 			->result_array();
 
-		$credit_memos = $this->db->select('"CM" AS description, cm.delivery_id AS id, cm.`date`, IFNULL(delivery.credit_memo_amount, 0)  AS amount', FALSE)
+		$credit_memos = $this->db->select('"CM" AS description, cm.delivery_id AS id, cm.`date`, IFNULL(delivery.credit_memo_amount, 0)  AS amount, "" AS ref_number', FALSE)
 			->from('cm')
 			->join('sales_delivery AS delivery', ' delivery.id = cm.delivery_id')
 			->join('sales_order', 'sales_order.id = delivery.fk_sales_order_id')
@@ -91,7 +91,7 @@ class Customer_ledger_model extends CI_Model
 			->get()
 			->result_array();
 
-		$receipts = $this->db->select('"SR" AS description, receipt.id, receipt.`date`, receipt_detail.amount, receipt.deposit_date, DATEDIFF(receipt.deposit_date, CURDATE()) AS pdc', FALSE)
+		$receipts = $this->db->select('"SR" AS description, receipt.id, receipt.`date`, receipt_detail.amount, receipt.deposit_date, DATEDIFF(receipt.deposit_date, CURDATE()) AS pdc, receipt.tracking_number AS ref_number', FALSE)
 				->from('sales_receipt AS receipt')
 				->join('sales_receipt_detail AS receipt_detail', 'receipt_detail.fk_sales_receipt_id = receipt.id')
 				->join('sales_delivery AS delivery', 'delivery.id = receipt_detail.fk_sales_delivery_id')
