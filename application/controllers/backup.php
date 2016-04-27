@@ -10,25 +10,19 @@ class Backup extends PM_Controller_v2 {
         parent::__construct();
     }
 
-    public function database() {
-        $fileName = "APIC Backup ".date('Y-m-d h:i:s a');
-
-        // Load the DB utility class
-        $this->load->dbutil();
-
-        // Backup your entire database and assign it to a variable
-        $backup =& $this->dbutil->backup([
-            'format'    => 'zip',
-            'filename'  => $fileName.".sql"
-            ]);
-
-        // Load the file helper and write the file to your server
-        $this->load->helper('file');
-        write_file(base_url().'assets/backup/'.$fileName.".zip", $backup);
-
-        // Load the download helper and send the file to your desktop
+    public function database(){
         $this->load->helper('download');
-        force_download($fileName.".zip", $backup);
+        date_default_timezone_set('Asia/Manila');
+        $fileName = "APIC_Backup_".date('Y-m-d__h-i-s_a').".sql";
+
+        $CI =& get_instance();
+        $CI->load->database();
+
+        $cmd = 'c:\xampp\mysql\bin\mysqldump --opt -u '.$CI->db->username.' -p'.$CI->db->password.' -h'.$CI->db->hostname.' '.$CI->db->database.' > assets/dbbackup/'.$fileName;
+        exec($cmd);
+
+        $data = file_get_contents(base_url()."assets/dbbackup/".$fileName);
+        force_download($fileName, $data);
     }
 
 }

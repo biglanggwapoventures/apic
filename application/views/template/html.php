@@ -235,7 +235,7 @@
                         <?php endif; ?>
                         <?php if($is_admin): ?>
                             <li class="">
-                                <a href="<?= base_url('backup/database') ?>" target="_blank">
+                                <a href="<?= base_url('backup/database') ?>">
                                     <i class="fa fa-download"></i> <span>Download DB Backup</span>
                                 </a>
                             </li>
