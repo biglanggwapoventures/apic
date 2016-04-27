@@ -15,8 +15,8 @@
                                data-url-fetch="<?= base_url('reports/outstanding_packing_list/fetch') ?>"
                                data-customer-src="<?= htmlentities(format_customer_editable(TRUE)) ?>">
                             <tbody>
-                                <tr class="borderless static"><td colspan="14" class="text-center text-bold text-underline font-16">OUTSTANDING PACKING LIST PER CUSTOMER</td></tr>
-                                <tr class="borderless static"><td colspan="14" class="no-padding text-center">As of: <?=date("F d, Y")?></td></tr>
+                                <tr class="borderless static"><td colspan="15" class="text-center text-bold text-underline font-16">OUTSTANDING PACKING LIST PER CUSTOMER</td></tr>
+                                <tr class="borderless static"><td colspan="15" class="no-padding text-center">As of: <?=date("F d, Y")?></td></tr>
                                 <tr class="borderless static"><td class="text-right" colspan="2">Customer:</td><td colspan="8" class="font-normal"><a id="customer-list-editable" data-type="select" data-title="Select customer"></a></td><td class="text-right" colspan="3">Credit Term: </td><td class="font-normal text-center" id="customer-credit-term"></td></tr>
                                 <tr class="borderless static"><td class="text-right" colspan="2">Customer Code:</td><td colspan="8" class="font-normal" id="customer-code"></td><td class="text-right" colspan="3">Credit Limit: </td><td class="font-normal text-center" id="customer-credit-limit"></td></tr>
                                 <tr class="static"><td rowspan="2" colspan="2" class="text-center">DATE</td><td class="text-center" colspan="4">PACKING LIST DETAILS</td><td colspan="7" class="text-center">PAYMENT DETAILS</td><td rowspan="2" class="text-center">BALANCE</td><td rowspan="2" class="text-center">MONTH<br>BALANCE</td></tr>

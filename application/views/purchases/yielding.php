@@ -9,10 +9,10 @@
     </div><!-- /.box-header -->
 
     <div class="box-body">
-    	<form action="<?= $form_action?>" method="POST">
+    	<form data-action="<?= $form_action?>" method="POST">
     		<div class="form-group">
     			<label>Remarks</label>
-    			<textarea class="form-control"></textarea>
+    			<textarea class="form-control" name="remarks"></textarea>
     		</div>
     		<hr>
 			<?php foreach(array_chunk($data['details'], 2) AS $chunk):?>
@@ -24,10 +24,10 @@
 		    					<tr class="active">
 		    						<th>Item</th><th style="width:10%">Unit</th><th>Quantity</th><th></th>
 		    					</tr>
-		    					<tr class="success">
+		    					<tr class="info">
 		    						<th>
 		    							<input type="hidden" name="yield[<?= $row['id']?>][rr_detail_id]" value="<?= $row['id']?>">
-		    							<?= $row['description']?>
+		    							<div class="checkbox"><label><input type="checkbox" class="toggle-include"> <?= $row['description']?></label></div>
 		    						</th>
 		    						<th>
 		    							<div class="t"><?= $row['unit_description']?></div>
@@ -35,9 +35,9 @@
 	    							</th>
 		    						<th>
 			    						<div class="t">
-			    							<input type="number" class="form-control" name="yield[<?= $row['id']?>][quantity]" />
+			    							<input type="number" step="0.01" class="form-control" name="yield[<?= $row['id']?>][quantity]" />
 		    							</div>
-		    							<input type="number" class="form-control" name="yield[<?= $row['id']?>][pieces]" />
+		    							<input type="number" step="0.01" class="form-control" name="yield[<?= $row['id']?>][pieces]" />
 	    							</th>
 	    							<th></th>
 		    					</tr>
@@ -64,9 +64,9 @@
 										</td>
 			    						<td>
 			    							<div class="t">
-				    							<input type="number" class="form-control" name="<?= "yield[{$row['id']}][to][{$index}][quantity]" ?>" data-name="yield[<?= $row['id']?>][to][idx][quantity]"/>
+				    							<input type="number" class="form-control" step="0.01" name="<?= "yield[{$row['id']}][to][{$index}][quantity]" ?>" data-name="yield[<?= $row['id']?>][to][idx][quantity]"/>
 			    							</div>
-			    							<input type="number" class="form-control" name="<?= "yield[{$row['id']}][to][{$index}][pieces]"?>" data-name="yield[<?= $row['id']?>][to][idx][pieces]"/>
+			    							<input type="number" step="0.01" class="form-control" name="<?= "yield[{$row['id']}][to][{$index}][pieces]"?>" data-name="yield[<?= $row['id']?>][to][idx][pieces]"/>
 										</td>
 										<td>
 											<a class="btn btn-danger btn-sm btn-flat remove-line">
@@ -96,6 +96,8 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
+
+		var messageBox = $('.callout.callout-danger');
 
 		$('.add-line').click(function(){
 			var table =  $(this).closest('table'),
@@ -133,5 +135,49 @@
 			}
 
 		})
+
+		$('form').submit(function(e){
+
+			e.preventDefault();
+
+			var that = $(this);
+
+			messageBox.addClass('hidden');
+
+			$('[type=submit]').attr('disabled', 'disabled');
+
+			$.post(that.data('action'), that.serialize())
+
+			.done(function(response){
+				if(response.error_flag){
+					messageBox.removeClass('hidden').find('ul').html('<li>'+response.message.join('</li><li>')+'</li>');
+					$('html, body').animate({scrollTop: 0}, 'slow');
+					return;
+				}
+				window.location.href = $('#cancel').attr('href');
+			})
+			.fail(function(){
+				alert('An internal error has occured. Please try again in a few moment.');
+			})
+			.always(function(){
+				$('[type=submit]').removeAttr('disabled');
+			});
+		});
+
+		$('.toggle-include').change(function(){
+			toggleInputs($(this));
+		});
+
+		toggleInputs($('.toggle-include'));
+
+		function toggleInputs(el){
+			if(el.prop('checked')){
+				el.closest('table').find('input:not([type=checkbox]),select').removeAttr('disabled')
+				return
+			}	
+			el.closest('table').find('input:not([type=checkbox]),select').attr('disabled', 'disabled')
+		}
+
+
 	});
 </script>

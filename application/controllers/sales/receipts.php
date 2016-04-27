@@ -213,7 +213,7 @@ class Receipts extends PM_Controller_v2 {
         $this->form_validation->set_rules('status', 'Status', 'callback_validate_status');
         $this->form_validation->set_rules('tracking_type', 'Tracking Type', 'callback_validate_tracking_type');
         $this->form_validation->set_rules('tracking_no', 'Tracking No.', 'required');
-        $this->form_validation->set_rules('deposit_date', 'Deposit date', 'callback_validate_deposit_date');
+        $this->form_validation->set_rules('deposit_date', 'Deposit date', 'required|callback_validate_deposit_date');
         $this->form_validation->set_rules('payment[type]', 'Payment Type', 'callback_validate_payment_type');
         $this->form_validation->set_rules('payment[amount]', 'Payment Amount', 'callback_validate_payment_amount');
         $this->form_validation->set_rules('payment[pay_from]', 'Pay from', 'callback_validate_pay_from');
@@ -263,7 +263,7 @@ class Receipts extends PM_Controller_v2 {
             'tracking_number_type' => $input['tracking_type'],
             'tracking_number' => $input['tracking_no'],
             'remarks' => $input['remarks'],
-            'deposit_date' => date('Y-m-d', strtotime($input['deposit_date']))
+            'deposit_date' => date_create($input['deposit_date'])->format('Y-m-d')
         ];
         if($mode ==='create')
         {
@@ -400,11 +400,6 @@ class Receipts extends PM_Controller_v2 {
 
     public function validate_deposit_date($deposit_date)
     {
-        $payment = $this->input->post('payment');
-        if(isset($payment['type']) && $payment['type'] === 'cash')
-        {
-            return TRUE;
-        }
         $this->load->helper('pmdate');
         $this->form_validation->set_message('validate_deposit_date', 'Please enter a valid deposit date: mm/dd/yyyy');
         return is_valid_date($deposit_date, 'm/d/Y');

@@ -70,7 +70,7 @@ class M_Receivable extends CI_Model {
         $age = [];
 
         // get all delivered amounts from all customers
-        $this->db->select('delivery.id AS packing_list_id, customer.company_name AS packing_list_customer, DATE(delivery.date) AS packing_list_date, SUM((order_detail.unit_price * delivery_detail.this_delivery) - (order_detail.discount * delivery_detail.this_delivery)) AS packing_list_amount, IFNULL(delivery.credit_memo_amount, 0) AS packing_list_credit_memo', FALSE)
+        $this->db->select('delivery.id AS packing_list_id, customer.company_name AS packing_list_customer, DATE(delivery.date) AS packing_list_date, (SUM((order_detail.unit_price * delivery_detail.this_delivery) - (order_detail.discount * delivery_detail.this_delivery))-IFNULL(delivery.credit_memo_amount, 0)) AS packing_list_amount', FALSE)
             ->from('sales_delivery AS delivery')
             ->join('sales_order AS s_order', 's_order.id = delivery.fk_sales_order_id')
             ->join('sales_customer AS customer', 'customer.id = s_order.fk_sales_customer_id')
@@ -82,11 +82,11 @@ class M_Receivable extends CI_Model {
         $deliveries = $this->db->get()->result_array();
 
         // get all paid
-        $this->db->select('SUM(CASE WHEN receipt_detail.payment_method = "Cash" OR (receipt_detail.payment_method = "Check" AND DATEDIFF(check_transaction.deposit_date, CURDATE()) <= 0) THEN receipt_detail.amount ELSE 0 END) AS packing_list_paid_amount, receipt_detail.fk_sales_delivery_id AS packing_list_id', FALSE)
+        $this->db->select('SUM(CASE WHEN DATEDIFF(receipt.deposit_date, CURDATE()) <= 0 THEN receipt_detail.amount ELSE 0 END) AS packing_list_paid_amount, receipt_detail.fk_sales_delivery_id AS packing_list_id', FALSE)
             ->from('sales_receipt_detail AS receipt_detail')
-            ->join('sales_receipt_check_transaction AS check_transaction', 'check_transaction.fk_sales_receipt_detail_id = receipt_detail.id', 'left')
+            // ->join('sales_receipt_check_transaction AS check_transaction', 'check_transaction.fk_sales_receipt_detail_id = receipt_detail.id', 'left')
             ->join('sales_receipt AS receipt', 'receipt.id = receipt_detail.fk_sales_receipt_id')
-            ->where('receipt.approved_by IS NOT NULL', FALSE, FALSE)
+            ->where('receipt.approved_by IS NOT NULL')
             ->where_in('receipt_detail.fk_sales_delivery_id', array_column($deliveries, 'packing_list_id'))
             ->group_by('receipt_detail.fk_sales_delivery_id');
 
@@ -105,9 +105,10 @@ class M_Receivable extends CI_Model {
 
             $payment = isset($payments[$row['packing_list_id']]) ? $payments[$row['packing_list_id']]['packing_list_paid_amount'] : 0;
 
-            $balance = $row['packing_list_amount'] - $payment - $row['packing_list_credit_memo'];
+            $balance = $row['packing_list_amount'] - $payment;
 
             if($balance <= 0){
+                insert($age, $row['packing_list_customer'], 'overpayment', abs($balance));
                 continue;
             }
 

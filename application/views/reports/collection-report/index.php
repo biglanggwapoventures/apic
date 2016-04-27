@@ -18,6 +18,11 @@
     thead th{
         background: white;
     }
+    @media print {
+      a[href]:after {
+        content: none !important;
+      }
+    }
 </style>
 <div class="box box-solid">
    <div class="box-body table-responsive">

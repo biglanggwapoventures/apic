@@ -212,9 +212,6 @@
                 <a class="btn btn-default btn-flat pull-right" href="<?= base_url('sales/orders')?>" id="cancel">Go back</a>
             </div>
             <?= form_close() ?>
-            <pre>
-            <?php print_r($products)?>
-            </pre>
         </div>
     </div>
 </div>

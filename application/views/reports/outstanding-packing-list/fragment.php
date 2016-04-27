@@ -70,6 +70,6 @@
     <?php endforeach; ?>
     <tr><td colspan="12" class="no-border"></td><td class="text-center text-bold">TOTAL</td><td colspan="3" class="text-right text-bold"><?= number_format($total_balance, 2) ?></td></tr>
 <?php else: ?>
-    <tr><td colspan="14" class="text-center">Selected customer has no outstanding balance</td></tr>
+    <tr><td colspan="15" class="text-center">Selected customer has no outstanding balance</td></tr>
 <?php endif; ?>
-<tr><td colspan="14" class="no-border">Time elapsed: <?= $this->benchmark->elapsed_time();?>s</tr>
+<tr><td colspan="15" class="no-border">Time elapsed: <?= $this->benchmark->elapsed_time();?>s</tr>

@@ -223,6 +223,7 @@
                                     <li><a  href='<?= $base_url . 'reports/receivables' ?>'><i class="fa fa-angle-double-right"></i> Aging of Receivables</a></li>
                                     <li><a  href='<?= $base_url . 'reports/payables' ?>'><i class="fa fa-angle-double-right"></i> Aging of Payables</a></li>
                                     <li><a  href='<?= $base_url . 'reports/collection_report' ?>'><i class="fa fa-angle-double-right"></i> Collection Report</a></li>
+                                    <li><a  href='<?= $base_url . 'reports/customer_ledger' ?>'><i class="fa fa-angle-double-right"></i> Customer Ledger</a></li>
                                 </ul>
                             </li>
                         <?php endif; ?>
