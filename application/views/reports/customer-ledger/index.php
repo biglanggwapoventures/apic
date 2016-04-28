@@ -121,16 +121,15 @@
                             <tr><td colspan="7" class="text-center">Choose a customer and date to start</td></tr>
                         <?php else:?>
                             <?php 
-                                $now = date_create();
+                                
                                 $amount_balance = $data['balance']; 
                                 $sr_url = base_url('sales/receipts/update/');
                                 $pl_url = base_url('sales/deliveries/update/')
                             ?>
                             <?php $counter=0; ?>
                             <?php foreach($data['ledger'] AS $row):?>
-
                                 <?php 
-
+                                    $now = date_create();
                                     $debit_amount = '';
                                     $credit_amount = '';
                                     $pdc = '';
@@ -148,6 +147,8 @@
                                                 $pdc = 'style="background:#fcf8e3"';
                                                 $clear_date = $now->modify("{$row['pdc']} days")->format('M d, Y');
                                                 $note = $clear_date;
+                                                $clear_date = $now->modify("{$row['pdc']} day")->format('M d, Y');
+                                                $note = "<br><small>clearing in {$row['pdc']} day(s): {$clear_date}</small>";
                                             }
                                             $url = "{$sr_url}/{$row['id']}";
                                         }else{
