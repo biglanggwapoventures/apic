@@ -148,7 +148,7 @@
                                                 $clear_date = $now->modify("{$row['pdc']} days")->format('M d, Y');
                                                 $note = $clear_date;
                                                 $clear_date = $now->modify("{$row['pdc']} day")->format('M d, Y');
-                                                $note = "<br><small>clearing in {$row['pdc']} day(s): {$clear_date}</small>";
+                                                $note = $clear_date;
                                             }
                                             $url = "{$sr_url}/{$row['id']}";
                                         }else{
@@ -166,9 +166,9 @@
                                     </td>
                                     <td>
                                         <?php if($row['description'] === 'PL' && is_numeric($row['ref_number'])):?>
-                                            <?= "(SI # {$row['ref_number']})"?>
+                                            <?= "SI # {$row['ref_number']}"?>
                                         <?php elseif($row['description'] === 'SR' && is_numeric($row['ref_number'])):?>
-                                             <?= "(CR # {$row['ref_number']})"?>
+                                             <?= "CR # {$row['ref_number']}"?>
                                         <?php endif;?>
                                     </td>
                                     <td colspan="2">
