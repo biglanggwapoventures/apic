@@ -72,7 +72,6 @@
                                         <td>
                                             <?php $total = $thirty + $sixty + $ninety + $plus ?>
                                             <?= number_format($total, 2) ?>
-                                            <?php $overall+=$total ?>
                                         </td>
                                          <td class="warning">
                                             <?php if (isset($balances['overpayment']) && $balances['overpayment'] > 0): ?>
