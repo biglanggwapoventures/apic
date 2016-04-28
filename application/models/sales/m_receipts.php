@@ -54,18 +54,14 @@ class M_Receipts extends CI_Model {
             }
         }
 
-        if(!empty($check_trans))
-        {
+        if(!empty($check_trans)){
             $this->db->insert_batch($this->check_transactions_table, $check_trans);
         }
 
-        if ($this->db->trans_status() === FALSE)
-        {
+        if ($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
             return FALSE;
-        }
-        else
-        {
+        }else{
             $this->db->trans_commit();
             return $id;
         }

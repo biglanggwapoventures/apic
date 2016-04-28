@@ -123,8 +123,7 @@
                                 $sr_url = base_url('sales/receipts/update/');
                                 $pl_url = base_url('sales/deliveries/update/')
                             ?>
-                            <?php foreach($data['ledger'] AS $row):?>
-
+                            <?php foreach($data['ledger'] AS $row):?> 
                                 <?php 
 
                                     $debit_amount = '';
@@ -138,11 +137,12 @@
                                     }else{
                                         $credit_amount =  number_format($row['amount'], 2);
                                         if($row['description'] === 'SR'){
-                                            if($row['pdc'] <= 0){
+                                            $deposit_date = date_create($deposit_date);
+                                            if($now->diff($deposit_date)->format('') <= 0){
                                                 $amount_balance -= $row['amount'];
                                             }else{
                                                 $pdc = 'style="background:#fcf8e3"';
-                                                $clear_date = $now->modify("{$row['pdc']} days")->format('M d, Y');
+                                                $clear_date = $now->modify("{$row['pdc']} day")->format('M d, Y');
                                                 $note = "<br><small>clearing in {$row['pdc']} day(s): {$clear_date}</small>";
                                             }
                                             $url = "{$sr_url}/{$row['id']}";
