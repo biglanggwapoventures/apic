@@ -18,7 +18,7 @@ class Customer_ledger extends PM_Controller_v2
 		$this->load->model('reports/customer_ledger_model', 'report');
 		$this->load->model('sales/m_customer', 'customer');
 
-		$this->add_javascript(['plugins/sticky-thead.js', 'printer/print.js']);
+		$this->add_javascript(['plugins/sticky-thead.js', 'printer/print.js', 'plugins/loadash.js', 'customer-ledger/customer-ledger.js']);
 
 		$customers = ['' => ''] + array_column($this->customer->all(['status' => 'a']), 'company_name', 'id');
 		$params = elements(['customer', 'date'], $this->input->get(), FALSE);

@@ -14,6 +14,7 @@ class Payables extends PM_Controller_v2
 
 	public function index()
 	{
+		$this->add_javascript(['plugins/sticky-thead.js', 'printer/print.js', 'plugins/loadash.js', 'reports-payables/payables.js']);
 		$this->load->model('maintainable/m_supplier', 'supplier');
 		$this->load->model('reports/m_payables', 'payables');
 		$this->supplier->fields = ['id','name'];

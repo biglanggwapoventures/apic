@@ -19,6 +19,7 @@ class Receivables extends PM_Controller_v2 {
     public function index() {
         $this->load->helper('customer');
         $this->add_css(array('reports/ageing-of-receivables.css'));
+        $this->add_javascript(['plugins/sticky-thead.js', 'printer/print.js', 'plugins/loadash.js', 'reports-receivables/receivables.js']);
         $data = $this->report->generate_report();
         ksort($data);
         $this->set_content('reports/ageing-of-receivables/view', compact('data'));

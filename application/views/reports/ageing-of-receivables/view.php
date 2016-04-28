@@ -2,20 +2,49 @@
     tr:not(.static) td:not(:first-child){
         text-align: right;
     }
-    tr:last-child td:not(:first-child){
+/*    tr:last-child td:not(:first-child){
        font-weight: bold;
+    }*/
+    tr > th{
+        border: 0px;
+    }
+    .noScreen{
+        border: 0;
+    }
+    @media screen
+    {
+        .noPrint{}
+        .noScreen{display:none;}
+    }
+
+    @media print
+    {
+        .noPrint{display:none;}
+        .noScreen{}
+        table {page-break-after: always;}
     }
 </style>
 <div class="row" id="print-area">
     <div class="col-sm-12">
         <div class="box box-solid">
+            <div class="box-header">
+                <div class="box-tools" style="position: absolute;width: 100%;z-index: 999">
+                    <a id="print-report" href="#"><i class="fa fa-print"></i> Print page</a>
+                </div>
+            </div>
             <div class="box-body">
                 <div class="row">
+                    <div id="table-header">
+                        <div class="col-sm-12 text-center text-bold text-underline font-16">
+                            AGING OF RECEIVABLES
+                        </div>
+                        <div class="col-sm-12 no-padding text-center" style="font-weight:bold">As of: <?= date("F d, Y") ?></div>
+                    </div>
                     <div class="col-sm-12">
                         <table id="aorr" class="table table-bordered borderless table-condensed" >
                             <tbody>
-                                <tr class="borderless static"><td colspan="8" class="text-center text-bold text-underline font-16">AGING OF RECEIVABLES</td></tr>
-                                <tr class="borderless static"><td colspan="8" class="no-padding text-center">As of: <?= date("F d, Y") ?></td></tr>
+                                <!-- <tr class="borderless static"><td colspan="8" class="text-center text-bold text-underline font-16">AGING OF RECEIVABLES</td></tr> -->
+                                <!-- <tr class="borderless static"><td colspan="8" class="no-padding text-center">As of: <?= date("F d, Y") ?></td></tr> -->
                                 <tr class="borderless static"><td colspan="1"><input type="text" class="form-control hidden" placeholder="Filter customer name"/></td></tr>
                                 <tr class="static active">
                                     <td class="text-center">CUSTOMER</td>
@@ -102,7 +131,7 @@
                                     <td class="active"><?= round(($ninety_total/$overall) * 100,1) ?>%</td>
                                     <td class="active"><?= round(($plus_total/$overall) * 100,1) ?>%</td>
                                 </tr>
-                                <tr><td colspan="6" class="no-border">Time elapsed: <?= $this->benchmark->elapsed_time();?>s</td></tr>
+                                <tr id="remove-me"><td colspan="6" class="no-border">Time elapsed: <?= $this->benchmark->elapsed_time();?>s</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -110,4 +139,20 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="table-dummy" class="hidden">
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <h5 style="margin-bottom:0;font-weight: bold">
+                ARDITEZZA POULTRY INTEGRATION CORPORATION
+            </h5>
+        </div><br/>
+        <div class="col-sm-12 text-center">
+            <th colspan="10" class="text-center font-normal">
+                Ultima Residences Tower 3, Unit 1018, Osmena Blvrd., Cebu City<br>
+                Tel/Fax Nos.: (032) 253-4570 to 71 / 414-3312 / 512-3067
+            </th>
+        </div>
+    </div><br/>
 </div>
