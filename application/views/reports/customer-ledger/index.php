@@ -118,7 +118,7 @@
                             <tr><td colspan="7" class="text-center">Choose a customer and date to start</td></tr>
                         <?php else:?>
                             <?php 
-                                $now = date_create();
+                                
                                 $amount_balance = $data['balance']; 
                                 $sr_url = base_url('sales/receipts/update/');
                                 $pl_url = base_url('sales/deliveries/update/')
@@ -126,7 +126,7 @@
                             <?php foreach($data['ledger'] AS $row):?>
 
                                 <?php 
-
+                                    $now = date_create();
                                     $debit_amount = '';
                                     $credit_amount = '';
                                     $pdc = '';
