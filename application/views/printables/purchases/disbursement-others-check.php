@@ -94,8 +94,8 @@
             </div>
             <div class="row" style="padding-top: 180px;">
                 <div class="col-xs-4 text-center">
-                    <div style="border-bottom: 1px solid black;"><small><?= strtoupper($this->session->userdata('name')) ?> / <?= strtoupper($this->session->userdata('name')) ?></small></div>
-                    <div><small>PREPARED BY / PRINTED BY</small></div>
+                    <div style="border-bottom: 1px solid black;"><small><?= strtoupper($this->session->userdata('name')) ?></small></div>
+                    <div><small>PREPARED BY</small></div>
                 </div>
                 <div class="col-xs-4 text-center">
                     <div style="border-bottom: 1px solid black;"><small>EVELYN MINOZA</small></div>
