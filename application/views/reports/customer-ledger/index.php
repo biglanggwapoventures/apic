@@ -124,7 +124,6 @@
                                 $pl_url = base_url('sales/deliveries/update/')
                             ?>
                             <?php foreach($data['ledger'] AS $row):?>
-
                                 <?php 
                                     $now = date_create();
                                     $debit_amount = '';
