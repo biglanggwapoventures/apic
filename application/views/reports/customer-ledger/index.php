@@ -123,7 +123,8 @@
                                 $sr_url = base_url('sales/receipts/update/');
                                 $pl_url = base_url('sales/deliveries/update/')
                             ?>
-                            <?php foreach($data['ledger'] AS $row):?> 
+                            <?php foreach($data['ledger'] AS $row):?>
+
                                 <?php 
 
                                     $debit_amount = '';
@@ -137,8 +138,7 @@
                                     }else{
                                         $credit_amount =  number_format($row['amount'], 2);
                                         if($row['description'] === 'SR'){
-                                            $deposit_date = date_create($deposit_date);
-                                            if($now->diff($deposit_date)->format('') <= 0){
+                                            if($row['pdc'] <= 0){
                                                 $amount_balance -= $row['amount'];
                                             }else{
                                                 $pdc = 'style="background:#fcf8e3"';
