@@ -2,9 +2,9 @@ $('#print-report').click(function(){
     $('#table-dummy').append($('#table-header').clone()).append('<br/>');
 
     var $main = $('#aorr tr').clone();
-    var $first = $main.slice(0, 13);
-    var $second = $main.slice(13);
-    var tr_chunks = _.chunk($second, 13);
+    var $first = $main.slice(0, 15);
+    var $second = $main.slice(15);
+    var tr_chunks = _.chunk($second, 16);
     var header = $main.slice(1,2);
 
     $('#table-dummy').append($first);
@@ -22,13 +22,15 @@ $('#print-report').click(function(){
     $('.chunked .borderless').remove();
     $('.chunked #remove-me').remove();
 
-    $('.first-table .active td:first-child').attr('width', '30%');
-    $('.chunked .active td:first-child').attr('width', '30%');
-    $('.first-table .active td:nth-child(6)').attr('width', '20%');
-    $('.chunked .active td:nth-child(6)').attr('width', '20%');
+    $('.first-table .active td, .chunked .active td').each(function(){
+        $(this).attr('width', '10%');
+    });
+    $('.first-table .active td:first-child, .chunked .active td:first-child').attr('width', '30%');
+    $('.chunked, .first-table').css({'font-size': '10px'});
 
     $('.first-table tbody tr:not(:first-child)').removeClass('b').css('font-weight', 'normal');
     $('.chunked tbody tr:not(:first-child)').removeClass('b').css('font-weight', 'normal');
 
-    $('#table-dummy').removeClass('hidden').print().addClass('hidden').empty();
+    $('#print-div').removeClass('hidden').print().addClass('hidden');
+    $('#table-dummy').empty();
 });

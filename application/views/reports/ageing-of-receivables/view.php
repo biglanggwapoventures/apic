@@ -141,7 +141,7 @@
     </div>
 </div>
 
-<div id="table-dummy" class="hidden">
+<div id="print-div" class="hidden">
     <div class="row">
         <div class="col-sm-12 text-center">
             <h5 style="margin-bottom:0;font-weight: bold">
@@ -155,4 +155,5 @@
             </th>
         </div>
     </div><br/>
+    <div id="table-dummy"></div>
 </div>

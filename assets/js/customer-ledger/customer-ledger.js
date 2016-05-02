@@ -29,6 +29,12 @@ $(document).ready(function(){
         $('.chunked tr.active > th').css({'border':'1px solid #ddd'});
         $('._ > td').css({'border':0});
 
-        $('#table-dummy').removeClass('hidden').print().addClass('hidden').empty();
+        $('.first-table .active th, .chunked .active th').each(function(){
+            $(this).attr('width', '10%');
+        });
+        $('.first-table .active th:first-child, .chunked .active th:first-child').attr('width', '10%');
+        $('.chunked, .first-table').css({'font-size': '10px'});
+
+        $('#table-dummy').removeClass('hidden').print().addClass('hidden');
     });
 })
