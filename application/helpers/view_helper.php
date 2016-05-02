@@ -298,6 +298,13 @@ if(!function_exists('status')){
     }
 }
 
+if(!function_exists('get_status')){
+    function get_status($status)
+    {
+        return $status ? ['text' => 'Active', 'class' => 'label-success'] :  ['text' => 'Inactive', 'class' => 'label-warning'];
+    }
+}
+
 if(function_exists('approved')){
     function approved($resource)
     { 

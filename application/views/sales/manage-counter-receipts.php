@@ -3,9 +3,9 @@
 <div class="row">
     <div class="col-md-12">
         <div class="box box-info">
-            <?= form_open($action, array('role' => 'form')); ?>
+            <?= form_open($action); ?>
             <div class="box-header">
-                <h3 class="box-title"><?= isset($form_title) ? $form_title : '' ?></h3>
+                <h3 class="box-title"><?= $form_title ?></h3>
             </div>
             <div class="box-body">
                 <div class="callout callout-danger hidden">
@@ -19,15 +19,14 @@
                             <?php if ($defaults['fk_sales_customer_id']): ?>
                                 <p class="form-control-static"><?= $defaults['company_name'] ?></p>
                             <?php else: ?>
-                                <?php $attr = 'class="form-control" id="customer-name" required="required"'; ?>
-                                <?= form_dropdown('fk_sales_customer_id', $customers, FALSE, $attr) ?>
+                                <?= form_dropdown('fk_sales_customer_id', $customers, FALSE, 'class="form-control"') ?>
                             <?php endif; ?>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label for="invoice-number">Invoice Number</label>
-                            <?= form_input(array('name' => 'invoice_number', 'class' => 'form-control', 'id' => 'invoice-number', 'required' => 'required', 'value' => $defaults['invoice_number'])); ?>
+                            <label for="invoice-number">SI#</label>
+                            <?= form_input(['name' => 'invoice_number', 'class' => 'form-control', 'value' => put_value($data, 'invoice_number', '')]); ?>
                         </div>
                     </div>
                     <div class="col-md-3">

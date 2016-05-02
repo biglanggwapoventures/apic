@@ -3,7 +3,7 @@
 class Customer extends PM_Controller_v2
 {
 
-	public function __construct()
+	function __construct()
 	{
 		parent::__construct();
         if(!has_access('sales')) show_error('Authorization error', 401);
@@ -13,7 +13,7 @@ class Customer extends PM_Controller_v2
         $this->load->model('sales/m_customer', 'customer');
 	}
 
-    public function _search_params()
+    function _search_params()
     {
         $search = [];
         $wildcards = [];
@@ -37,7 +37,7 @@ class Customer extends PM_Controller_v2
         return compact(['search', 'wildcards']);
     }
 
-	public function index() 
+	function index() 
 	{
         $this->add_javascript(['sales-customers/listing.js', 'plugins/sticky-thead.js']);
     
@@ -47,7 +47,7 @@ class Customer extends PM_Controller_v2
         ])->generate_page();
     }
 
-    public function create() 
+    function create() 
     {
         $this->add_javascript(['sales-customers/manage.js', 'price-format.js']);
         $this->set_content('sales/customers/manage', [
@@ -57,7 +57,7 @@ class Customer extends PM_Controller_v2
         ])->generate_page();
     }
 
-    public function edit($id = FALSE)
+    function edit($id = FALSE)
     {
         if(!$id || !$customer = $this->customer->find($id)){
             show_404();
@@ -70,7 +70,7 @@ class Customer extends PM_Controller_v2
         ])->generate_page();
     }
 
-    public function store()
+    function store()
     {
         $this->set_action('new');
         $this->_perform_validation();
@@ -86,7 +86,7 @@ class Customer extends PM_Controller_v2
         $this->generate_response(TRUE, $this->form_validation->errors())->to_JSON();
     }
 
-    public function update($id = FALSE)
+    function update($id = FALSE)
     {
 
         if(!$id || !$customer = $this->customer->find($id)){
@@ -109,7 +109,7 @@ class Customer extends PM_Controller_v2
         $this->generate_response(TRUE, $this->form_validation->errors())->to_JSON();
     }
 
-    public function delete($id)
+    function delete($id)
     {
         if(!$id || !$customer = $this->customer->find($id)){
             $this->generate_response(TRUE, 'Please select a valid customer to delete.')->to_JSON();
@@ -126,7 +126,7 @@ class Customer extends PM_Controller_v2
         $this->generate_response(TRUE, 'Cannot perform action due to an unknown error. Please try again later.')->to_JSON();
     }
 
-    public function show_pricing($customer_id)
+    function show_pricing($customer_id)
     {   
         $this->add_javascript(['sales-customers/pricing.js', 'price-format.js', 'plugins/sticky-thead.js']);
         $this->load->model('inventory/m_product', 'product');
@@ -143,7 +143,7 @@ class Customer extends PM_Controller_v2
         ])->generate_page();
     }
 
-    public function save_customer_pricing($customer_id = FALSE) 
+    function save_customer_pricing($customer_id = FALSE) 
     {
         if($this->m_customer->save_price_list($customer_id, $this->input->post('list'))){
             $this->generate_response(FALSE)->to_JSON();    
@@ -152,7 +152,16 @@ class Customer extends PM_Controller_v2
         $this->generate_response(TRUE)->to_JSON();    
     }
 
-    public function _perform_validation()
+    function get_uncountered_packing_list($customer_id)
+    {
+        if($this->customer->exists((int)$customer_id, TRUE)){
+             $this->generate_response(FALSE, '', $this->customer->get_uncountered_packing_list($customer_id))->to_JSON();
+             return;
+        }
+        $this->generate_response(TRUE)->to_JSON();
+    }
+
+    function _perform_validation()
     {
         if($this->action('new')){
             $this->form_validation->set_rules('customer_code', 'customer code', 'trim|required|is_unique[sales_customer.customer_code]');
@@ -171,7 +180,7 @@ class Customer extends PM_Controller_v2
         
     }
 
-    public function _format_data()
+    function _format_data()
     {
         $input = elements(['customer_code', 'company_name', 'address', 'contact_number', 'contact_person', 'credit_limit', 'credit_term', 'customer_status'], $this->input->post());
         $input['credit_limit'] = str_replace(',', '', $input['credit_limit']);
@@ -181,13 +190,13 @@ class Customer extends PM_Controller_v2
         return $input;
     }
 
-    public function _validate_customer_code($code)
+    function _validate_customer_code($code)
     {
         $this->form_validation->set_message('_validate_customer_code', 'The %s is already in use.');
         return $this->customer->has_unique_code($code, $this->id);
     }
 
-    public function _validate_credit_limit($credit_limit)
+    function _validate_credit_limit($credit_limit)
     {
     	$this->form_validation->set_message('_validate_credit_limit', 'The %s is should only contain numbers.');
         return is_numeric(str_replace(',', '', $credit_limit));

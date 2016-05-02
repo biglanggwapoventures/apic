@@ -68,7 +68,7 @@ if(!function_exists('can_delete')){
     {
         $CI = &get_instance();
         $status_key = is_string($status_key) ? $status_key : 'status';
-        if(isset($resource[$status_key]) && $resource[$status_key] === 'a'){
+        if(isset($resource[$status_key]) && ($resource[$status_key] === 'a' || $resource[$status_key] !== NULL)){
             return in_array(role(), ['su', 'a']);
         }
         return TRUE;

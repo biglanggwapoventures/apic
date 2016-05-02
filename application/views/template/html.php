@@ -147,11 +147,13 @@
                                 <ul class="treeview-menu">
                                     <li><a href="<?= $base_url . 'sales/orders' ?>" ><i class="fa fa-angle-double-right"></i> Orders</a></li>
                                     <li><a href="<?= $base_url . 'sales/deliveries' ?>" ><i class="fa fa-angle-double-right"></i> Packing List</a></li>
+                                    <li><a href="<?= $base_url . 'sales/counter_receipts' ?>"><i class="fa fa-angle-double-right"></i> Counter Receipts</a></li>
                                     <li><a href="<?= $base_url . 'sales/receipts' ?>" ><i class="fa fa-angle-double-right"></i> Receipts</a></li>
                                     <li><a href="<?= $base_url . 'sales/customer' ?>" ><i class="fa fa-angle-double-right"></i> Customers</a></li>
                                     <li><a href="<?= $base_url . 'sales/agents' ?>"><i class="fa fa-angle-double-right"></i> Sales Agents</a></li>
                                     <li><a href="<?= $base_url . 'sales/trucking' ?>"><i class="fa fa-angle-double-right"></i> Trucking</a></li>
                                     <li><a href="<?= $base_url . 'sales/trucking_assistants' ?>"><i class="fa fa-angle-double-right"></i> Trucking Assistants</a></li>
+
                                 </ul>
                             </li>
                         <?php endif; ?>

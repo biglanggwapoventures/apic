@@ -74,6 +74,39 @@ class M_customer extends CI_Model {
         return $this->db->select('id')->from($this->table)->where('id', $id)->get()->num_rows() > 0;
     }
 
+    function get_uncountered_packing_list($customer_id, $excluded_packing_lists = FALSE)
+    {
+        $countered = $this->db->select('cr_detail.fk_sales_delivery_id')
+            ->from('sales_counter_receipt AS cr')
+            ->join('sales_counter_receipt_detail AS cr_detail', 'cr_detail.fk_sales_counter_receipt_id = cr.id')
+            ->where('cr.fk_sales_customer_id', $customer_id)
+            ->where('cr.approved_by IS NOT NULL')
+            ->get()
+            ->result_array();
+
+        $countered_packing_lists = array_column($countered, 'fk_sales_delivery_id');
+
+        if($excluded_packing_lists){
+            $countered_packing_lists = array_diff($countered_packing_lists, $excluded_packing_lists);
+            // print_r($countered_packing_lists);
+        }
+
+        $this->db->select('delivery.id, DATE(delivery.date) AS date, delivery.invoice_number, (SUM((order_detail.unit_price * delivery_detail.this_delivery) - (order_detail.discount * delivery_detail.this_delivery)) - IFNULL(delivery.credit_memo_amount, 0)) AS amount ', FALSE)
+            ->from('sales_delivery AS delivery')
+            ->join('sales_delivery_detail AS delivery_detail', 'delivery_detail.fk_sales_delivery_id = delivery.id')
+            ->join('sales_order_detail AS order_detail', 'order_detail.id = delivery_detail.fk_sales_order_detail_id')
+            ->join('sales_order AS sales', 'sales.id = order_detail.fk_sales_order_id')
+            ->where('sales.fk_sales_customer_id', $customer_id)
+            ->group_by('delivery.id')
+            ->order_by('delivery.date', 'DESC');
+
+        if(!empty($countered_packing_lists)){
+            $this->db->where_not_in('delivery.id', $countered_packing_lists);
+        }
+
+        return $this->db->get()->result_array();
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
