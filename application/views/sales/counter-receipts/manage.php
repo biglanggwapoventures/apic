@@ -45,7 +45,7 @@
             </div>
             <hr>
             <table class="table table-bordered" id="cr-table" style="border-bottom: none;border-left: none;border-right: none;">
-                <thead><tr class="info"><th>PL #</th><th>SI #</th><th>PL Date</th><th>Amount</th></tr></thead>
+                <thead><tr class="info"><th><label><input type="checkbox" id="toggle-all"/> PL #</label></th><th>SI #</th><th>PL Date</th><th>Amount</th></tr></thead>
                 <tbody>
                     <?php $total = 0;?>
                     <?php if (isset($uncountered_packing_lists)): ?>
@@ -148,6 +148,10 @@
             
             $('.total-amount').text(numeral(totalAmount).format('0,0.00'));
         });
+
+         $('#toggle-all').change(function(){
+            $('#cr-table tbody input[type=checkbox]').prop('checked', $(this).prop('checked'));
+         });
 
 
 

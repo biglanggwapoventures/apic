@@ -48,12 +48,37 @@ class Counter_receipt_model extends CI_Model
 		return NULL;
 	}
 
+	public function get_complete_details($id)
+	{
+		$cr = $this->db->select('cr.id, cr.date, customer.company_name AS customer, customer.credit_term, customer.address AS customer_address')
+			->from($this->table.' AS cr')
+			->join('sales_customer AS customer', 'customer.id = cr.fk_sales_customer_id')
+			->where('cr.id', $id)
+			->get()
+			->row_array();
+		if($cr){
+			$cr['details'] = $this->db->select("delivery.id, delivery.date, delivery.invoice_number, order_detail.unit_price - order_detail.discount AS unit_price, SUM(delivery_detail.this_delivery) AS quantity", FALSE)
+				->from($this->table.' AS cr')
+				->join('sales_counter_receipt_detail AS cr_detail', 'cr_detail.fk_sales_counter_receipt_id = cr.id')
+				->join('sales_delivery AS delivery', 'delivery.id = cr_detail.fk_sales_delivery_id')
+				->join('sales_delivery_detail AS delivery_detail', 'delivery_detail.fk_sales_delivery_id = delivery.id')
+				->join('sales_order_detail AS order_detail', 'order_detail.id = delivery_detail.fk_sales_order_detail_id')
+				->where('cr.id', $id)
+				->group_by('order_detail.id')
+				->get()
+				->result_array();
+
+			return $cr;
+		}	
+		return NULL;
+	}
+
 	function all($page = 1, $params = FALSE)
 	{
 		$limit = 100;
         $offset = ($page <= 1 ? 0 : ($page-1)*$limit);
 
-		$this->db->select('cr.id, cr.date, customer.company_name AS customer, (SUM((delivery_detail.this_delivery * order_detail.unit_price) - (delivery_detail.this_delivery * order_detail.discount)) - IFNULL(delivery.credit_memo_amount, 0)) AS amount, created_by.Username AS created_by, approved_by.Username AS approved_by', FALSE)
+		$this->db->select('cr.id, cr.date, customer.company_name AS customer, SUM((delivery_detail.this_delivery * order_detail.unit_price) - (delivery_detail.this_delivery * order_detail.discount)) AS amount, created_by.Username AS created_by, approved_by.Username AS approved_by', FALSE)
 			->from($this->table.' AS cr')
 			->join('sales_counter_receipt_detail AS cr_detail', 'cr_detail.fk_sales_counter_receipt_id = cr.id')
 			->join('sales_delivery AS delivery', 'delivery.id = cr_detail.fk_sales_delivery_id')

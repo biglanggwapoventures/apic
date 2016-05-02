@@ -91,7 +91,7 @@ class M_customer extends CI_Model {
             // print_r($countered_packing_lists);
         }
 
-        $this->db->select('delivery.id, DATE(delivery.date) AS date, delivery.invoice_number, (SUM((order_detail.unit_price * delivery_detail.this_delivery) - (order_detail.discount * delivery_detail.this_delivery)) - IFNULL(delivery.credit_memo_amount, 0)) AS amount ', FALSE)
+        $this->db->select('delivery.id, DATE(delivery.date) AS date, delivery.invoice_number, SUM((order_detail.unit_price * delivery_detail.this_delivery) - (order_detail.discount * delivery_detail.this_delivery))  AS amount ', FALSE)
             ->from('sales_delivery AS delivery')
             ->join('sales_delivery_detail AS delivery_detail', 'delivery_detail.fk_sales_delivery_id = delivery.id')
             ->join('sales_order_detail AS order_detail', 'order_detail.id = delivery_detail.fk_sales_order_detail_id')

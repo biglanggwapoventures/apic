@@ -24,7 +24,8 @@
         <table class="table table-striped" id="master-list"
             data-master-list-url="<?= "{$url}/master_list"?>"
             data-edit-url="<?= "{$url}/edit"?>/"
-            data-delete-url="<?= "{$url}/delete"?>"> 
+            data-delete-url="<?= "{$url}/delete"?>"
+            data-print-url="<?= "{$url}/do_print"?>/"> 
             <thead><tr class="info"><th>CR #</th><th>Date</th><th>Customer</th><th>Amount</th><th>Status</th><th>CB</th><th>AB</th><th></th></tr></thead>
             <tbody>
                 <tr><td colspan="8" class="text-center">Loading data. Please wait...</td></tr>

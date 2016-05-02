@@ -51,7 +51,7 @@ class Counter_receipts extends PM_Controller_v2
 
 	function index() 
 	{
-        $this->add_javascript(['plugins/sticky-thead.js', 'numeral.js', 'plugins/moment.min.js']);
+        $this->add_javascript(['plugins/sticky-thead.js', 'numeral.js', 'plugins/moment.min.js', 'printer/printer.js']);
         $this->set_content('sales/counter-receipts/listing', [
         	'items' => [],
         	'customers' => ['' => 'All customers'] + array_column($this->customer->all(['status' => 'a']), 'company_name', 'id')
@@ -139,6 +139,14 @@ class Counter_receipts extends PM_Controller_v2
 		}
 		$this->generate_response(TRUE, ['Selected counter receipt does not exist or has already been approved.'])->to_JSON();
 	}
+
+    function do_print($id = FALSE)
+    {
+        if($this->cr->exists($id) && $this->cr->is_approved($id)){
+            $details = $this->cr->get_complete_details($id);
+            $this->load->view('printables/sales/counter-receipt', compact('details'));
+        }
+    }
 
     function _perform_validation($mode = 'c')
     {
