@@ -157,11 +157,11 @@ class Dummy_checks extends PM_Controller_v2
     {
         $this->form_validation->set_rules('date', 'Date', 'required|callback_validate_date');
         $this->form_validation->set_rules('payee', 'Payee', 'required');
-        $this->form_validation->set_rules('bank_account', 'Bank account', 'required|callback_validate_bank_account');
+        // $this->form_validation->set_rules('bank_account', 'Bank account', 'required|callback_validate_bank_account');
         $this->form_validation->set_rules('check_number', 'Check number', 'required');
         $this->form_validation->set_rules('check_date', 'Check date', 'required|callback_validate_date');
         $this->form_validation->set_rules('check_amount', 'Check amount', 'required|callback_validate_check_amount');
-        $this->form_validation->set_rules('is_approved', '', 'callback_validate_status');
+        // $this->form_validation->set_rules('is_approved', '', 'callback_validate_status');
         if ($this->form_validation->run() === FALSE) {
             $this->validation_errors = $this->form_validation->error_array();
         }
@@ -199,10 +199,10 @@ class Dummy_checks extends PM_Controller_v2
     public function format($mode = 'create')
     {
         $input = $this->input->post();
-        $data = elements(['bank_account', 'check_number', 'remarks', 'payee'], $this->input->post());
-        if (is_admin()) {
-            $data['approved_by'] = isset($input['is_approved']) ? $this->session->userdata('user_id') : NULL;
-        }
+        $data = elements(['check_number', 'remarks', 'payee'], $this->input->post());
+        // if (is_admin()) {
+            $data['approved_by'] = user_id();
+        // }
         $data['check_amount'] = str_replace(',', '', $input['check_amount']);
         $data['date'] = date('Y-m-d', strtotime($input['date']));
         $data['check_date'] = date('Y-m-d', strtotime($input['check_date']));

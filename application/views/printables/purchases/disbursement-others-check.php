@@ -110,7 +110,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-offset-1 col-xs-7">*** <?=(!empty(trim($payee)) ? trim($payee) : trim($supplier))?> ***</div>
-                <div class="col-xs-1"><div style="padding-left:25px; padding-top:3px;"><?=number_format($amount, 2)?></div></div>
+                <div class="col-xs-1"><div style="padding-left:35px; padding-top:3px;"><?=number_format($amount, 2)?></div></div>
             </div>
             <br/>
             <div class="row">
