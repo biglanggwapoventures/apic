@@ -123,16 +123,16 @@
                                             <td><?= number_format($amount, 2) ?></td>
                                             <?php $total += $amount;?>
                                         </tr>
-                                        
+                                        <?php if ($detailsCursor+1 == $detailsCount): ?>
+                                            <tr><td colspan="6" class="text-center"><small>***NOTHING FOLLOWS***</small></td></tr>
+                                            <tr ><td colspan="4"></td><td style="border:1px solid black;border-right: 0;">TOTAL</td><td class="text-right" style="border:1px solid black;border-left: 0"><?= number_format($total, 2)?></td></tr>
+                                        <?php endif; ?>
                                         <?php $detailsCursor++; ?>
                                     <?php else: ?>
                                         <tr><td colspan="4">&nbsp;</td></tr>
                                     <?php endif; ?>
                                 <?php endfor; ?>
-                                <?php if ($pageCounter == $pageTotal): ?>
-                                    <tr><td colspan="6" class="text-center"><small>***NOTHING FOLLOWS***</small></td></tr>
-                                    <tr ><td colspan="4"></td><td style="border:1px solid black;border-right: 0;">TOTAL</td><td class="text-right" style="font-size:130%;border:1px solid black;border-left: 0"><?= number_format($total, 2)?></td></tr>
-                                <?php endif; ?>
+                                
                             </tbody>
                         </table>
                     </div>
