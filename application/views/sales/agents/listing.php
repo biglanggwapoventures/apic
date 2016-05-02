@@ -23,7 +23,7 @@
                     <tbody>
                         <?php foreach($items AS $row):?>   
                             <tr data-pk="<?= $row['id']?>">
-                                <td><a href="<?= "{$url}/edit/{$row['id']}"?>"><?= $row['contact_number']?></a></td>
+                                <td><a href="<?= "{$url}/edit/{$row['id']}"?>"><?= $row['agent_code']?></a></td>
                                 <td><?= $row['name']?></td>   
                                 <td><?= $row['area']?></td>
                                 

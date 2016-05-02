@@ -26,8 +26,9 @@
                                     <th>Date</th>
                                     <th>Payee</th>
                                     <th>Amount</th>
-                                    <th>Status</th>
-                                    <th></th>  
+                                    <!-- <th>Status</th> -->
+                                    <th>CB</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>

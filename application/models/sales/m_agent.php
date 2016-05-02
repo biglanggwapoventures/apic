@@ -17,7 +17,7 @@ class M_Agent extends CI_Model {
         if(!empty($wildcards)){
             $this->db->like($wildcards);
         }
-        $this->db->order_by('contact_number', 'ASC');
+        $this->db->order_by('agent_code', 'ASC');
         return $this->db->get($this->table)->result_array();
     }
 
@@ -55,6 +55,14 @@ class M_Agent extends CI_Model {
             $this->db->where('id !=', $id);
         }
         return $this->db->select('name')->from($this->table)->where('name', $name)->get()->num_rows() === 0;
+    }
+
+    public function has_unique_code($code, $id = FALSE)
+    {
+        if($id !== FALSE){
+            $this->db->where('id !=', $id);
+        }
+        return $this->db->select('agent_code')->from($this->table)->where('agent_code', $code)->get()->num_rows() === 0;
     }
 
 }

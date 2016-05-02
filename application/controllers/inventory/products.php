@@ -40,7 +40,7 @@ class Products extends PM_Controller_v2 {
         $search = [];
         $wildcards = [];
 
-        $params = elements(['status', 'description'], $this->input->get(), FALSE);
+        $params = elements(['status', 'description', 'category'], $this->input->get(), FALSE);
 
         if($params['status'] && in_array($params['status'], ['a', 'ia'])){
             $search['p.status'] = $params['status'];
@@ -50,6 +50,10 @@ class Products extends PM_Controller_v2 {
 
         if($params['description'] && trim($params['description'])){
             $wildcards['p.description'] = $params['description'];
+        }
+
+        if($params['category'] && is_numeric($params['category'])){
+            $search['p.fk_category_id'] = $params['category'];
         }
         
         return compact(['search', 'wildcards']);
@@ -62,7 +66,8 @@ class Products extends PM_Controller_v2 {
         $params = $this->_search_params();
 
         $this->set_content('inventory/products/listing', [
-            'items' => $this->m_product->all($params['search'], $params['wildcards'])
+            'items' => $this->m_product->all($params['search'], $params['wildcards']),
+            'category' => array_column($this->m_category->all(['status'=>'a']), 'description', 'id')
         ])->generate_page();
     }
 

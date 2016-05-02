@@ -69,9 +69,9 @@
                         <input type="text" class="form-control" value="<?= $this->input->get('description')?>" name="description"/>
                     </div>
                     <div class="form-group">
-                        <label>Type</label>
-                        <?php $type_default = $this->input->get('type') ? $this->input->get('type') : 'all';?>
-                        <?= category_type_dropdown('type', $type_default, 'class="form-control"', TRUE)?>
+                        <label>Category</label>
+                        <?php $type_default = $this->input->get('category') ? $this->input->get('category') : 'all';?>
+                        <?= form_dropdown('category', [''=>'']+$category, $type_default, 'class="form-control"') ?>
                     </div>
                     <div class="form-group">
                         <label>Status</label>

@@ -15,7 +15,7 @@
                     </div>
                     <div class="form-group">
                         <label>Agent code</label>
-                        <input name="contact_number" style="text-align: left" type="text" class="form-control" value="<?= put_value($data, 'contact_number', '')?>">
+                        <input name="agent_code" style="text-align: left" type="text" class="form-control" value="<?= put_value($data, 'agent_code', '')?>">
                     </div>
                     <div class="form-group">
                         <label>Name</label>

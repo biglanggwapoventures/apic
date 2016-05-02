@@ -21,8 +21,10 @@ class M_dummy_check extends CI_Model
         if ($show_deleted === FALSE) {
             $this->db->where('deleted_at IS NULL', FALSE, FALSE);
         }
-        $this->db->select('id, payee, DATE_FORMAT(date, "%m/%d/%Y") AS `formatted_date`,  date, check_amount, approved_by', FALSE);
-        return $this->db->get($this->table)->result_array();
+        $this->db->select('dc.id, dc.payee, DATE_FORMAT(dc.date, "%m/%d/%Y") AS `formatted_date`,  dc.date, dc.check_amount, account.Username as created_by', FALSE);
+        $this->db->from($this->table.' as dc');
+        $this->db->join('account', 'account.id=dc.created_by');
+        return $this->db->get()->result_array();
     }
 
     public function get($id)

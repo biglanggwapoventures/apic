@@ -13,13 +13,15 @@
             var request = $.getJSON(getURL);
             request.done(function(response){
                 var tr = [];
+                console.log(response);
                 $.each(response, function(i, v){
                     var td = [];
                     td[0] = '<a href="'+updateURL+v.id+'">'+v.id+'</a>';
                     td[1] = v.formatted_date;
                     td[2] = v.payee;
                     td[3] = n(v.check_amount).format('0,0.00');
-                    td[4] = v.approved_by !== null ? '<span class="label label-success">Approved</span>' : '<span class="label label-warning">Pending</span>';
+                    // td[4] = v.approved_by !== null ? '<span class="label label-success">Approved</span>' : '<span class="label label-warning">Pending</span>';
+                    td[4] = v.created_by;
                     td[5] = (isAdmin ? deleteTemplate : '') + (actionTemplate(v.approved_by !== null, v.id));
                     tr.push('<tr data-pk="'+v.id+'"><td>'+td.join('</td><td>')+'</td></tr>');
                 })

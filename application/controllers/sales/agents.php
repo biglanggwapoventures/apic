@@ -131,11 +131,12 @@ class Agents extends PM_Controller_v2
     {
         if($this->action('new')){
             $this->form_validation->set_rules('name', 'agent name', 'trim|required|is_unique[sales_agent.name]');
+            $this->form_validation->set_rules('agent_code', 'agent code', 'trim|required|alpha_numeric|is_unique[pm_sales_agent.agent_code]');
         }else{
             $this->form_validation->set_rules('name', 'agent name', 'trim|required|callback__validate_agent_name');
+            $this->form_validation->set_rules('agent_code', 'agent code', 'trim|required|alpha_numeric|callback__validate_agent_code');
         }
         $this->form_validation->set_rules('area', 'agent area', 'trim|required');
-        $this->form_validation->set_rules('contact_number', 'agent code', 'trim|required|alpha_numeric');
         $this->form_validation->set_rules('commission_rate', 'agent commission rate', 'trim|required|numeric');
         if(can_set_status()){
             $this->form_validation->set_rules('status', 'agent status', 'trim|required|in_list[a,ia]', ['in_list' => 'Please provide a valid %s']);
@@ -145,7 +146,7 @@ class Agents extends PM_Controller_v2
 
     public function _format_data()
     {
-        $input = elements(['name', 'area', 'commission_rate', 'contact_number', 'status'], $this->input->post());
+        $input = elements(['name', 'area', 'commission_rate', 'agent_code', 'status'], $this->input->post());
         if(!can_set_status()){
            unset($input['status']);
         }
@@ -156,5 +157,11 @@ class Agents extends PM_Controller_v2
     {
         $this->form_validation->set_message('_validate_unit_description', 'The %s is already in use.');
         return $this->agent->has_unique_name($name, $this->id);
+    }
+
+    public function _validate_agent_code($code)
+    {
+        $this->form_validation->set_message('_validate_agent_code', 'The %s is already in use.');
+        return $this->agent->has_unique_code($code, $this->id);
     }
 }
