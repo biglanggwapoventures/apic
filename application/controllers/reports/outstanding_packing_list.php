@@ -22,7 +22,7 @@ class Outstanding_Packing_List extends PM_Controller_v2 {
     public function index() {
         $this->load->helper('customer');
         $this->add_css(array('reports/outstanding-packing-list.css', 'bootstrap-editable.css'));
-        $this->add_javascript(['numeral.js', 'bootstrap-editable.min.js', 'reports/outstanding-packing-list.js']);
+        $this->add_javascript(['numeral.js', 'bootstrap-editable.min.js', 'printer/print.js', 'plugins/loadash.js', 'reports/outstanding-packing-list.js']);
         $this->set_content('reports/outstanding-packing-list/view', $this->_content);
         $this->generate_page();
     }

@@ -8,6 +8,11 @@
 <div class="row" id="print-area">
     <div class="col-sm-12">
         <div class="box box-solid">
+            <div class="box-header">
+                <div class="box-tools" style="position: absolute;width: 100%;z-index: 999">
+                    <a id="print-report" href="#"><i class="fa fa-print"></i> Print page</a>
+                </div>
+            </div>
             <div class="box-body">
                 <div class="row">
                     <div class="col-sm-12">
@@ -46,4 +51,21 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="print-div" class="hidden">
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <h5 style="margin-bottom:0;font-weight: bold">
+                ARDITEZZA POULTRY INTEGRATION CORPORATION
+            </h5>
+        </div><br/>
+        <div class="col-sm-12 text-center">
+            <th colspan="10" class="text-center font-normal">
+                Ultima Residences Tower 3, Unit 1018, Osmena Blvrd., Cebu City<br>
+                Tel/Fax Nos.: (032) 253-4570 to 71 / 414-3312 / 512-3067
+            </th>
+        </div>
+    </div><br/>
+    <div id="table-dummy"></div>
 </div>
