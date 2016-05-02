@@ -9,11 +9,19 @@
                 font-size: 10px!important;
                 font-family: 'Tahoma';
                 height: 100%!important; 
+                margin-top:-20px;
             }
             .content{
-                width:46%;
+                width:45%;
             }
-            .customer-info{
+           
+
+
+        </style>
+    </head>
+    <body class="content">
+        <style type="text/css">
+         .customer-info{
                 padding: 0 0 0 10px;
             }
             .products table thead tr td{
@@ -29,7 +37,7 @@
             }
             .products table td{
                 border:0;
-                padding: 5px auto;
+                padding: 2px auto;
             }
             #footer {
                 bottom:0px;
@@ -45,24 +53,17 @@
             }
             #row-end,.labels{
                 font-weight:normal!important;
-            }
-
-
-        </style>
-    </head>
-    <body class="content">
-        <?php $maxDetailsCount = 20; ?>
+            }</style>
+        <?php $maxDetailsCount = 14; ?>
         <?php $detailsCursor = 0; ?>
         <?php $detailsCount = count($details['details']); ?>
         <?php $tempDetailsCount = $detailsCount; ?>
         <?php $pageTotal = 0; ?>
-        <?php if ($detailsCount <= $maxDetailsCount): ?>
-            <?php $pageTotal = 1; ?>
-        <?php elseif (($detailsCount > $maxDetailsCount) && ($detailsCount % $maxDetailsCount !== 0)): ?>
-            <?php $pageTotal = (int) ($detailsCount / $maxDetailsCount + 1); ?>
-        <?php elseif (($detailsCount > $maxDetailsCount) && ($detailsCount % $maxDetailsCount === 0)): ?>
-            <?php $pageTotal = (int) ($detailsCount / $maxDetailsCount); ?>
-        <?php endif; ?>
+
+        <?php
+            $pageTotal = (int)ceil($detailsCount / 14);
+        ?>
+
         <?php $pageCounter = 1; ?>
         <?php $margin = '' ?>
         <?php $total = 0;?>
@@ -81,8 +82,8 @@
                     </div>
                 </div> 
                 <div class="row customer" style='border:1px solid #000;border-radius: 5px;margin-top:5px'>
-                    <div class="col-xs-8">
-                        <table>
+                    <div class="col-xs-12">
+                        <table style="width:100%">
                             <tbody>
                                 <tr>
                                     <td class="labels">CUSTOMER</td>
@@ -99,9 +100,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-xs-4">
-                        
-                    </div>
                 </div>
                 <div class='row products'>
                     <div class='col-xs-12'>
@@ -112,19 +110,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $detailsToDisplay = 0; ?>
-                                <?php if ($tempDetailsCount > $maxDetailsCount): ?>
-                                    <?php $detailsToDisplay = $maxDetailsCount; ?>
-                                    <?php $tempDetailsCount = $tempDetailsCount - $maxDetailsCount; ?>
-                                <?php else: ?>
-                                    <?php $detailsToDisplay = $tempDetailsCount; ?>
-                                <?php endif; ?>
-                                <?php if ($pageCounter === $pageTotal && ($detailsCount % 20 <= 14 || $detailsCount % 20 <= 0 || $detailsCount - 20 <= 0)): ?>
-                                    <?php $ctr = 14 ?>
-                                <?php else: ?>
-                                    <?php $ctr = $maxDetailsCount ?>
-                                <?php endif; ?>
-                                <?php for ($innerCursor = 0; $innerCursor < $ctr; $innerCursor++): ?>
+                                <?php for ($innerCursor = 0; $innerCursor < $maxDetailsCount; $innerCursor++): ?>
                                     <?php if (isset($details['details'][$detailsCursor])): ?>
                                         <tr>
                                             <?php $pl_date =  date_create($details['details'][$detailsCursor]['date']); ?>
@@ -137,20 +123,21 @@
                                             <td><?= number_format($amount, 2) ?></td>
                                             <?php $total += $amount;?>
                                         </tr>
+                                        
                                         <?php $detailsCursor++; ?>
-                                        <?php if ($detailsCursor === $detailsCount): ?>
-                                            <tr><td colspan="6" class="text-center"><small>***NOTHING FOLLOWS***</small></td></tr>
-                                            <tr ><td colspan="4"></td><td style="border:1px solid black;border-right: 0;">TOTAL</td><td class="text-right" style="font-size:130%;border:1px solid black;border-left: 0"><?= number_format($total, 2)?></td></tr>
-                                        <?php endif; ?>
                                     <?php else: ?>
                                         <tr><td colspan="4">&nbsp;</td></tr>
                                     <?php endif; ?>
                                 <?php endfor; ?>
+                                <?php if ($pageCounter == $pageTotal): ?>
+                                    <tr><td colspan="6" class="text-center"><small>***NOTHING FOLLOWS***</small></td></tr>
+                                    <tr ><td colspan="4"></td><td style="border:1px solid black;border-right: 0;">TOTAL</td><td class="text-right" style="font-size:130%;border:1px solid black;border-left: 0"><?= number_format($total, 2)?></td></tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <?php if($pageCounter === $pageTotal):?>
+                <?php if ($pageCounter == $pageTotal): ?>
                     <div class='row'> 
                         <div class='col-xs-12'>
                             <table style="width:100%">
