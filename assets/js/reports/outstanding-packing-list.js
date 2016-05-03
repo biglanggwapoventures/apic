@@ -58,7 +58,7 @@ jQuery(function ($) {
             $('.chunked, .first-table').css({'font-size': '10px', 'border': 'none'});
             $('.first-table tbody tr:not(:first-child), .chunked tbody tr:not(:first-child)').removeClass('b').css('font-weight', 'normal');
             $('#print-div').removeClass('hidden').print().addClass('hidden');
-            //$('#table-dummy').empty();
+            $('#table-dummy').empty();
         });
     });
 
