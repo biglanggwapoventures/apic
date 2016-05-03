@@ -20,16 +20,27 @@ class Yielding extends PM_Controller_v2 {
 
     function index()
     {
+
+        $allowed_types = ['live-to-dressed', 'dressed-to-cutups'];
+
+        $type = $this->input->get('type');
+        if(!in_array($type, $allowed_types)){
+            show_404();
+        }
+
+        $this->add_javascript('numeral.js');
     	$this->load->model('purchases/m_purchase_receiving');
     	$this->load->model('inventory/m_product', 'product');
+
     	$rr_no = $this->input->get('rr');
     	$data = $this->m_purchase_receiving->get(TRUE, FALSE, ['receiving.id' => $rr_no]);
-    	$this->set_content('purchases/yielding', [
+    	$this->set_content("purchases/yielding-{$type}", [
     		'form_title' => "Process products from RR# {$rr_no}",
     		'form_action' => base_url("purchases/yielding/save/{$rr_no}"),
     		'product_list' => $this->product->get_list(),
     		'data' => $data[0],
-            // 'yielding' => $this->
+            'yielding' => $this->yield->get($rr_no),
+            'type' => $type
 		])->generate_page();
     }
 
@@ -45,12 +56,20 @@ class Yielding extends PM_Controller_v2 {
 
         $mode = $this->yield->exists($rr_no) ? 'u' : 'c';
 
+
+        $data = $this->_format_data($mode);
         if($mode === 'c'){
-            $data = $this->_format_data($mode);
+            
             // $this->generate_response($data)->to_JSON();
             // return;
             if($this->yield->create($data)){
                 $this->generate_response(FALSE)->to_JSON();
+                return;
+            }
+            $this->generate_response(TRUE, 'Cannot perform action due to an unknown error.')->to_JSON();
+        }else{
+            if($this->yield->update($rr_no, $data)){
+                $this->generate_response(FALSE, [], $data)->to_JSON();
                 return;
             }
             $this->generate_response(TRUE, 'Cannot perform action due to an unknown error.')->to_JSON();
@@ -88,12 +107,21 @@ class Yielding extends PM_Controller_v2 {
                 'quantity' => $quantity,
                 'pieces' => $source['pieces']
             ];
+
+            if(isset($source['id'])){
+                $temp['id'] = $source['id'];
+            }
+
             foreach($source['to'] AS $result){
-                $results[] = [
+                $to = [
                     'quantity' => $result['quantity'],
                     'pieces' => $result['pieces'],
                     'fk_inventory_product_id' => $result['product_id']
                 ];
+                if(isset($result['id'])){
+                    $to['id'] = $result['id'];
+                }  
+                $results[] = $to;
             }
 
             $temp['result'] = $results;

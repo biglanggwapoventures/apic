@@ -69,7 +69,7 @@
         <?php $total = 0;?>
         <?php while ($pageCounter <= $pageTotal): ?>
             <?php if ($pageCounter > 1): ?>
-                <?php $margin = "style='margin-top:5px;'" ?>
+                <?php $margin = "style='margin-top:20px;'" ?>
             <?php endif; ?>
             <div style="height:5in;">
                 <div class="row header" <?= $margin ?>> 
@@ -159,6 +159,8 @@
                     </div>
                 <?php endif;?>
             </div>
+            
+            
             <?php $pageCounter++; ?>
         <?php endwhile; ?>
     </body>

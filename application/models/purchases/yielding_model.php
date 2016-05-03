@@ -7,12 +7,29 @@ class Yielding_model extends CI_Model
 
 	function get($rr_id)
 	{
-		$data['yielding'] = $this->db->get_where($this->table, ['fk_purchase_receiving_id' => $rr_id])->row_array();
+		$data['yielding'] = $this->db->get_where($this->table, ['fk_purchase_receiving_id' => $rr_id])
+			->row_array();
 
 		if($data['yielding']){
 
+			$sources = $this->db->get_where('yieldings_from', ['fk_yielding_id' => $data['yielding']['id']])
+				->result_array();
+			$results = $this->db->where_in('fk_yieldings_from_id', array_column($sources, 'id'))
+				->get('yieldings_to')
+				->result_array();
+
+			$data['source'] = array_column($sources, NULL, 'id');
+
+			foreach($results AS $row){
+				if(isset($data['source'][$row['fk_yieldings_from_id']])){
+					$data['source'][$row['fk_yieldings_from_id']]['result'][] = $row; 
+				}
+			}
+
+			return $data;	 
 		}
 
+		return NULL;
 
 	}
 
@@ -60,6 +77,9 @@ class Yielding_model extends CI_Model
 
 		$this->db->update($this->table, $data['yielding'], ['fk_purchase_receiving_id' => $rr_id]);
 
+		// $this->db->where_not_in('yieldings_from', array_column($data['source'], 'id'))
+		// 	->where('')
+
 		foreach($data['source'] AS &$row){
 
 			$results  = $row['result'];
@@ -82,7 +102,7 @@ class Yielding_model extends CI_Model
 
 				$this->db->update('yieldings_from', $row, ['id' => $id]);
 
-				$this->sync('yieldings_to', $results, 'id', 'fk_yielding_from_id', $id);
+				$this->sync('yieldings_to', $results, 'id', 'fk_yieldings_from_id', $id);
 
 			}
 		}

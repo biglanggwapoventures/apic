@@ -98,3 +98,19 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="choose-yield-type" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel1">Process received goods</h4>
+      </div>
+      <div class="modal-body">
+        <a class="btn btn-default btn-block btn-flat" data-href="<?= base_url('purchases/yielding?type=live-to-dressed')?>">Live to dressed</a>
+        <a class="btn btn-default btn-block btn-flat" data-href="<?= base_url('purchases/yielding?type=dressed-to-cutups')?>">Dressed to cut-ups</a>
+      </div>
+    </div>
+  </div>
+</div>

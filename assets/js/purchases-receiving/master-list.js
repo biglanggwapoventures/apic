@@ -13,7 +13,7 @@
         },
 
         yieldTemplate = function(id){
-            return '<a class="btn btn-default btn-flat btn-xs yield" href="'+yieldUrl+id+'">Yield</a> ';
+            return '<a class="btn btn-default btn-flat btn-xs" data-pk="'+id+'" data-toggle="modal" data-target="#choose-yield-type">Process</a> ';
         },
 
         btnViewMore = '#btn-view-more'
@@ -52,7 +52,7 @@
                 td[4] = v.dr_si;
                 td[5] = n(v.amount).format('0,0.00');
                 td[6] = v.status === 'Approved' ? '<span class="label label-success">Approved</span>': '<span class="label label-warning">Pending</span>';
-                td[7] = printTemplate(v.id) + yieldTemplate(v.id) +(isAdmin ? deleteTemplate : '');
+                td[7] = (v.status === 'Approved' ? yieldTemplate(v.id) + printTemplate(v.id)  : '') +(isAdmin ? deleteTemplate : '');
                 tr.push('<tr data-pk="'+v.id+'"><td>'+td.join('</td><td>')+'</td></tr>');
             });
             var content = tr.join('');
@@ -123,6 +123,13 @@
         });
         $('.datepicker').datepicker({dateFormat:'mm/dd/yy'})
         $('table.promix').stickyTableHeaders({fixedOffset: $('.content-header')});
+
+        $('#choose-yield-type').on('show.bs.modal', function(e){
+            var rrId = $(e.relatedTarget).data('pk')
+            $(this).find('a').attr('href', function(){
+                return $(this).data('href')+'&rr='+rrId;
+            })
+        });
     });
 
 })(jQuery, numeral);
