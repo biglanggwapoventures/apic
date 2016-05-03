@@ -72,4 +72,4 @@
 <?php else: ?>
     <tr><td colspan="15" class="text-center">Selected customer has no outstanding balance</td></tr>
 <?php endif; ?>
-<tr><td colspan="15" class="no-border">Time elapsed: <?= $this->benchmark->elapsed_time();?>s</tr>
+<tr id="remove-me"><td colspan="15" class="no-border">Time elapsed: <?= $this->benchmark->elapsed_time();?>s</tr>

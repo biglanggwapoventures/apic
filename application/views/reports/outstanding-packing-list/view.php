@@ -3,6 +3,7 @@
       a[href]:after {
         content: none !important;
       }
+      table {page-break-after: always;}
     }
 </style>
 <div class="row" id="print-area">
