@@ -5,7 +5,7 @@
             <div class="box-header bg-light-blue-gradient" style="color:#fff">
                 <h3 class="box-title"><?= $title ?></h3>
             </div><!-- /.box-header -->
-
+            
             <form data-action="<?= $action ?>">
                 <div class="box-body">
                     <div class="callout callout-danger hidden">

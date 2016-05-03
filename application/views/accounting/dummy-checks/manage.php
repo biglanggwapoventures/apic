@@ -30,11 +30,11 @@
                     </div>
                     <hr/>
                     <table class="table">
-                        <thead><tr><!-- <th style="width:5%"></th> --><!-- <th>Bank Account</th> --><th>Check Number</th><th>Check Date</th><th>Amount</th></tr></thead>
+                        <thead><tr><th style="width:5%"></th><th>Bank Account</th><th>Check Number</th><th>Check Date</th><th>Amount</th></tr></thead>
                         <tbody>
                             <tr>
-                                <?php //if(isset($dc['bank_account'])):?>
-                                <!-- <td>
+                                <?php if(isset($dc['bank_account'])):?>
+                                <td>
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-primary dropdown-toggle btn-sm btn-flat" data-toggle="dropdown" aria-expanded="false"> <i class="fa fa-print"></i></button>
                                         <ul class="dropdown-menu" role="menu">
@@ -45,15 +45,14 @@
                                             <li><a class="print-check">Print cross check (Metrobank)</a></li>
                                         </ul>
                                     </div>
-                                </td> -->
-                                <?php //else:?>
-                                <!-- <td></td> -->
-                                <?php //endif;?>
-                                <!-- <td> --><?php /* echo arr_group_dropdown('bank_account', $accounts, 'id', 'bank_name', isset($dc['bank_account']) ? $dc['bank_account'] : FALSE, FALSE, 'class="form-control" required="required"')*/?><!-- </td> -->
+                                </td>
+                                <?php else:?>
+                                <td></td>
+                                <?php endif;?>
+                                <td><?php echo arr_group_dropdown('bank_account', $accounts, 'id', 'bank_name', isset($dc['bank_account']) ? $dc['bank_account'] : FALSE, FALSE, 'class="form-control" required="required"')?></td>
                                 <td><input value="<?= isset($dc['check_number']) ? $dc['check_number'] : ''?>" type="text" class="form-control" name="check_number" required="required"/></td>
                                 <td><input value="<?= isset($dc['check_date']) ? date('m/d/Y', strtotime($dc['check_date'])) : '' ?>"  type="text" class="form-control datepicker" name="check_date" required="required"/></td>
-                                <td><input value="<?= isset($dc['check_amount']) ? number_format($dc['check_amount'],2) : ''?>" type="text" class="form-control price" name="check_amount" required="required"/></td>
-                                
+                                <td><input value="<?= isset($dc['check_amount']) ? number_format($dc['check_amount'],2) : ''?>" type="text" class="form-control price" name="check_amount" required="required"/></td>   
                             </tr>
                         </tbody>
                     </table>

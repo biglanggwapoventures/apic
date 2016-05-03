@@ -157,7 +157,7 @@ class Dummy_checks extends PM_Controller_v2
     {
         $this->form_validation->set_rules('date', 'Date', 'required|callback_validate_date');
         $this->form_validation->set_rules('payee', 'Payee', 'required');
-        // $this->form_validation->set_rules('bank_account', 'Bank account', 'required|callback_validate_bank_account');
+        $this->form_validation->set_rules('bank_account', 'Bank account', 'required|callback_validate_bank_account');
         $this->form_validation->set_rules('check_number', 'Check number', 'required');
         $this->form_validation->set_rules('check_date', 'Check date', 'required|callback_validate_date');
         $this->form_validation->set_rules('check_amount', 'Check amount', 'required|callback_validate_check_amount');
@@ -199,7 +199,7 @@ class Dummy_checks extends PM_Controller_v2
     public function format($mode = 'create')
     {
         $input = $this->input->post();
-        $data = elements(['check_number', 'remarks', 'payee'], $this->input->post());
+        $data = elements(['check_number', 'remarks', 'payee', 'bank_account'], $this->input->post());
         // if (is_admin()) {
             $data['approved_by'] = user_id();
         // }
