@@ -8,6 +8,7 @@
         deleteTemplate = '<a class="btn btn-danger btn-flat btn-xs delete">Delete</a>',
 
         printTemplate = '<a class="btn btn-primary btn-flat btn-xs print">Print</a>',
+        printTemplateDisabled = '<a class="btn btn-primary btn-flat btn-xs print disabled">Print</a>';
 
         btnViewMore = '#btn-view-more',
 
@@ -55,7 +56,7 @@
                 }
                 td[6] = n(v.amount).format('0,0.00');
                 td[7] = v['status'] === 'Approved' ? '<span class="label label-success">Approved</span>': '<span class="label label-warning">Pending</span>';
-                td[8] = printTemplate + (isAdmin ? deleteTemplate : '');
+                td[8] = (v['status'] === 'Approved' ? printTemplate : printTemplateDisabled) + (isAdmin ? deleteTemplate : '');
                 tr.push('<tr data-pk="'+v.id+'" data-po="'+v.po_id+'" data-type="'+v.disbursement_type+'"><td>'+td.join('</td><td>')+'</td></tr>');
             });
             var content = tr.join('');

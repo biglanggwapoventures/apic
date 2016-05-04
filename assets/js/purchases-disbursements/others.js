@@ -7,6 +7,7 @@
         tbody = $('table#master-list tbody'),
         deleteTemplate = '<a class="btn btn-danger btn-flat btn-xs delete">Delete</a>',
 
+        printTemplateDisabled = '<a class="btn btn-primary btn-flat btn-xs disabled" data-toggle="modal" data-target="#print">Print</a> ';
         printTemplate = '<a class="btn btn-primary btn-flat btn-xs" data-toggle="modal" data-target="#print">Print</a> ';
 
         btnViewMore = '#btn-view-more'
@@ -46,7 +47,7 @@
                 td[4] = v.check_number;
                 td[5] = n(v.total_amount).format('0,0.00');
                 td[6] = v['status'] === 'Approved' ? '<span class="label label-success">Approved</span>': '<span class="label label-warning">Pending</span>';
-                td[7] = printTemplate + (isAdmin ? deleteTemplate : '');
+                td[7] = (v['status'] === 'Approved' ? printTemplate : printTemplateDisabled) + (isAdmin ? deleteTemplate : '');
                 tr.push('<tr data-pk="'+v.id+'" data-po="'+v.po_id+'" data-type="'+v.disbursement_type+'"><td>'+td.join('</td><td>')+'</td></tr>');
             });
             var content = tr.join('');
