@@ -51,25 +51,31 @@
             </div> <!-- end .row -->
             <br/><br/><br/><br/><br/><br/><br/><br/><br/>
             <div class="row">
-                <div class="col-xs-offset-1 col-xs-5" style="padding-left:30px; padding-top:3px;">
+                <div class="col-xs-offset-1 col-xs-9" style="padding-left:30px; padding-top:3px;">
                     <table>
                         <tr><td><?=$data['id']?></td></tr>
                         <tr><td>&nbsp;</td></tr>
                         <tr><td>&nbsp;</td></tr>
                         <tr><td><?=number_format($data['check_amount'], 2)?></td></tr>
-                        <tr><td><?=$data['remarks']?:'&nbsp;'?></td></tr>
                     </table>
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-2" style="margin-left:-231px;">
                     <table>
                         <tr><td>&nbsp;</td></tr>
                         <tr><td><?=$data['date']?></td></tr>
                     </table>
                 </div>
             </div> <!-- end .row -->
+            <div class="row">
+                <div class="col-xs-offset-1 col-xs-11" style="padding-left:30px; z-index:2000; position: absolute;">
+                    <table>
+                        <tr><td><?=$data['remarks']?:'&nbsp;'?></td></tr>
+                    </table>
+                </div>
+            </div>
         </div> <!-- end .container -->
         <br/><br/><br/>
-        <div class="container-fluid" style="height: 303px;">
+        <div class="container-fluid" style="height: 303px; margin-top: 17px;">
             <div class="row" style="padding-top:-3px;">
                 <table style="width:100%" id="reference">
                     <tr>
