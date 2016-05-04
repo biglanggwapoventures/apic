@@ -97,10 +97,6 @@ class Yielding extends PM_Controller_v2 {
 
             $quantity = $source['quantity'];
 
-            if(!$quantity){
-                continue;
-            }
-
             $results = [];
             $temp = [
                 'fk_purchase_receiving_detail_id' => $source['rr_detail_id'],
@@ -159,7 +155,7 @@ class Yielding extends PM_Controller_v2 {
                 continue;
             }
 
-            if(!isset($item['quantity']) || !is_numeric($item['quantity'])){
+            if(!isset($item['quantity']) || !is_numeric($item['quantity']) || !$item['quantity']){
                 $this->validation_errors[] = "Provide quantity to use for further processing of {$product}.";
             }
 
@@ -181,7 +177,7 @@ class Yielding extends PM_Controller_v2 {
                 if(!isset($produce['product_id']) || !is_numeric($produce['product_id'])){
                     $this->validation_errors[] = "Provide product for line # {$line} in {$product}";
                 }
-                if(!isset($produce['quantity']) || !is_numeric($produce['quantity'])){
+                if(!isset($produce['quantity']) || !is_numeric($produce['quantity']) || !$produce['quantity']){
                     $this->validation_errors[] = "Provide product quantity for line # {$line} in {$product}";
                 }
                 if(!isset($produce['pieces']) || ($produce['pieces'] && !is_numeric($produce['pieces']))){
