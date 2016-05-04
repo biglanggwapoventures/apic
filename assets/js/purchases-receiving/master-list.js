@@ -16,6 +16,11 @@
             return '<a class="btn btn-default btn-flat btn-xs" data-pk="'+id+'" data-toggle="modal" data-target="#choose-yield-type">Process</a> ';
         },
 
+        goToYield = function(id, yieldType){
+            var type = yieldType === 'ltd' ? 'live-to-dressed' : 'dressed-to-cutups';
+            return '<a class="btn btn-default btn-flat btn-xs" href="'+yieldUrl+id+'&type='+type+'">Process</a> ';
+        },
+
         btnViewMore = '#btn-view-more'
 
         page = 1,
@@ -52,8 +57,9 @@
                 td[4] = v.dr_si;
                 td[5] = n(v.amount).format('0,0.00');
                 td[6] = v.status === 'Approved' ? '<span class="label label-success">Approved</span>': '<span class="label label-warning">Pending</span>';
-                td[7] = (v.status === 'Approved' ? yieldTemplate(v.id) + printTemplate(v.id)  : '') +(isAdmin ? deleteTemplate : '');
+                td[7] = (v.status === 'Approved' ? (!v.yielding_type ? yieldTemplate(v.id) : goToYield(v.id, v.yielding_type)) + printTemplate(v.id)  : '') +(isAdmin ? deleteTemplate : '');
                 tr.push('<tr data-pk="'+v.id+'"><td>'+td.join('</td><td>')+'</td></tr>');
+                console.log(v.id+' '+v.yielding_type)
             });
             var content = tr.join('');
             if(overwrite){
