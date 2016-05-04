@@ -32,7 +32,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td colspan="5" class="text-center">Loading data...</td></tr>
+                                <tr><td colspan="6" class="text-center">Loading data...</td></tr>
                             </tbody>
                         </table>
                     </div>

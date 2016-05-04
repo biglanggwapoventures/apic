@@ -28,7 +28,7 @@
                 if(response.length){
                     table.find('tbody').html(tr.join(''));
                 }else{
-                    table.find('tbody').html('<tr><td colspan="5" class="text-center">No more data to display</td></tr>');
+                    table.find('tbody').html('<tr><td colspan="6" class="text-center">No more data to display</td></tr>');
                 }
                 $('.print').printPage();
             });
