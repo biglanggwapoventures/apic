@@ -88,7 +88,7 @@
                         <td width="9%"></td>
                     </tr>
                     <tr>
-                        <td>Petty Cash</td>
+                        <td><?= (isset($vreference)) ? $vreference : '&nbsp;' ?></td>
                         <td>-</td>
                         <td>-</td>
                         <td class='text-center'><?=number_format($amount, 2)?></td>

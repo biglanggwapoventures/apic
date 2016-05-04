@@ -184,6 +184,7 @@ class Other_Disbursements extends PM_Controller_v2 {
         $this->form_validation->set_rules('check_date', '', 'callback__validate_check_date');
         $this->form_validation->set_rules('check_type', 'Check Type', 'callback__validate_check_type');
         $this->form_validation->set_rules('status', 'Status', 'integer|callback__validate_status');
+        $this->form_validation->set_rules('vreference', 'Voucher Reference', 'required');
         if ($this->form_validation->run()) {
             return $this->response(FALSE, '', $this->_format_data($method));
         }
@@ -192,7 +193,7 @@ class Other_Disbursements extends PM_Controller_v2 {
 
     public function _format_data($method) {
         $input = $this->input->post();
-        $data['general'] = elements(['remarks', 'payee', 'status'], $input, NULL);
+        $data['general'] = elements(['remarks', 'payee', 'status', 'vreference'], $input, NULL);
         if ($method === 'create') {
             $data['general']['created_by'] = $this->session->userdata('user_id');
         }

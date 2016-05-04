@@ -42,6 +42,12 @@
                                 <input type="text" name="payee" value="<?= isset($data['payee']) ? $data['payee'] : '' ?>" class="form-control"/>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Voucher Reference</label>
+                                <input type="text" name="vreference" value="<?= isset($data['vreference']) ? $data['vreference'] : '' ?>" class="form-control"/>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Remarks</label>
