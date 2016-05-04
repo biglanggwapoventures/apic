@@ -9,7 +9,7 @@
     tbody > tr > td:nth-child(4),td:nth-child(5),td:nth-child(7){
         text-align: right;
     }
-    tbody > tr > td:nth-child(2){
+    tbody > tr > td:nth-child(2),td:nth-child(3),td:nth-child(6){
         text-align: center;
     }
     thead > tr:nth-child(7) > th{
@@ -145,10 +145,7 @@
                                                 $amount_balance -= $row['amount'];
                                             }else{
                                                 $pdc = 'style="background:#fcf8e3"';
-                                                $clear_date = $now->modify("{$row['pdc']} days")->format('M d, Y');
-                                                $note = $clear_date;
-                                                $clear_date = $now->modify("{$row['pdc']} day")->format('M d, Y');
-                                                $note = $clear_date;
+                                                $note = date_create($row['deposit_date'])->format('M d, Y');
                                             }
                                             $url = "{$sr_url}/{$row['id']}";
                                         }else{
@@ -177,7 +174,7 @@
                                     <td>
                                         <?= $credit_amount ?> 
                                     </td >
-                                    <td style="text-align: right">
+                                    <td>
                                         <?= $note ?>
                                     </td>
                                     <td ><?= number_format($amount_balance, 2)?></td>
