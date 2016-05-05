@@ -31,13 +31,17 @@ class Yielding extends PM_Controller_v2 {
         $this->add_javascript('numeral.js');
     	$this->load->model('purchases/m_purchase_receiving');
     	$this->load->model('inventory/m_product', 'product');
+        
+        $used_categories = $type === $allowed_types[0] ? [M_Product::CATEGORY_FRESH_CHILLED_DRESSED_CHICKEN, M_Product::CATEGORY_CHICKEN_BYPRODUCTS] : [M_Product::CATEGORY_CHICKEN_CUTUPS];
+        $products = $this->product->category_in($used_categories)->get_list();
 
     	$rr_no = $this->input->get('rr');
     	$data = $this->m_purchase_receiving->get(TRUE, FALSE, ['receiving.id' => $rr_no]);
+
     	$this->set_content("purchases/yielding-{$type}", [
     		'form_title' => "Process products from RR# {$rr_no}",
     		'form_action' => base_url("purchases/yielding/save/{$rr_no}"),
-    		'product_list' => $this->product->get_list(),
+    		'product_list' => $products,
     		'data' => $data[0],
             'yielding' => $this->yield->get($rr_no),
             'type' => $type

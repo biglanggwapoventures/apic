@@ -3,6 +3,10 @@
 class M_Product extends CI_Model {
 
     protected $table = 'inventory_product';
+    
+    const CATEGORY_FRESH_CHILLED_DRESSED_CHICKEN = 7;
+    const CATEGORY_CHICKEN_BYPRODUCTS = 2;
+    const CATEGORY_CHICKEN_CUTUPS = 5;
 
     const TABLE_NAME_GENERAL = 'inventory_product';
 
@@ -141,10 +145,19 @@ class M_Product extends CI_Model {
     /* =====================
       NEW FUNCTIONS 01-14-15
       ===================== */
+      
+   public function category_in($category_ids)
+   {
+       $this->db->where_in('fk_category_id', $category_ids);
+       return $this;
+   }
 
-    public function get_list() {
-        $this->db->select('product.id, product.code, product.description, category.description AS category_description');
+    public function get_list($params = FALSE) {
+        $this->db->select('product.id, product.code, product.description, category.description AS category_description, fk_category_id');
         $this->db->from(self::TABLE_NAME_GENERAL . ' as product');
+        if($params !== FALSE){
+            $this->db->where($params);
+        }
         $this->db->join('inventory_category AS category', 'category.id = product.fk_category_id');
         return $this->db->order_by('description', 'ASC')->get()->result_array();
     }

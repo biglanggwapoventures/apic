@@ -245,6 +245,9 @@
                 var tableRow = [];
                 $(json.data.details).each(function (i) {
                     var detail = json.data.details[i];
+                    if(detail.quantity_received >= detail.quantity){
+                        return;
+                    }
                     var tableCell = [];
                     tableCell[0] = detail.description + '<input type="hidden" value="' + detail.id + '" name="details[fk_purchase_order_detail_id][]">';
                     tableCell[1] = '<div class="t">'+detail.unit_description+'</div>pcs';
@@ -252,7 +255,7 @@
                     tableCell[3] = '<div class="t">'+detail.quantity_received+'</div>0.00';
                     tableCell[4] = '<div class="t"><input value="0" type="number" class="form-control this-receive do-calculation" name="details[this_receive][]" step="0.01"/></div><input value="0" type="number" class="form-control" name="details[pieces_received][]" step="0.01"/>';
                     tableCell[5] = '<span class="unit-price">' + detail.unit_price + '</span>';
-                    tableCell[6] = '<input name="details[discount][]" type="text" class="form-control discount has-amount do-calculation"/>';
+                    tableCell[6] = '<input name="details[discount][]" type="text" value="0.00" class="form-control discount has-amount do-calculation"/>';
                     tableCell[7] = '<span class="gross-amount">0.00</span>';
                     tableCell[8] = '<span class="net-amount">0.00</span>';
                     tableRow.push("<tr><td>" + tableCell.join("</td><td>") + "</td></tr>");

@@ -409,11 +409,12 @@ class M_Purchase_Receiving extends CI_Model {
         $limit = 100;
         $offset = ($page <= 1 ? 0 : ($page-1)*$limit);
 
-        $this->db->select('rr.id, rr.pr_number AS dr_si, rr.fk_purchase_order_id AS po_id, rr.fk_maintainable_supplier_id AS supplier_id, DATE_FORMAT(STR_TO_DATE(`date`, "%Y-%m-%d"), "%d-%b-%Y") AS `date`, rr.is_locked', FALSE);
+        $this->db->select('rr.id, rr.pr_number AS dr_si, rr.fk_purchase_order_id AS po_id, rr.fk_maintainable_supplier_id AS supplier_id, DATE_FORMAT(STR_TO_DATE(`date`, "%Y-%m-%d"), "%d-%b-%Y") AS `date`, rr.is_locked, yieldings.type AS yielding_type', FALSE);
         $this->db->select('CASE WHEN status = '.M_Status::STATUS_RECEIVED.' THEN "Approved" ELSE "Pending" END AS `status`', FALSE);
         $this->db->select('SUM((rrd.this_receive * pod.unit_price) - rrd.discount) AS amount', FALSE);
         $this->db->from('purchase_receiving AS rr')->join('purchase_receiving_detail AS rrd', 'rrd.fk_purchase_receiving_id = rr.id');
         $this->db->join('purchase_order_detail AS pod', 'pod.id = rrd.fk_purchase_order_detail_id');
+        $this->db->join('yieldings', 'yieldings.fk_purchase_receiving_id = rr.id', 'left');
 
         if($params !== FALSE)
         {

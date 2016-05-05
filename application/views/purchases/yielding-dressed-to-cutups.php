@@ -2,6 +2,9 @@
 	div.t{
         border-bottom:1px solid black;
     }
+    table input{
+    	text-align: right;
+    }
 </style>
 <div class="box box-solid">
     <div class="box-header bg-light-blue-gradient" style="color:#fff">
@@ -25,120 +28,121 @@
     			}
     		?>
 			<?php foreach($data['details'] AS $row):?>
-				<table class="table table-bordered table-condensed" style="margin-top:10px;border-bottom: 0;border-left: 0;border-right: 0">
-    				<thead>
-    					<tr class="info">
-    						<th>ITEM</th>
-    						<th>KGS</th>
-    						<th>PIECES</th>
-    						<th>UNIT PRICE</th>
-    						<th colspan="2">AMOUNT</th>
-    					</tr>
-    					<?php $unit_price = $row['unit_price'] - ($row['discount'] / $row['this_receive'])?>
-    					<tr>
-    						<th>
-    							<?php $checked = isset($sources[$row['id']]) ? 'checked="checked"' : FALSE?>
-    							<?php if($checked):?>
-	    							<?= form_hidden("yield[{$row['id']}][id]", $sources[$row['id']]['id'])?>
-	    						<?php endif;?>
-    							<input type="hidden" name="yield[<?= $row['id']?>][rr_detail_id]" value="<?= $row['id']?>">
-    							<div class="checkbox">
-    								<label>
-    									<input type="checkbox" class="toggle-include" <?= $checked?> /> 
-    									<?= $row['description']?>
-									</label>
-								</div>
-    						</th>
-    						
-    						<th>
-    							<input type="number" step="0.01" class="form-control yield-quantity" name="yield[<?= $row['id']?>][quantity]" value="<?= $checked ? $sources[$row['id']]['quantity'] : ''?>" />
-							</th>
-							<th>
-    							<input type="number" step="0.01" class="form-control yield-pieces" name="yield[<?= $row['id']?>][pieces]" value="<?= $checked ? $sources[$row['id']]['pieces'] : ''?>"  />
-							</th>
-							<th class="text-right yield-unit-price" data-unit-price="<?= $unit_price?>"><?= number_format($unit_price, 2)?></th>
-							<th class="yield-amount text-right" colspan="2">
-								<?= $checked ? number_format($unit_price * $sources[$row['id']]['quantity'], 2) : ''?>
-							</th>
-    					</tr>
-    					<tr  class="success">
-    						<th colspan="2" style="background: white;border:0"></th>
-    						<th>ITEM</th>
-    						<th>KGS</th>
-    						<th>PIECES</th>
-    						<th></th>
-    					</tr>
-					</thead>
-
-					<?php $processed = isset($sources[$row['id']]['result']) ? $sources[$row['id']]['result'] : [[]] ?>
-	    			<tbody data-length="<?= count($processed)?>">
-	    				<?php $total = ['kgs' => 0, 'pieces' => 0]; ?>
-	    				<?php foreach( $processed AS $index => $item ):?>
+				<?php if($row['this_receive'] > 0):?>
+					<table class="table table-bordered table-condensed" style="margin-top:10px;border-bottom: 0;border-left: 0;border-right: 0">
+	    				<thead>
+	    					<tr class="info">
+	    						<th>ITEM</th>
+	    						<th>KGS</th>
+	    						<th>PIECES</th>
+	    						<th>UNIT PRICE</th>
+	    						<th colspan="2">AMOUNT</th>
+	    					</tr>
+	    					<?php $unit_price = $row['unit_price'] - ($row['discount'] / $row['this_receive'])?>
 	    					<tr>
-	    						<td colspan="2" style="border:0"></td>
-		    					<td>
-		    						<?php if(isset($item['id'])):?>
-		    							<?= form_hidden("yield[{$row['id']}][to][{$index}][id]", $item['id'])?>
+	    						<th>
+	    							<?php $checked = isset($sources[$row['id']]) ? 'checked="checked"' : FALSE?>
+	    							<?php if($checked):?>
+		    							<?= form_hidden("yield[{$row['id']}][id]", $sources[$row['id']]['id'])?>
 		    						<?php endif;?>
-		    						<?= arr_group_dropdown("yield[{$row['id']}][to][{$index}][product_id]", $product_list, 'id', 'description', isset($item['fk_inventory_product_id']) ? $item['fk_inventory_product_id'] : FALSE, 'category_description', "class=\"form-control\" data-name=\"yield[{$row['id']}][to][idx][product_id]\"")?>
-	    						</td>
-	    						<td>
-	    							<?php $kgs = put_value($item, 'quantity', ''); ?>
-	    							<input type="number" class="form-control produce-quantity" step="0.01" name="<?= "yield[{$row['id']}][to][{$index}][quantity]" ?>" value="<?= $kgs ?>" data-name="yield[<?= $row['id']?>][to][idx][quantity]"/>
-								</td>
-	    						<td>
-	    							<?php $pieces = put_value($item, 'pieces', ''); ?>
-	    							<input type="number" step="0.01" class="form-control produce-pieces" name="<?= "yield[{$row['id']}][to][{$index}][pieces]"?>" value="<?= $pieces ?>" data-name="yield[<?= $row['id']?>][to][idx][pieces]"/>
-								</td>
-								<td>
-									<a class="btn btn-danger btn-sm btn-flat remove-line">
-										<i class="fa fa-times"></i>
+	    							<input type="hidden" name="yield[<?= $row['id']?>][rr_detail_id]" value="<?= $row['id']?>">
+	    							<div class="checkbox">
+	    								<label>
+	    									<input type="checkbox" class="toggle-include" <?= $checked?> /> 
+	    									<?= $row['description']?>
+										</label>
+									</div>
+	    						</th>
+	    						
+	    						<th>
+	    							<input type="text" step="0.01" class="form-control yield-quantity" name="yield[<?= $row['id']?>][quantity]" value="<?= $checked ? $sources[$row['id']]['quantity'] : ''?>" />
+								</th>
+								<th>
+	    							<input type="text" step="0.01" class="form-control yield-pieces" name="yield[<?= $row['id']?>][pieces]" value="<?= $checked ? $sources[$row['id']]['pieces'] : ''?>"  />
+								</th>
+								<th class="text-right yield-unit-price" data-unit-price="<?= $unit_price?>"><?= number_format($unit_price, 2)?></th>
+								<th class="yield-amount text-right" colspan="2">
+									<?= $checked ? number_format($unit_price * $sources[$row['id']]['quantity'], 2) : ''?>
+								</th>
+	    					</tr>
+	    					<tr  class="success">
+	    						<th colspan="2" style="background: white;border:0"></th>
+	    						<th>ITEM</th>
+	    						<th>KGS</th>
+	    						<th>PIECES</th>
+	    						<th></th>
+	    					</tr>
+						</thead>
+
+						<?php $processed = isset($sources[$row['id']]['result']) ? $sources[$row['id']]['result'] : [[]] ?>
+		    			<tbody data-length="<?= count($processed)?>">
+		    				<?php $total = ['kgs' => 0, 'pieces' => 0]; ?>
+		    				<?php foreach( $processed AS $index => $item ):?>
+		    					<tr>
+		    						<td colspan="2" style="border:0"></td>
+			    					<td>
+			    						<?php if(isset($item['id'])):?>
+			    							<?= form_hidden("yield[{$row['id']}][to][{$index}][id]", $item['id'])?>
+			    						<?php endif;?>
+			    						<?= arr_group_dropdown("yield[{$row['id']}][to][{$index}][product_id]", $product_list, 'id', 'description', isset($item['fk_inventory_product_id']) ? $item['fk_inventory_product_id'] : FALSE, 'category_description', "class=\"form-control\" data-name=\"yield[{$row['id']}][to][idx][product_id]\"")?>
+		    						</td>
+		    						<td>
+		    							<?php $kgs = (float)put_value($item, 'quantity', ''); ?>
+		    							<input type="text" class="form-control produce-quantity" step="0.01" name="<?= "yield[{$row['id']}][to][{$index}][quantity]" ?>" value="<?= $kgs ?: '' ?>" data-name="yield[<?= $row['id']?>][to][idx][quantity]"/>
+									</td>
+		    						<td>
+		    							<?php $pieces = (float)put_value($item, 'pieces', ''); ?>
+		    							<input type="text" step="0.01" class="form-control produce-pieces" name="<?= "yield[{$row['id']}][to][{$index}][pieces]"?>" value="<?= $pieces ?: '' ?>" data-name="yield[<?= $row['id']?>][to][idx][pieces]"/>
+									</td>
+									<td>
+										<a class="btn btn-danger btn-sm btn-flat remove-line">
+											<i class="fa fa-times"></i>
+										</a>
+									</td>
+									<?php 
+										$total['kgs'] += $kgs;
+										$total['pieces'] += $pieces;
+									?>
+								</tr>
+							<?php endforeach;?>
+		    			</tbody>
+		    			<tfoot>
+		    				
+							<tr>
+								<td colspan="2" style="border:0">
+								<td style="border: 0"  class="text-center" style="vertical-align:top">
+									<a class="add-line btn btn-default btn-sm btn-flat">
+										<i class="fa fa-plus "></i> Add new line
 									</a>
 								</td>
-								<?php 
-									$total['kgs'] += $kgs;
-									$total['pieces'] += $pieces;
-								?>
+								<td class="text-center active" colspan="2" style="vertical-align:middle;">
+									<b>SUMMARY</b>
+								</td>
+								<td class="text-right" style="border: 0"></td>
 							</tr>
-						<?php endforeach;?>
-	    			</tbody>
-	    			<tfoot>
-	    				<?php 
-	    					if($checked){
-	    						$weight_loss = (100 -  (($total['kgs'] / $sources[$row['id']]['quantity']) * 100));
-	    					}
-    					?>
-						<tr>
-							<td colspan="2" style="border:0">
-							<td style="border: 0"  class="text-center" style="vertical-align:top">
-								<a class="add-line btn btn-default btn-sm btn-flat">
-									<i class="fa fa-plus "></i> Add new line
-								</a>
-							</td>
-							<td class="text-center active" colspan="2" style="vertical-align:middle;">
-								<b>TOTAL</b>
-							</td>
-							<td class="text-right" style="border: 0"></td>
-						</tr>
-						<tr>
-							<td colspan="3" style="border:0;"></td>
-							<td class="text-right active produce-total-quantity" style="vertical-align:middle;">
-								<?= number_format($total['kgs'], 2)?> kgs
-							</td>
-							<td class="text-right active produce-total-pieces" style="vertical-align: middle">
-								<?= number_format($total['pieces'], 2)?> pieces
-							</td>
-							<td class="text-right" style="border: 0"></td>
-						</tr>
-						<tr>
-							<td colspan="3" style="border:0;"></td>
-							<td colspan="2" class="warning text-center weight-loss">
-								<?= isset($weight_loss) ? 'Weight Loss: <b>'.number_format($weight_loss, 2).'%</b>' : ''; ?>
-							</td>
-							<td class="text-right" style="border: 0"></td>
-						</tr>
-					</tfoot>
-    			</table>
+							<tr>
+								<td colspan="3" style="border:0;"></td>
+								<td style="vertical-align:middle;">
+									<b>RECOVERED WEIGHT</b>
+								</td>
+								<td class="text-right produce-total-quantity" style="vertical-align: middle">
+									
+								</td>
+								<td class="text-right" style="border: 0"></td>
+							</tr>
+							<tr>
+								<td colspan="3" style="border:0;"></td>
+								<td style="vertical-align:middle;">
+									<b>WEIGHT LOSS</b>
+								</td>
+								<td class="text-right weight-loss" style="vertical-align: middle">
+									
+								</td>
+								<td class="text-right" style="border: 0"></td>
+							</tr>
+						</tfoot>
+	    			</table>
+    			<?php endif;?>
 			<?php endforeach;?>
     		<hr>
     		<button type="submit" class="btn btn-success btn-flat">Submit</button>
@@ -250,27 +254,27 @@
 			
 		});
 
-		doTotalCalculation('.produce-quantity', '.produce-total-quantity', ' kgs');
-		doTotalCalculation('.produce-pieces', '.produce-total-pieces', ' pieces');
 
-		function doTotalCalculation(element, elementTotalPlaceholder, append){
-			$('#yield-section').on('blur', element, function(){
+			$('#yield-section').on('blur', '.produce-quantity', function(){
 				var totalQty = 0,
 					table = $(this).closest('table');
 
 				table.find('tbody tr').each(function(){
-					var quantity = $(this)	.find(element).val() || 0;
+					var quantity = $(this).find('.produce-quantity').val() || 0;
 					totalQty += parseFloat(quantity);
 				});
-				table.find(elementTotalPlaceholder).text(numeral(totalQty).format('0,0.00')+append);
+
+				table.find('.produce-total-quantity').text(numeral(totalQty).format('0,0.00')+' kgs');
 
 				var weightLoss = 100 - (totalQty / parseFloat(table.find('.yield-quantity').val() || 0) * 100);
-				table.find('.weight-loss').html('Weight Loss: <b>'+weightLoss.toFixed(2)+'%</b>');
+				table.find('.weight-loss').html(weightLoss.toFixed(2)+'%');
+
 			});
 
 			
 
-		}
+		
+		$('.produce-quantity:not(:disabled):last').trigger('blur');
 
 		// $('#yield-section').on('blur', '.produce-quantity', function(){
 		// 	var that = $(this),
