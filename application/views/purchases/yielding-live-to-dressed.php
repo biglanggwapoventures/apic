@@ -17,9 +17,10 @@
             <ul class="list-unstyled"></ul>
         </div>
     	<form data-action="<?= $form_action?>" method="POST">
+    		<input type="hidden" name="yield_type" value="<?= $type?>">
     		<div class="form-group">
     			<label>Remarks</label>
-    			<textarea class="form-control" name="remarks"></textarea>
+    			<textarea class="form-control" name="remarks"><?=isset($yielding['yielding']) ? $yielding['yielding']['remarks'] : ''?></textarea>
     		</div>
     		<hr>
     		<?php 
@@ -231,9 +232,7 @@
 					$('html, body').animate({scrollTop: 0}, 'slow');
 					return;
 				}
-				$.growl.notice({'title':'Done','message': 'Further processing of the products have been successfully saved!'});
-				// window.location.href = $('#cancel').attr('href');
-				// window.location.reload();
+				window.location.reload();
 			})
 			.fail(function(){
 				alert('An internal error has occured. Please try again in a few moment.');
@@ -305,10 +304,20 @@
 		$('.toggle-include').each(function(){
 			toggleInputs($(this));
 		})
-		
-		$('.produce-quantity:not(:disabled):last').trigger('blur');
-		
 
+
+		function calculate_summary()
+		{
+			$('.produce-quantity:not(:disabled):last').trigger('blur');
+		}
+		
+		calculate_summary();
+
+		$('#yield-section').on('click', '.remove-line', function(){
+			calculate_summary();
+		});
+
+		
 
 	});
 </script>

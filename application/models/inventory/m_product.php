@@ -7,6 +7,7 @@ class M_Product extends CI_Model {
     const CATEGORY_FRESH_CHILLED_DRESSED_CHICKEN = 7;
     const CATEGORY_CHICKEN_BYPRODUCTS = 2;
     const CATEGORY_CHICKEN_CUTUPS = 5;
+    const CATEGORY_LIVE_CHICKEN = 6;
 
     const TABLE_NAME_GENERAL = 'inventory_product';
 

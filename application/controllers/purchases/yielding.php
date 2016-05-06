@@ -4,6 +4,7 @@ class Yielding extends PM_Controller_v2 {
 
     protected $rr_no;
     protected $validation_errors = [];
+    protected $yield_types = ['live-to-dressed', 'dressed-to-cutups'];
 
     function __construct()
     {
@@ -14,29 +15,41 @@ class Yielding extends PM_Controller_v2 {
         $this->set_active_nav(NAV_PURCHASES);
         $this->set_content_title('Purchases');
         $this->set_content_subtitle('Process products');
-        $this->load->model('purchases/m_purchase_receiving');
+        $this->load->model('purchases/m_purchase_receiving', 'receiving');
         $this->load->model('purchases/yielding_model', 'yield');
     }
 
     function index()
     {
 
-        $allowed_types = ['live-to-dressed', 'dressed-to-cutups'];
-
         $type = $this->input->get('type');
-        if(!in_array($type, $allowed_types)){
+        if(!in_array($type, $this->yield_types)){
             show_404();
         }
 
         $this->add_javascript('numeral.js');
-    	$this->load->model('purchases/m_purchase_receiving');
     	$this->load->model('inventory/m_product', 'product');
-        
-        $used_categories = $type === $allowed_types[0] ? [M_Product::CATEGORY_FRESH_CHILLED_DRESSED_CHICKEN, M_Product::CATEGORY_CHICKEN_BYPRODUCTS] : [M_Product::CATEGORY_CHICKEN_CUTUPS];
-        $products = $this->product->category_in($used_categories)->get_list();
 
-    	$rr_no = $this->input->get('rr');
-    	$data = $this->m_purchase_receiving->get(TRUE, FALSE, ['receiving.id' => $rr_no]);
+        $rr_no = $this->input->get('rr');
+        $data = $this->receiving->get(TRUE, FALSE, ['receiving.id' => $rr_no]);
+
+        if(!$data){
+            show_404();
+        }
+
+        if($type === $this->yield_types[0]){
+            $used_categories = [M_Product::CATEGORY_FRESH_CHILLED_DRESSED_CHICKEN, M_Product::CATEGORY_CHICKEN_BYPRODUCTS];
+            $filter_detail = M_Product::CATEGORY_LIVE_CHICKEN;
+        }else{
+            $used_categories = [M_Product::CATEGORY_CHICKEN_CUTUPS];
+            $filter_detail = M_Product::CATEGORY_FRESH_CHILLED_DRESSED_CHICKEN;
+        }
+
+        $data[0]['details'] = array_filter($data[0]['details'], function($var) USE ($filter_detail) {
+            return $var['fk_category_id'] == $filter_detail;
+        });
+
+        $products = $this->product->category_in($used_categories)->get_list();
 
     	$this->set_content("purchases/yielding-{$type}", [
     		'form_title' => "Process products from RR# {$rr_no}",
@@ -67,12 +80,15 @@ class Yielding extends PM_Controller_v2 {
             // $this->generate_response($data)->to_JSON();
             // return;
             if($this->yield->create($data)){
+                $this->flash_message(FALSE, 'Further processing has been successful!');
                 $this->generate_response(FALSE)->to_JSON();
                 return;
             }
             $this->generate_response(TRUE, 'Cannot perform action due to an unknown error.')->to_JSON();
+
         }else{
             if($this->yield->update($rr_no, $data)){
+               $this->flash_message(FALSE, 'Further processing has been successful!');
                 $this->generate_response(FALSE, [], $data)->to_JSON();
                 return;
             }
@@ -105,7 +121,8 @@ class Yielding extends PM_Controller_v2 {
             $temp = [
                 'fk_purchase_receiving_detail_id' => $source['rr_detail_id'],
                 'quantity' => $quantity,
-                'pieces' => $source['pieces']
+                'pieces' => $source['pieces'],
+                'yield_type' => $input['yield_type'] === $this->yield_types[0] ? 'ltd' : 'dtc'
             ];
 
             if(isset($source['id'])){
@@ -134,13 +151,18 @@ class Yielding extends PM_Controller_v2 {
 
     function _perform_validation()
     {
-        // check if 
+        $type = $this->input->post('yield_type');
+        if(!in_array($type, $this->yield_types)){
+            $this->validation_errors[] = "Yield type not valid.";
+            return;
+        }
+
         if(!is_array($yield = $this->input->post('yield'))){
             $this->validation_errors[] = "Malformed payload.";
             return;
         }
         // get receiving details
-        $receiving = $this->m_purchase_receiving->get(TRUE, FALSE, ['receiving.id' => $this->rr_no]);
+        $receiving = $this->receiving->get(TRUE, FALSE, ['receiving.id' => $this->rr_no]);
         // index reciving line
         $receiving_details = array_column($receiving[0]['details'], NULL, 'id');
 
@@ -159,7 +181,7 @@ class Yielding extends PM_Controller_v2 {
                 continue;
             }
 
-            if(!isset($item['quantity']) || !is_numeric($item['quantity']) || !$item['quantity']){
+            if(!isset($item['quantity']) || !is_numeric($item['quantity']) || floatval($item['quantity']) <= 0){
                 $this->validation_errors[] = "Provide quantity to use for further processing of {$product}.";
             }
 
@@ -181,7 +203,7 @@ class Yielding extends PM_Controller_v2 {
                 if(!isset($produce['product_id']) || !is_numeric($produce['product_id'])){
                     $this->validation_errors[] = "Provide product for line # {$line} in {$product}";
                 }
-                if(!isset($produce['quantity']) || !is_numeric($produce['quantity']) || !$produce['quantity']){
+                if(!isset($produce['quantity']) || !is_numeric($produce['quantity']) || floatval($produce['quantity']) <= 0){
                     $this->validation_errors[] = "Provide product quantity for line # {$line} in {$product}";
                 }
                 if(!isset($produce['pieces']) || ($produce['pieces'] && !is_numeric($produce['pieces']))){

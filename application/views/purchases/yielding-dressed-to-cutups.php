@@ -17,9 +17,10 @@
             <ul class="list-unstyled"></ul>
         </div>
     	<form data-action="<?= $form_action?>" method="POST">
+    		<input type="hidden" name="yield_type" value="<?= $type?>">
     		<div class="form-group">
     			<label>Remarks</label>
-    			<textarea class="form-control" name="remarks"></textarea>
+    			<textarea class="form-control" name="remarks"><?=isset($yielding['yielding']) ? $yielding['yielding']['remarks'] : ''?></textarea>
     		</div>
     		<hr>
     		<?php 
@@ -214,9 +215,7 @@
 					$('html, body').animate({scrollTop: 0}, 'slow');
 					return;
 				}
-				$.growl.notice({'title':'Done','message': 'Further processing of the products have been successfully saved!'});
-				// window.location.href = $('#cancel').attr('href');
-				// window.location.reload();
+				window.location.reload();
 			})
 			.fail(function(){
 				alert('An internal error has occured. Please try again in a few moment.');
@@ -255,49 +254,33 @@
 		});
 
 
-			$('#yield-section').on('blur', '.produce-quantity', function(){
-				var totalQty = 0,
-					table = $(this).closest('table');
+		$('#yield-section').on('blur', '.produce-quantity', function(){
+			var totalQty = 0,
+				table = $(this).closest('table');
 
-				table.find('tbody tr').each(function(){
-					var quantity = $(this).find('.produce-quantity').val() || 0;
-					totalQty += parseFloat(quantity);
-				});
-
-				table.find('.produce-total-quantity').text(numeral(totalQty).format('0,0.00')+' kgs');
-
-				var weightLoss = 100 - (totalQty / parseFloat(table.find('.yield-quantity').val() || 0) * 100);
-				table.find('.weight-loss').html(weightLoss.toFixed(2)+'%');
-
+			table.find('tbody tr').each(function(){
+				var quantity = $(this).find('.produce-quantity').val() || 0;
+				totalQty += parseFloat(quantity);
 			});
 
-			
+			table.find('.produce-total-quantity').text(numeral(totalQty).format('0,0.00')+' kgs');
 
+			var weightLoss = 100 - (totalQty / parseFloat(table.find('.yield-quantity').val() || 0) * 100);
+			table.find('.weight-loss').html(weightLoss.toFixed(2)+'%');
+
+		});
+
+			
+		function calculate_summary()
+		{
+			$('.produce-quantity:not(:disabled):last').trigger('blur');
+		}
 		
-		$('.produce-quantity:not(:disabled):last').trigger('blur');
+		calculate_summary();
 
-		// $('#yield-section').on('blur', '.produce-quantity', function(){
-		// 	var that = $(this),
-		// 		table = that.closest('table'),
-		// 		yieldQty = table.find('.yield-quantity').val() || 0,
-		// 		unitPrice = table.find('.yield-unit-price').data('unit-price') || 0,
-		// 		yieldCost = parseFloat(yieldQty) * parseFloat(unitPrice),
-		// 		produceQty = parseFloat(that.val() || 0);
-
-		// 	if(yieldCost > 0){
-
-				
-		// 		var percentage = (produceQty / yieldQty),
-		// 			thisCost = yieldCost * percentage;
-
-		// 		that.closest('tr').find('.produce-unit-cost').text(numeral(thisCost/produceQty).format('0,0.00'))
-		// 		that.closest('tr').find('.produce-total-cost').text(numeral(thisCost).format('0,0.00'))
-		// 	}
-
-			
-
-
-		// });
+		$('#yield-section').on('click', '.remove-line', function(){
+			calculate_summary();
+		});
 		
 
 

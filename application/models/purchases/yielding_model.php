@@ -73,12 +73,34 @@ class Yielding_model extends CI_Model
 
 	function update($rr_id, $data)
 	{
+		$yield = $this->db->select('id')->get_where($this->table, ['fk_purchase_receiving_id' => $rr_id])->row_array();
+
+		if(!$yield){
+			return NULL;
+		}
+
 		$this->db->trans_start();
 
-		$this->db->update($this->table, $data['yielding'], ['fk_purchase_receiving_id' => $rr_id]);
+		$this->db->update($this->table, $data['yielding'], ['id' => $yield['id']]);
 
-		// $this->db->where_not_in('yieldings_from', array_column($data['source'], 'id'))
-		// 	->where('')
+		$existings_ids = array_column($data['source'], 'id');
+
+		if(empty($existings_ids)){
+			$this->db->where([
+				'yield_type' => $data['source'][0]['yield_type'],
+				'fk_yielding_id' => $yield['id']
+			])
+			->delete('yieldings_from');
+		}else{
+			$this->db->where_not_in('id', $existings_ids)
+			->where([
+				'yield_type' => $data['source'][0]['yield_type'],
+				'fk_yielding_id' => $yield['id']
+			])
+			->delete('yieldings_from');
+		}
+
+		
 
 		foreach($data['source'] AS &$row){
 
@@ -86,11 +108,13 @@ class Yielding_model extends CI_Model
 			unset($row['result']);
 
 			if(!isset($row['id'])){
+
+				$row['fk_yielding_id'] = $yield['id'];
 			
 				$this->db->insert('yieldings_from', $row);
 
 				foreach($results AS &$result){
-					$result['fk_yielding_from_id'] = $this->db->insert_id();
+					$result['fk_yieldings_from_id'] = $this->db->insert_id();
 				}
 
 				$this->db->insert_batch('yieldings_to', $results);
@@ -110,6 +134,11 @@ class Yielding_model extends CI_Model
 		$this->db->trans_complete();
 
 		return $this->db->trans_status();
+	}
+
+	function delete($rr_id)
+	{
+		return $this->db->delete($this->table, ['fk_purchase_receiving_id' => $rr_id]);
 	}
 
 	function sync($table, $value_array, $table_pk_column_name, $table_fk_column_name, $table_fk_column_value)

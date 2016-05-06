@@ -174,17 +174,13 @@
                             </li>
                         <?php endif; ?>
                         <?php if ($is_admin || (int) $mod_access['production'] === 1): ?>
-                            <li class="treeview hidden <?= $data_nav === NAV_PRODUCTION ? 'active' : '' ?>">
+                            <li class="treeview <?= $data_nav === NAV_PRODUCTION ? 'active' : '' ?>">
                                 <a href="#">
                                     <i class="fa fa-gears"></i> <span>Production</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href='<?= $base_url . 'production/job_order' ?>' ><i class="fa fa-angle-double-right"></i> Job Orders</a></li>
-                                    <li><a href='<?= $base_url . 'production/formulations' ?>'><i class="fa fa-angle-double-right"></i> Formulations</a></li>
-                                    <li>
-                                        <a href='<?= $base_url . 'production/receiving' ?>' ><i class="fa fa-angle-double-right"></i> Receiving</a>
-                                    </li>
+                                    <li><a href='<?= $base_url . 'production/yielding' ?>' ><i class="fa fa-angle-double-right"></i> Further Processing</a></li>
                                 </ul>
                             </li>
                         <?php endif; ?>
