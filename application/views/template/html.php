@@ -193,6 +193,7 @@
                                 <ul class="treeview-menu">
                                     <li><a  href="<?= $base_url . 'accounting/bank_accounts' ?>"><i class="fa fa-angle-double-right"></i> Bank Accounts</a></li>
                                     <li><a  href="<?= $base_url . 'accounting/dummy_checks' ?>"><i class="fa fa-angle-double-right"></i> Dummy Checks</a></li>
+                                    <li><a  href="<?= $base_url . 'accounting/debit_memo' ?>"><i class="fa fa-angle-double-right"></i> Debit Memo</a></li>
                                     <li class="hidden"><a  href="<?= $base_url . 'accounting/print_checks' ?>"><i class="fa fa-angle-double-right"></i> Print Checks</a></li>
                                 </ul>
                             </li>
