@@ -20,7 +20,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="customer">Customer</label>
-                                <?= generate_customer_dropdown('customer', $dc['company_id'], 'class="form-control" id="search-customer" required="required"')?>
+                                <?= generate_customer_dropdown('customer', (isset($dc['company_id'])) ? $dc['company_id'] : FALSE, 'class="form-control" id="search-customer" required="required"')?>
                             </div>
                         </div>
                     </div>
