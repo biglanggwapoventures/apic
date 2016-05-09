@@ -214,9 +214,9 @@ class Debit_Memo extends PM_Controller_v2
         }
         $data['amount'] = str_replace(',', '', $input['amount']);
         $data['date'] = date('Y-m-d', strtotime($input['date']));
+        $data['fk_sales_customer_id'] = $input['customer'];
         if ($mode === 'create') {
             $data['created_by'] = $this->session->userdata('user_id');
-            $data['fk_sales_customer_id'] = $input['customer'];
         }
         return $data;
     }
