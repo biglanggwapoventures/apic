@@ -32,7 +32,7 @@ class M_debit_memo extends CI_Model
     public function get($id)
     {
         $this->db->order_by('id', 'DESC');
-        $this->db->select('dc.id, DATE_FORMAT(dc.date, "%m/%d/%Y") AS `formatted_date`, dc.remarks, dc.date, dc.amount, customer.company_name, account.Username as created_by, accounts.Username as approved_by, dc.created_at as created_at', FALSE);
+        $this->db->select('dc.id, DATE_FORMAT(dc.date, "%m/%d/%Y") AS `formatted_date`, dc.remarks, dc.date, dc.amount, customer.company_name, customer.id as company_id, account.Username as created_by, accounts.Username as approved_by, dc.created_at as created_at', FALSE);
         $this->db->from($this->table.' as dc');
         $this->db->join('account', 'account.id=dc.created_by');
         $this->db->join('account as accounts', 'accounts.id=dc.approved_by', 'left');
