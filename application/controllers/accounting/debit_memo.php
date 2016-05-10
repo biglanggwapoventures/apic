@@ -14,7 +14,7 @@ class Debit_Memo extends PM_Controller_v2
             show_error('Authorization error', 401);
         $this->set_active_nav(NAV_ACCOUNTING);
         $this->set_content_title('Accounting');
-        $this->set_content_subtitle('Dummy Memo');
+        $this->set_content_subtitle('Debit Memo');
         $this->load->model('accounting/m_debit_memo', 'debit_memo');
     }
 

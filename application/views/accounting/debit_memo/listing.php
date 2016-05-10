@@ -34,7 +34,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td colspan="9" class="text-center">Loading data...</td></tr>
+                                <tr><td colspan="9" class="text-center">Loading data...<!-- . --></td></tr>
                             </tbody>
                         </table>
                     </div>
