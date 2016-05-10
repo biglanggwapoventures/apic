@@ -49,7 +49,7 @@ class Yielding extends PM_Controller_v2 {
             return $var['fk_category_id'] == $filter_detail;
         });
 
-        $products = $this->product->category_in($used_categories)->get_list();
+        $products = $this->product->category_in($used_categories)->get_list(['product.status' => 'a']);
 
     	$this->set_content("purchases/yielding-{$type}", [
     		'form_title' => "Process products from RR# {$rr_no}",
