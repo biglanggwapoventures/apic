@@ -28,7 +28,7 @@
                                     <th>Amount</th>
                                     <th>Remarks</th>
                                     <th>CB</th>
-                                    <th>AP</th>
+                                    <th>AB</th>
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
