@@ -17,44 +17,67 @@
                             </div>
                         </div>
                     </div>
-                    <table class="table">
+                    <table class="table table-bordered" style="border-bottom:none;border-right:none;border-left:none">
                         <thead>
                             <tr class="active">
-                                <th style="width:20%">Item</th>
-                                <th style="width:15%">Packaging</th>
-                                <th style="width:15%">Quantity</th>
-                                <th style="width:15%">Unit Price</th>
-                                <th style="width:30%">Remarks</th>
+                                <th>ITEM</th>
+                                <th>UNIT</th>
+                                <th>UNIT QTY</th>
+                                <th>PIECES</th>
+                                <th>UNIT PRICE</th>
+                                <th>REMARKS</th>
                                 <th style="width:5%"></th>
                             </tr>
                         </thead>
                         <?php $text_options = ['text' => 'description', 'attr' => ['name' => 'packaging', 'value' => 'unit']]?>
                         <?php $details = isset($data['details']) ? $data['details'] : [[]];?>
                         <tbody id="adjustment-details">
-                        <?php foreach($details as $row):?>
+                        <?php foreach($details as $index => $row):?>
                             <tr>
-                                <td><?= arr_group_dropdown('items[]', $products, 'id', $text_options, isset($row['product_id']) ? $row['product_id'] : FALSE, 'category', 'class="form-control items" required="required"')?></td>
+                                <td>
+                                    <?= arr_group_dropdown("items[{$index}][product_id]", $products, 'id', $text_options, put_value($row, 'product_id', FALSE), 'category', 'class="form-control items" data-name="items[idx][product_id]"')?>
+                                </td>
+
                                 <td class="packaging"></td>
-                                <td><input type="number" name="quantity[]" step="0.01" value="<?= isset($row['quantity']) ? $row['quantity'] : '' ?>" class="form-control" required="required"></td>
                                 
-                                <td><input name="unit_price[]" type="text" class="form-control price text-right"  value="<?= isset($row['unit_price']) ? number_format($row['unit_price'], 2) : '' ?>"  required="required"/></td>
-                                <td><input name="remarks[]" type="text" class="form-control"  value="<?= isset($row['remarks']) ? $row['remarks'] : '' ?>"  required="required"/></td>
+                                <td>
+                                    <?php $quantity = put_value($row, 'quantity', 0)?>
+                                    <?= form_input("items[{$index}][quantity]", (float)$quantity ?: '', 'class="form-control text-right" data-name="items[idx][quantity]"')?>
+                                </td>
+
+                               
+                                <td>
+                                    <?php $pieces = put_value($row, 'pieces', 0)?>
+                                    <?= form_input("items[{$index}][pieces]", (float)$pieces ?: '', 'class="form-control text-right" data-name="items[idx][pieces]"')?>
+                                </td>
+                                
+                                <td>
+                                    <?php $unit_price = put_value($row, 'unit_price', 0)?>
+                                    <?= form_input("items[{$index}][unit_price]",  (float)$unit_price ?: '', 'class="form-control text-right" data-name="items[idx][unit_price]"')?>
+                                </td>
+
+                                <td>
+                                    <?php $remarks = put_value($row, 'remarks', '')?>
+                                    <?= form_input("items[{$index}][remarks]",  $remarks, 'class="form-control" data-name="items[idx][remarks]"')?>
+                                </td>
                                 <td>
                                 <?php if(isset($row['id'])):?>
-                                    <input type="hidden" name="detail_id[]" value="<?= $row['id']?>"/>
+                                    <?= form_hidden("items[{$index}][id]", $row['id'])?>
                                 <?php endif;?>
                                     <a class="btn btn-flat btn-sm btn-danger remove-line"><i class="fa fa-times"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach;?>
                         </tbody>
-                        <tfoot><tr><td colspan="5"><a class="btn btn-default btn-flat" id="new-line"><i class="fa fa-plus"></i> Add new line</a></td></tr></tfoot>
+                        <tfoot style="border:none"><tr style="border:none"><td style="border:none" colspan="7"><a class="btn btn-default btn-flat" id="new-line"><i class="fa fa-plus"></i> Add new line</a></td></tr></tfoot>
                     </table>
-                    <hr/>
-                    <div class="checkbox">
-                        <?php $checked = isset($data['sa']['approved_by']) && $data['sa']['approved_by'] ? 'checked="checked"':''?>
-                        <label><input type="checkbox" name="is_approved" value="1" <?= $checked?>/> Mark this request as approved</label>
-                    </div>
+                    <?php if(can_set_status()):?>
+                        <hr/>
+                        <div class="checkbox">
+                            <?php $checked = isset($data['sa']['approved_by']) && $data['sa']['approved_by'] ? 'checked="checked"':''?>
+                            <label><input type="checkbox" name="is_approved" value="1" <?= $checked?>/> Mark this request as approved</label>
+                        </div>
+                    <?php endif;?>
                 </div>
                 <div class="box-footer clearfix">
                     <button type="submit" class="btn btn-success btn-flat">Submit</button>

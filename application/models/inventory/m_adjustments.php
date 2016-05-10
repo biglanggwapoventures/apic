@@ -85,15 +85,15 @@ class M_Adjustments extends CI_Model
 
     public function all()
     {
-        $this->db->select('adj.id, adj.date, adj.approved_by, a.username')->from($this->table.' AS adj');  
+        $this->db->select('adj.id, DATE(adj.created_at) AS date, adj.approved_by, a.username')->from($this->table.' AS adj');  
         $this->db->join('account AS a', 'a.id = adj.created_by');
         return $this->db->order_by('id', 'DESC')->get()->result_array();
     }
 
     public function get($id)
     {
-        $data['sa'] = $this->db->select('id, date, approved_by')->from($this->table)->where('id', $id)->get()->row_array();
-        $data['details'] = $this->db->select('id, product_id, quantity, remarks, unit_price')->from($this->details_table)->where('adjustment_id', $id)->get()->result_array();
+        $data['sa'] = $this->db->select('id, DATE(created_at) AS date, approved_by')->from($this->table)->where('id', $id)->get()->row_array();
+        $data['details'] = $this->db->select('id, product_id, quantity, remarks, unit_price, pieces')->from($this->details_table)->where('adjustment_id', $id)->get()->result_array();
         return $data;
     }
 

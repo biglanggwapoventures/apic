@@ -1,15 +1,19 @@
 (function($){
 
 	var details = '#adjustment-details',
+		index = parseInt($(details).find('tr').length),
 
 		addNewLine = function(){
 			var trs = $(details).find('tr'), 
 				clone = $(trs[0]).clone();
-			clone.find('input,select').val('');
+			clone.find('input:not([type=hidden]),select').val('').attr('name', function(){
+				return $(this).data('name').replace('idx', index);
+			});
 			clone.find('.packaging').text('');
 			clone.find('input[type=hidden]').remove();
 			formatPrice(clone.find('.price'));
 			clone.appendTo(details);
+			index++;
 		},
 
 		removeLine = function(){

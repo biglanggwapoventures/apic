@@ -29,8 +29,6 @@
         <script src="<?= $js_url . 'jquery-2.1.1.min.js' ?>"></script>
         <!-- jQuery UI script -->
         <script src="<?= $js_url . 'jquery-ui.min.js' ?>" type="text/javascript"></script>
-
-
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -132,7 +130,7 @@
                                     <li><a href="<?= $base_url . 'inventory/products' ?>" ><i class="fa fa-angle-double-right"></i> Products</a></li>
                                     <li><a href="<?= $base_url . 'inventory/categories' ?>"><i class="fa fa-angle-double-right"></i> Categories</a></li>
                                     <li><a href="<?= $base_url . 'inventory/units' ?>" ><i class="fa fa-angle-double-right"></i> Units</a></li>
-                                    <li class="hidden"><a href="<?= $base_url . 'inventory/stock_adjustments' ?>" ><i class="fa fa-angle-double-right"></i> Stock Adjustments</a></li>
+                                    <li><a href="<?= $base_url . 'inventory/stock_adjustments' ?>" ><i class="fa fa-angle-double-right"></i> Stock Adjustments</a></li>
                                     <li class="hidden"><a href="<?= $base_url . 'inventory/withdrawals' ?>" ><i class="fa fa-angle-double-right"></i> Stock Withdrawals</a></li>
                                 </ul>
                             </li>
