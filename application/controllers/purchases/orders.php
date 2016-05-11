@@ -202,9 +202,13 @@ class Orders extends PM_Controller_v2 {
                 $detail = array(
                     'fk_inventory_product_id' => $temp['fk_inventory_product_id'][$x],
                     'quantity' => $temp['quantity'][$x],
-                    'pieces' => $temp['pieces'][$x],
                     'unit_price' => str_replace(",", "", $temp['unit_price'][$x])
                 );
+                if(is_numeric($temp['pieces'][$x]) && (float)abs($temp['pieces'][$x])){
+                    $detail['pieces'] = $temp['pieces'][$x];
+                }else{
+                    $detail['pieces'] = NULL;
+                }
                 if (isset($temp['id'][$x])) {
                     $detail['id'] = $temp['id'][$x];
                 }

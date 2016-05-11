@@ -134,9 +134,9 @@
                                             </td>
                                             <td>
                                                 <div class="t">
-                                                    <input value="<?= $detail['this_receive'] ?>" type="number" class="form-control this-receive do-calculation" name="details[this_receive][]" step="0.01">
+                                                    <input value="<?= $detail['this_receive'] ?>" type="text" class="form-control this-receive do-calculation text-right" name="details[this_receive][]">
                                                 </div>
-                                                <input value="<?= $detail['pieces_received'] ?>" type="number" class="form-control" name="details[pieces_received][]" step="0.01">
+                                                <input value="<?= $detail['pieces_received'] ?>" type="text" class="form-control text-right" name="details[pieces_received][]">
                                             </td>
                                             <td><span class="unit-price"><?= $detail['unit_price'] ?></span></td>
                                             <td><input name="details[discount][]" type="text" value="<?= number_format($detail['discount'], 2) ?>" class="form-control discount has-amount do-calculation"/></td>
@@ -253,7 +253,7 @@
                     tableCell[1] = '<div class="t">'+detail.unit_description+'</div>pcs';
                     tableCell[2] = '<div class="t">'+detail.quantity+'</div>'+detail.pieces;
                     tableCell[3] = '<div class="t">'+detail.quantity_received+'</div>0.00';
-                    tableCell[4] = '<div class="t"><input value="0" type="number" class="form-control this-receive do-calculation" name="details[this_receive][]" step="0.01"/></div><input value="0" type="number" class="form-control" name="details[pieces_received][]" step="0.01"/>';
+                    tableCell[4] = '<div class="t"><input type="text" class="form-control this-receive do-calculation  text-right" name="details[this_receive][]"/></div><input type="text" class="form-control text-right" name="details[pieces_received][]"/>';
                     tableCell[5] = '<span class="unit-price">' + detail.unit_price + '</span>';
                     tableCell[6] = '<input name="details[discount][]" type="text" value="0.00" class="form-control discount has-amount do-calculation"/>';
                     tableCell[7] = '<span class="gross-amount">0.00</span>';

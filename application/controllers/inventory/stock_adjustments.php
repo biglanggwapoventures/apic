@@ -176,7 +176,9 @@ class Stock_adjustments extends PM_Controller_v2
         }
         foreach($input['items'] AS $item){
             
-            $temp = elements(['product_id', 'quantity', 'pieces', 'unit_price', 'remarks'], $item, NULL);
+            $temp = elements(['product_id', 'quantity', 'remarks'], $item, NULL);
+            $temp['pieces']  = (float)$item['pieces'] ?: NULL;
+            $temp['unit_price']  = (float)$item['unit_price'] ?: NULL;
             
             if(isset($item['id']) && $mode === 'u'){
                 $temp['id'] = $item['id'];

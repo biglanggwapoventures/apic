@@ -116,10 +116,10 @@
                                         <span class="unit"> <?= $defaults['details']['unit_description'][0] ?></span>
                                     </td>
                                     <td>
-                                        <?= form_input(array('name' => 'details[product_quantity][]', 'type' => 'number', 'step' => '0.01', 'class' => 'form-control  input-clear for-calculation product-quantity', 'value' => $defaults['details']['product_quantity'][0])); ?>
+                                        <?= form_input(array('name' => 'details[product_quantity][]', 'type' => 'text', 'class' => 'form-control  input-clear for-calculation product-quantity text-right', 'value' => $defaults['details']['product_quantity'][0])); ?>
                                     </td>
                                     <td>
-                                        <?= form_input(['name' => 'details[total_units][]', 'type' => 'number', 'step' => '0.01', 'class' => 'form-control  input-clear', 'value' => (float)$defaults['details']['total_units'][0] ?: '']); ?>
+                                        <?= form_input(['name' => 'details[total_units][]', 'type' => 'text', 'class' => 'form-control  input-clear text-right', 'value' => (float)$defaults['details']['total_units'][0] ?: '']); ?>
                                     </td>
                                     <td >
                                         <?= form_input(array('name' => 'details[unit_price][]', 'class' => 'form-control  unit-price text-right has-amount for-calculation input-clear', 'value' => number_format($defaults['details']['unit_price'][0], 2))); ?>

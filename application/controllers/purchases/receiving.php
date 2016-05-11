@@ -213,10 +213,21 @@ class Receiving extends PM_Controller_v2 {
             for ($x = 0; $x < count($temp['fk_purchase_order_detail_id']); $x++) {
                 $detail = array(
                     'fk_purchase_order_detail_id' => $temp['fk_purchase_order_detail_id'][$x],
-                    'this_receive' => $temp['this_receive'][$x],
-                    'pieces_received' => $temp['pieces_received'][$x],
                     'discount' => str_replace(',', '', $temp['discount'][$x])
                 );
+                
+                if(is_numeric($temp['this_receive'][$x]) && (float)abs($temp['this_receive'][$x])){
+                    $detail['this_receive'] = abs($temp['this_receive'][$x]);
+                }else{
+                    $detail['this_receive'] = NULL;
+                }
+                
+                if(is_numeric($temp['pieces_received'][$x]) && (float)abs($temp['pieces_received'][$x])){
+                    $detail['pieces_received'] = abs($temp['pieces_received'][$x]);
+                }else{
+                    $detail['pieces_received'] = NULL;
+                }
+                
                 if (isset($temp['id'][$x])) {
                     $detail['id'] = $temp['id'][$x];
                 }
@@ -381,7 +392,7 @@ class Receiving extends PM_Controller_v2 {
         }
         foreach ($received_quantities as $key=>$value) {
             $discount = str_replace(',', '', $details['discount'][$key]);
-            if (!is_numeric($value)) {
+            if ($value && !is_numeric($value)) {
                 $this->form_validation->set_message('_details_check', 'Received quantities can only contain numbers.');
                 return FALSE;
             }
@@ -389,7 +400,7 @@ class Receiving extends PM_Controller_v2 {
                 $this->form_validation->set_message('_details_check', 'Discount should be in decimal form.');
                 return FALSE;
             }
-            if (!is_numeric($details['pieces_received'][$key])) {
+            if ($details['pieces_received'][$key] && !is_numeric($details['pieces_received'][$key])) {
                 $this->form_validation->set_message('_details_check', 'Received quantities can only contain numbers.');
                 return FALSE;
             }

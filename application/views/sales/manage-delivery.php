@@ -131,7 +131,11 @@
                                             <td><div class="t"><?= $d['quantity_delivered'][$x] ?></div><?= $d['units_delivered'][$x] ?></td>
 
                                             <td>
-                                                <div class="t"><input type="number" step="0.01" class="form-control this-delivery text-right" value="<?= $d['this_delivery'][$x] ?>" name="details[this_delivery][]"></div><input type="number" step="0.01" class="form-control" value="<?= $d['delivered_units'][$x] ?>" name="details[delivered_units][]"></td>
+                                                <div class="t">
+                                                    <input type="text" class="form-control this-delivery text-right" value="<?= $d['this_delivery'][$x] ?>" name="details[this_delivery][]">
+                                                </div>
+                                                <input type="text" class="form-control  text-right" value="<?= $d['delivered_units'][$x] ?>" name="details[delivered_units][]">
+                                            </td>
                                             <td class="text-right"><span class="unit-price"><?= number_format($d['unit_price'][$x], 2) ?></span></td>
                                             <?php $totalDiscount = ($d['this_delivery'][$x] * $d['discount'][$x]); ?>
                                             <?php $grossAmount = ($d['unit_price'][$x] * $d['this_delivery'][$x]); ?>

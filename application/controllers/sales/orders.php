@@ -242,9 +242,14 @@ class Orders extends PM_Controller_v2 {
                     'fk_inventory_product_id' => $details['fk_inventory_product_id'][$x],
                     'product_quantity' => $quantity,
                     'unit_price' => $unit_price,
-                    'discount' => $discount,
-                    'total_units' => $details['total_units'][$x],
+                    'discount' => $discount
                 );
+                
+                if(is_numeric($details['total_units'][$x]) && (float)abs($details['total_units'][$x])){
+                    $formatted_details[$x]['total_units'] = abs($details['total_units'][$x]);
+                }else{
+                    $formatted_details[$x]['total_units'] = NULL;
+                }
             }
             if ($details['fk_inventory_product_id'][$x] && isset($details['id'][$x])) {
                 $formatted_details[$x]['id'] = $details['id'][$x];

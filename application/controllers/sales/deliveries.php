@@ -345,16 +345,29 @@ class Deliveries extends PM_Controller
             if ($details['fk_sales_order_detail_id'][$x])
             {
                 $delivered_quantity = abs($details['this_delivery'][$x]);
-                $formatted_details[$x] = array(
+                $temp = [
                     'fk_sales_order_detail_id' => $details['fk_sales_order_detail_id'][$x],
-                    'this_delivery' => $delivered_quantity,
-                    'delivered_units' => abs($details['delivered_units'][$x]),
-                );
+                    'this_delivery' => $delivered_quantity
+                ];
+                
+                if(is_numeric($details['delivered_units'][$x]) && (float)abs($details['delivered_units'][$x])){
+                    $temp['delivered_units'] = abs($details['delivered_units'][$x]);
+                }else{
+                    $temp['delivered_units'] = NULL;
+                }
+                
+                if(is_numeric($delivered_quantity) && (float)abs($delivered_quantity)){
+                    $temp['this_delivery'] = $delivered_quantity;
+                }else{
+                    $temp['this_delivery'] = NULL;
+                }
+                 
             }
             if (isset($details['id'][$x]))
             {
-                $formatted_details[$x]['id'] = $details['id'][$x];
+                $temp['id'] = $details['id'][$x];
             }
+             $formatted_details[$x] = $temp;
         }
         return $formatted_details;
     }

@@ -98,9 +98,9 @@
                                             </td>
                                             <td>
                                                 <div class="t">
-                                                    <input name="details[quantity][]" value="<?= $detail['quantity'] ?>" type="number" class="form-control needs-reset has-quantity do-calculation" step="0.01" required>
+                                                    <input name="details[quantity][]" value="<?= $detail['quantity'] ?>" type="text" class="form-control needs-reset has-quantity do-calculation text-right">
                                                 </div>
-                                                <input name="details[pieces][]" value="<?= $detail['pieces'] ?>" type="number" class="form-control needs-reset has-quantity" step="0.01" required>
+                                                <input name="details[pieces][]" value="<?= $detail['pieces'] ?>" type="text" class="form-control needs-reset has-quantity text-right">
                                             </td>
                                             <td class="text-right">
                                                 <div class="t">
