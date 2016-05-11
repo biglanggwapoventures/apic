@@ -40,7 +40,7 @@ class M_chart extends CI_Model
         if($show_deleted === FALSE){
             $this->db->where(['is_deleted' => 0]);
         }
-        return $this->db->select('description, id')->from('maintainable_coa')->get()->result_array();
+        return $this->db->select('description, id')->from('maintainable_coa')->order_by('description')->get()->result_array();
     }
     
     public function is_valid($id){
