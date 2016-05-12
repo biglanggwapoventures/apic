@@ -1,4 +1,9 @@
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic);
+/*@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic);*/
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: url(../fonts/SourceSansPro-Regular.ttf);
+    font-weight: 400;
+}
 html,
 body {
     overflow-x: hidden!important;
