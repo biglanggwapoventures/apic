@@ -207,6 +207,10 @@
                        <label>End date</label>
                        <input type="text" class="form-control datepicker" name="end_date" value="<?= $this->input->get('end_date')?>"/>
                     </div>
+                    <div class="form-group">
+                       <label>Sales agent</label>
+                       <?= form_dropdown('agent_id', $agents, $this->input->get('agent_id'), 'class="form-control"')?>
+                    </div>
                     <?php foreach($categories AS $c):?>
                         <?php $checked = in_array($c['id'], $selected_categories) ? 'checked="checked"' : ''?>
                         <div class="checkbox">
