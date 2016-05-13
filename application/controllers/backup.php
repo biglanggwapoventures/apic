@@ -18,7 +18,7 @@ class Backup extends PM_Controller_v2 {
         $CI =& get_instance();
         $CI->load->database();
 
-        $cmd = 'mysqldump -u '.$CI->db->username.' -p'.$CI->db->password.' -h'.$CI->db->hostname.' '.$CI->db->database.' > assets/'.$fileName;
+        $cmd = 'cd /web/apic/ && mysqldump -u '.$CI->db->username.' -p'.$CI->db->password.' -h'.$CI->db->hostname.' '.$CI->db->database.' > assets/dbbackup/'.$fileName;
         $output = NULL;
         $return = NULL;
         exec($cmd, $output, $return);
