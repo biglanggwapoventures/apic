@@ -18,11 +18,21 @@ class Backup extends PM_Controller_v2 {
         $CI =& get_instance();
         $CI->load->database();
 
-        $cmd = 'mysqldump --opt -u '.$CI->db->username.' -p'.$CI->db->password.' -h'.$CI->db->hostname.' '.$CI->db->database.' > assets/dbbackup/'.$fileName;
-        exec($cmd);
+        $cmd = 'mysqldump -u '.$CI->db->username.' -p'.$CI->db->password.' -h'.$CI->db->hostname.' '.$CI->db->database.' > assets/'.$fileName;
+        $output = NULL;
+        $return = NULL;
+        exec($cmd, $output, $return);
 
-        $data = file_get_contents(base_url()."assets/dbbackup/".$fileName);
-        force_download($fileName, $data);
+        echo $cmd;
+
+        echo "<pre>";
+        print_r($output);
+        echo "</pre>";
+
+        echo "return = ".$return;
+
+        // $data = file_get_contents(base_url()."assets/dbbackup/".$fileName);
+        // force_download($fileName, $data);
     }
 
 }
