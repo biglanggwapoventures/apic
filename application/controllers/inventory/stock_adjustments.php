@@ -105,7 +105,8 @@ class Stock_adjustments extends PM_Controller_v2
 
         if(isset($data['sa']['approved_by']) && $data['sa']['approved_by']){
             $previous = $this->adjustments->get($id);
-            $unavailable = $this->_check_item_availability($data['details'], array_column($previous['details'], NULL, 'product_id'));
+            $exclude = $previous['sa']['approved_by'] ? array_column($previous['details'], NULL, 'product_id') : [];
+            $unavailable = $this->_check_item_availability($data['details'], $exclude);
             if(!empty($unavailable)){
                 $this->generate_response(TRUE, $unavailable)->to_JSON();
                 return;
@@ -191,32 +192,65 @@ class Stock_adjustments extends PM_Controller_v2
     function _check_item_availability($details, $exclude = [])
     {
         $unavailable = [];
+        
+        // retrieve only details with item stock reduction
         $items = array_filter($details, function($var){
-            return $var['quantity'] < 0;
+            return $var['quantity'] < 0 || $var['pieces'] < 0;
         });
+        
         if(empty($items)){
             return;
         }
+        
         $product_ids = array_column($items, 'product_id');
         $product_details = $this->product->identify($product_ids);
         $stocks = $this->product->get_stocks($product_ids);
+
+        unset($product_ids);
+
         foreach($items AS $item){
-            $item_stock = isset($stocks[$item['product_id']]) ? $stocks[$item['product_id']] : 0;
+
+            $available = ['units' => 0, 'pieces' => 0];
+
+            if(isset($stocks[$item['product_id']])){
+                $available['units'] += $stocks[$item['product_id']]['available_units'];
+                $available['pieces'] += $stocks[$item['product_id']]['available_pieces'];
+            }
+
             if(isset($exclude[$item['product_id']])){
+
                 if($exclude[$item['product_id']]['quantity'] < 0){
-                    $item_stock += abs($exclude[$item['product_id']]['quantity']);
+                    $available['units'] += abs($exclude[$item['product_id']]['quantity']);
                 }else{
-                    $item_stock -= $exclude[$item['product_id']]['quantity'];
+                    $available['units'] -= $exclude[$item['product_id']]['quantity'];
+                }
+
+                if($exclude[$item['product_id']]['pieces'] < 0){
+                    $available['pieces'] += abs($exclude[$item['product_id']]['pieces']);
+                }else{
+                    $available['pieces'] -= $exclude[$item['product_id']]['pieces'];
                 }
             }
-            $request_qty = abs($item['quantity']);
-            if($item_stock < $request_qty){
-                $lacking = $request_qty - $item_stock;
-                $product_unit = $product_details[$item['product_id']]['unit_description'];
-                $product_description = "{$product_details[$item['product_id']]['description']} [{$product_details[$item['product_id']]['code']}]";
-                $unavailable[] = "Lacking {$lacking} {$product_unit} for: {$product_description}";
+
+            $requested = [ 'units' => $item['quantity'], 'pieces' => $item['pieces'] ];
+
+            $lacking = [];  
+
+            if($requested['units'] < 0 && $available['units'] < abs($requested['units'])){
+                $lacking_units = abs($requested['units']) - $available['units'];
+                $lacking[] = "{$lacking_units} {$product_details[$item['product_id']]['unit_description']}";
+            }
+
+            if($requested['pieces'] < 0 && $available['pieces'] < abs($requested['pieces'])){
+                $lacking_pieces = abs($requested['pieces']) - $available['pieces'];
+                $lacking[] = "{$lacking_pieces} pieces";
+            }
+
+            if(!empty($lacking)){
+                $unavailable[] = "Lacking ". implode(' and ', $lacking). " for: {$product_details[$item['product_id']]['description']}";
             }
         }
+
         return $unavailable;
     }
 }

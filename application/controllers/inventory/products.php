@@ -65,8 +65,21 @@ class Products extends PM_Controller_v2 {
 
         $params = $this->_search_params();
 
+        $products = $this->m_product->all($params['search'], $params['wildcards']);
+
+        $stocks = $this->m_product->get_stocks(array_column($products, 'id'));
+
+        foreach ($products AS &$item) {
+            if(isset($stocks[$item['id']])){
+                $item['available_units']  = $stocks[$item['id']]['available_units'];
+                $item['available_pieces']  = $stocks[$item['id']]['available_pieces'];
+            }
+        }
+
+        unset($stocks);
+
         $this->set_content('inventory/products/listing', [
-            'items' => $this->m_product->all($params['search'], $params['wildcards']),
+            'items' => $products,
             'category' => array_column($this->m_category->all(['status'=>'a']), 'description', 'id')
         ])->generate_page();
     }

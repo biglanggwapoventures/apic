@@ -17,19 +17,23 @@
 
     <div class="box-body no-padding">
         <table class="table table-striped"> 
-            <thead><tr class="info"><th>Code</th><th>Description</th><th>Category</th><th>Units</th><th>Status</th><th></th></tr></thead>
+            <thead>
+                <tr class="info"><th>CODE</th><th>DESCRIPTION</th><th>CATEGORY</th><th>UNIT QTY</th><th>PIECES</th><th>STATUS</th><th></th></tr>
+            </thead>
             <tbody>
                 <?php foreach($items AS $row):?>   
                     <tr data-pk="<?= $row['id']?>">
                         <td><a href="<?= "{$url}/edit/{$row['id']}"?>"><?= $row['code']?></a></td>
                         <td><?= $row['description']?></td>
                         <td><?= $row['category']?></td>
-                        <td><?= $row['unit']?></td>
+                        <td><?= isset($row['available_units']) ? "{$row['available_units']} {$row['unit']}" : '-'?></td>
+                        <td><?= isset($row['available_pieces']) ? "{$row['available_pieces']} pieces" : '-'?></td>
                         <td>
                             <?php $status = status($row['status'])?>
                             <span class="label <?= $status['class']?>"><?= $status['text']?></span>
                         </td>
                         <td>
+                            <a class="btn btn-xs btn-flat btn-default" href="<?= base_url("reports/product_inventory?product_id={$row['id']}")?>"><i class="fa fa-search"></i> Logs</a>
                             <a class="btn btn-xs btn-flat btn-danger _delete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>
                         </td>
                     </tr>

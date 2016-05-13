@@ -1,10 +1,11 @@
 <style type="text/css">
-    table thead th:nth-child(3),th:nth-child(4),th:nth-child(5),th:nth-child(6),th:nth-child(7),th:nth-child(8),
-    table tbody td:nth-child(3),td:nth-child(4),td:nth-child(5),td:nth-child(6),td:nth-child(7),td:nth-child(8){
+    table > tbody > td:nth-child(3),td:nth-child(4),td:nth-child(5),td:nth-child(6),td:nth-child(7),td:nth-child(8){
         text-align: right;
     }
-    th.header{
+    th{
         text-align: center;
+    }
+    th.header{
         border:0!important;
         padding:0!important;
         background:#fff!important;
@@ -21,26 +22,45 @@
         <p class="text-center text-bold"></p>
         <p class="text-center"></p>
         <p class="text-center"></p>
-        <table class="table table-condensed table-bordered" id="sr" style="table-layout:fixed">
+        <table class="table table-condensed table-bordered" id="sr" style="table-layout:fixed;border:none;">
             <thead>
-                <tr class="active"><th colspan="8" class="header"><span class="fs130"><?= $product['description']?> <?= $product['formulation_code'] ? " [{$product['formulation_code']}]" : '' ?></span></th></tr>
-                <tr class="active"><th colspan="8" class="header"><span class="fs130"><?= number_format($current_stock, 2).' '.$product['unit_description']?></span> @ <span class="fs130">PHP <?= number_format($current_cost, 2)?></span></th></tr>
                 <tr class="active">
-                    <th style="width: 20%">Date &amp; time</th>
-                    <th></th>
-                    <th>Purchase price</th>
-                    <th>Production cost</th>
-                    <th>Cost per bag</th>
-                    <th>In</th>
-                    <th>Out</th>
-                    <th>Stock left</th>
+                    <th colspan="9" class="header"><span class="fs130">
+                        <?= "{$product['description']} [{$product['code']}]" ?></span>
+                    </th>
+                </tr>
+                <tr class="active">
+                    <th colspan="9" class="header">
+                        <span class="fs130">
+                            <?= number_format($current_stock['available_units'], 2).' '.$product['unit_description']. ' ('. number_format($current_stock['available_pieces'], 2).' pieces)'?>
+                        </span>
+                    </th>
+                </tr>
+                <tr class="active">
+                    <th rowspan="2">DATE &amp; TIME</th>
+                    <th rowspan="2">ACTION</th>
+                    <th rowspan="2">ACQUISITION<br>COST</th>
+                    <th colspan="2">IN</th>
+                    <th colspan="2">OUT</th>
+                    <th colspan="2">REMAINING</th>
+                </tr>
+                <tr class="active">
+                    <th><?= strtoupper($product['unit_description'])?></th>
+                    <th>PIECES</th>
+                    <th><?= strtoupper($product['unit_description'])?></th>
+                    <th>PIECES</th>
+                    <th><?= strtoupper($product['unit_description'])?></th>
+                    <th>PIECES</th>
                 </tr>
             </thead>
             <tbody>
-                <?php $temp_stock = $current_stock;?>
+
+                <?php $temp_units = $current_stock['available_units'];?>
+                <?php $temp_pieces = $current_stock['available_pieces'];?>
+
                 <?php foreach($data AS $key => $row):?>
                     <tr>
-                        <td><?= date('d-M-Y', strtotime($row['date']))?></td>
+                        <td><?= date_create($row['date'])->format('d-M-Y h:i A')?></td>
                         <td>
                             <?php if($row['pl_no']):?>
                                 <a target="_blank"href="<?= base_url("sales/deliveries/update/{$row['pl_no']}")?>">
@@ -54,12 +74,9 @@
                                 <a target="_blank"href="<?= base_url("purchases/receiving/manage?do=update-purchase-receiving&id={$row['rr_no']}")?>">
                                     <?= "Purchase RR # {$row['rr_no']}"?>
                                 </a>
-                            <?php elseif($row['jo_no']):?>
-                                <a target="_blank"href="<?= base_url("production/job_order/update/{$row['jo_no']}")?>">
-                                    <?= "Job Order # {$row['jo_no']}"?>
-                            <?php elseif($row['prr_no']):?>
-                                 <a target="_blank"href="<?= base_url("production/receiving/update/{$row['prr_no']}")?>">
-                                    <?= "Production RR # {$row['prr_no']}"?>
+                            <?php elseif($row['yieldt_no'] || $row['yieldf_no']):?>
+                                <a target="_blank">
+                                    <?= "Process # {$row['yieldt_no']} {$row['yieldf_no']}" ?>
                                 </a>
                             <?php endif;?>
                         </td>
@@ -68,26 +85,54 @@
                                 <?= $row['unit_price'] ? number_format($row['unit_price'], 2): ''?>
                             <?php endif;?>
                         </td>
+                        <!-- IN:START -->
                         <td class="text-right">
-                            <?php if($row['prr_no'] && $row['prr_no'] >= 86):?>
-                                <?php $cost_per_kilo = $this->receiving->get_cost($row['production_receiving_detail_id']); ?>
-                                <?= number_format($cost_per_kilo,2)?>
+                            <?php if($row['in']):?>
+                                <span class="text-info">
+                                    <?= number_format($row['in'], 2)?>
+                                </span>
                             <?php endif;?>
                         </td>
                         <td class="text-right">
-                            <?php if($row['prr_no'] && $row['prr_no'] >= 86):?>
-                                <?= number_format($cost_per_kilo/$row['in'],2)?>
+                            <?php if($row['in'] && $row['pieces']):?>
+                                <span class="text-info">
+                                    <?= number_format($row['pieces'], 2)?>
+                                </span>
                             <?php endif;?>
                         </td>
-                        <td class="text-right"><?= $row['in'] > 0 ? '<span class="text-info">'.number_format($row['in'], 2).'</span>': ''?></td>
-                        <td class="text-right"><?= $row['out'] > 0 ? '<span class="text-danger">'.number_format($row['out'], 2).'</span>': ''?></td>
+                        <!-- IN:END -->
+                        <!-- OUT:START -->
+                        <td class="text-right">
+                            <?php if($row['out']):?>
+                                <span class="text-danger">
+                                    <?= number_format($row['out'], 2)?>
+                                </span>
+                            <?php endif;?>
+                        </td>
+                        <td class="text-right">
+                            <?php if($row['out'] && $row['out']):?>
+                                <span class="text-danger">
+                                    <?= number_format($row['pieces'], 2)?>
+                                </span>
+                            <?php endif;?>
+                        </td>
+                        <!-- OUT:END -->
                         <td class="text-right">
                             <?php if($key === 0):?>
-                                <?= number_format($temp_stock, 2)?>
+                                <?= number_format($temp_units, 2)?>
                             <?php else:?>
-                                <?php $temp_stock += $data[$key-1]['out']?>
-                                <?php $temp_stock -= $data[$key-1]['in']?>
-                                <?= number_format($temp_stock, 2)?>
+                                <?php $temp_units += $data[$key-1]['out']?>
+                                <?php $temp_units -= $data[$key-1]['in']?>
+                                <?= number_format($temp_units, 2)?>
+                            <?php endif;?>
+                        </td>
+                        <td class="text-right">
+                            <?php if($key === 0):?>
+                                <?= number_format($temp_pieces, 2)?>
+                            <?php else:?>
+                                <?php $temp_pieces += ($data[$key-1]['out'] ? $data[$key-1]['pieces'] : 0);?>
+                                <?php $temp_pieces -= ($data[$key-1]['in'] ? $data[$key-1]['pieces'] : 0);?>
+                                <?= number_format($temp_pieces, 2)?>
                             <?php endif;?>
                         </td>
                     </tr>

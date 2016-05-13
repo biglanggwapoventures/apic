@@ -301,7 +301,7 @@
                     $('html, body').animate({scrollTop: 0}, 'slow');
                     return;
                 }
-                window.location.href = $('#go-back').attr('href');
+                // window.location.href = $('#go-back').attr('href');
             })
             .fail(function(){
                 alert('An internal error has occured. Please try again in a few moment.');

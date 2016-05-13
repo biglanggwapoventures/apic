@@ -61,11 +61,7 @@ class Deliveries extends PM_Controller
         $this->viewpage_settings['truckers'] = $this->m_trucking->all(['status' => 'a']);
         $this->viewpage_settings['agents'] = $this->m_agent->all(['status' => 'a']);
 
-        $customers = $this->m_customer->all(['status' => 'a']);
-        array_walk($customers, function(&$var){
-            $var['name'] = "[{$var['customer_code']}] {$var['company_name']}";
-        });
-        $this->viewpage_settings['customers'] = dropdown_format($customers, 'id', 'name', '');
+        $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_customer->all(['status' => 'a']), 'company_name', 'id');
 
         $this->viewpage_settings['url'] = base_url('sales/deliveries/a_add');
         $this->viewpage_settings['form_title'] = 'Add new packing list';
@@ -128,29 +124,51 @@ class Deliveries extends PM_Controller
         show_404();
     }
 
-    public function _check_item_availability($filled_orders, $exclude = []){
+    public function _check_item_availability($filled_orders, $exclude = [])
+    {
         $unavailable = [];
+
         $this->load->model('sales/m_sales_order', 'sales_order');
+
         $ordered_products = $this->sales_order->get_ordered_products(FALSE, array_column($filled_orders, 'fk_sales_order_detail_id'));
         $product_ids = array_values($ordered_products);
         $product_details = $this->m_product->identify($product_ids);
-        $stocks = $this->m_product->get_stocks(array_values($product_ids));
+        $stocks = $this->m_product->get_stocks($product_ids);
+
         foreach($filled_orders AS &$item){
-            $needed = 0;
 
             $product_id = $ordered_products[$item['fk_sales_order_detail_id']];
-            $product_description = "{$product_details[$product_id]['description']} [{$product_details[$product_id]['code']}]";
-            $product_unit = $product_details[$product_id]['unit_description'];
 
-            $stock = isset($stocks[$product_id]) ? $stocks[$product_id]: 0;
+            $available = ['units' => 0, 'pieces' => 0];
+
+            if(isset($stocks[$product_id])){
+                $available['units'] += $stocks[$product_id]['available_units'];
+                $available['pieces'] += $stocks[$product_id]['available_pieces'];
+            }
+
             if(isset($exclude[$item['fk_sales_order_detail_id']])){
-                $stock += $exclude[$item['fk_sales_order_detail_id']]['this_delivery'];
+                $available['units'] += $exclude[$item['fk_sales_order_detail_id']]['this_delivery'];
+                $available['pieces'] += $exclude[$item['fk_sales_order_detail_id']]['delivered_units'];
             }
-            if($item['this_delivery'] > $stock){
-                $lacking = $item['this_delivery'] - $stock;
-                $message = "Lacking {$lacking} {$product_unit} for: {$product_description}";
-                $unavailable[] = $message;
+
+            $requested = [ 'units' => abs($item['this_delivery']), 'pieces' => abs($item['delivered_units']) ];
+
+            $lacking = [];  
+
+            if($available['units'] < $requested['units']){
+                $lacking_units = $requested['units'] - $available['units'];
+                $lacking[] = "{$lacking_units} {$product_details[$product_id]['unit_description']}";
             }
+
+            if($available['pieces'] < $requested['pieces']){
+                $lacking_pieces = $requested['pieces'] - $available['pieces'];
+                $lacking[] = "{$lacking_pieces} pieces";
+            }
+
+            if(!empty($lacking)){
+                $unavailable[] = "Lacking ". implode(' and ', $lacking). " for: {$product_details[$product_id]['description']}";
+            }
+
         }
         return $unavailable;
     }
@@ -162,14 +180,14 @@ class Deliveries extends PM_Controller
             echo json_encode($this->response(TRUE, $input['message']));
             return;
         }
-        // else if(!$input['error_flag'] && $input['data']['status'] == M_Status::STATUS_DELIVERED){
-        //     $details = $input['data']['details'];
-        //     $unavailable = $this->_check_item_availability($details);
-        //     if(!empty($unavailable)){
-        //         echo json_encode($this->response(TRUE, $unavailable));
-        //         return;
-        //     }
-        // }
+        else if(!$input['error_flag'] /*&& $input['data']['status'] == M_Status::STATUS_DELIVERED*/){
+            $details = $input['data']['details'];
+            $unavailable = $this->_check_item_availability($details);
+            if(!empty($unavailable)){
+                echo json_encode($this->response(TRUE, $unavailable));
+                return;
+            }
+        }
         $input['data']['status'] = M_Status::STATUS_DELIVERED;
         $input['data']['approved_by'] = user_id();
         $input['data']['created_by'] = user_id();
@@ -202,20 +220,17 @@ class Deliveries extends PM_Controller
             if ($input['error_flag']){
                 echo json_encode($this->response(TRUE, $input['message']));
                 return;
+            }else{
+                $details = $input['data']['details'];
+
+                $previous = $this->m_delivery->get_delivered_items($delivery_id);
+                $unavailable = $this->_check_item_availability($details, array_column($previous, NULL, 'fk_sales_order_detail_id'));
+
+                if(!empty($unavailable)){
+                    echo json_encode($this->response(TRUE, $unavailable));
+                    return;
+                }
             }
-            // else{
-            //     $details = $input['data']['details'];
-            //     if($input['data']['status'] == M_Status::STATUS_DELIVERED && $state['status'] != M_Status::STATUS_DELIVERED){
-            //         $unavailable = $this->_check_item_availability($details);
-            //     }else if($input['data']['status'] == M_Status::STATUS_DELIVERED && $state['status'] == M_Status::STATUS_DELIVERED){
-            //         $delivered_items = $this->m_delivery->get_delivered_items($delivery_id);
-            //         $unavailable = $this->_check_item_availability($details, array_column($delivered_items, NULL, 'fk_sales_order_detail_id'));
-            //     }
-            //     if(!empty($unavailable)){
-            //         echo json_encode($this->response(TRUE, $unavailable));
-            //         return;
-            //     }
-            // }
             // if ($input['data']['status'] == M_Status::STATUS_DELIVERED){
             //     $input['data']['is_locked'] = 1;
             //     $input['data']['approved_by'] = $this->session->userdata('user_id');
@@ -356,7 +371,7 @@ class Deliveries extends PM_Controller
                     $temp['delivered_units'] = NULL;
                 }
                 
-                if(is_numeric($delivered_quantity) && (float)abs($delivered_quantity)){
+                if(is_numeric($delivered_quantity) && (float)$delivered_quantity){
                     $temp['this_delivery'] = $delivered_quantity;
                 }else{
                     $temp['this_delivery'] = NULL;

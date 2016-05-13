@@ -53,6 +53,13 @@ class dressed_packing_list extends PM_Controller_v2
         $this->_perform_validation();  
         if($this->form_validation->run()){
             $data = $this->_format_input();
+
+            $unavailable = $this->_check_item_availability($data['details']);
+            if(!empty($unavailable)){
+                $this->generate_response(TRUE, $unavailable)->to_JSON();
+                return;
+            }
+
             $created = $this->packing_list->create($data['packing_list'], $data['details']);
             if($created){
                 $this->generate_response(FALSE)->to_JSON();
@@ -99,6 +106,15 @@ class dressed_packing_list extends PM_Controller_v2
         $this->_perform_validation();  
         if($this->form_validation->run()){
             $data = $this->_format_input();
+
+            $previous = $this->packing_list->get($id);
+            $details = array_column($previous['details'], NULL, 'fk_sales_order_detail_id');
+            $unavailable = $this->_check_item_availability($data['details'], $details);
+            if(!empty($unavailable)){
+                $this->generate_response(TRUE, $unavailable)->to_JSON();
+                return;
+            }
+
             $created = $this->packing_list->update($id, $data['packing_list'], $data['details']);
             if($created){
                 $this->generate_response(FALSE)->to_JSON();
@@ -228,7 +244,53 @@ class dressed_packing_list extends PM_Controller_v2
         return $this->agent->exists($sales_agent, TRUE);
     }
 
+    function _check_item_availability($filled_orders, $exclude = []){
 
+        $unavailable = [];
+
+        $this->load->model('sales/m_sales_order', 'sales_order');
+        $this->load->model('inventory/m_product');
+
+        $ordered_products = $this->sales_order->get_ordered_products(FALSE, [$filled_orders[0]['fk_sales_order_detail_id']]);
+        $product_ids = array_values($ordered_products);
+        $product_details = $this->m_product->identify($product_ids);
+        $stocks = $this->m_product->get_stocks($product_ids);
+
+        $product_id = $ordered_products[$filled_orders[0]['fk_sales_order_detail_id']];
+
+        $available = ['units' => 0, 'pieces' => 0];
+
+        $requested = [
+            'units' => array_sum(array_column($filled_orders, 'this_delivery')), 
+            'pieces' => array_sum(array_column($filled_orders, 'delivered_units')), 
+        ];
+
+        if(isset($stocks[$product_id])){
+            $available['units'] += $stocks[$product_id]['available_units'];
+            $available['pieces'] += $stocks[$product_id]['available_pieces'];
+        }
+
+        if(isset($exclude[$filled_orders[0]['fk_sales_order_detail_id']])){
+            $available['units'] += array_sum(array_column($exclude, 'this_delivery'));
+            $available['pieces'] += array_sum(array_column($exclude, 'delivered_units')); 
+        }
+
+        if($available['units'] < $requested['units']){
+            $lacking_units = $requested['units'] - $available['units'];
+            $lacking[] = "{$lacking_units} {$product_details[$product_id]['unit_description']}";
+        }
+
+        if($available['pieces'] < $requested['pieces']){
+            $lacking_pieces = $requested['pieces'] - $available['pieces'];
+            $lacking[] = "{$lacking_pieces} pieces";
+        }
+
+        if(!empty($lacking)){
+            $unavailable[] = "Lacking ". implode(' and ', $lacking). " for: {$product_details[$product_id]['description']}";
+        }
+
+        return $unavailable;
+    }
 
     
 }

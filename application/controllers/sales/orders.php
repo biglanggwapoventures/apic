@@ -100,12 +100,7 @@ class Orders extends PM_Controller_v2 {
         $this->add_javascript(array('manage-sales-orders.js', 'price-format.js', 'numeral.js', 'jquery-ui.min.js'));
         $this->load->helper('customer');
 
-        $customers = $this->m_customer->all(['status' => 'a']);
-        array_walk($customers, function(&$var){
-            $var['name'] = "[{$var['customer_code']}] {$var['company_name']}";
-        });
-        $this->viewpage_settings['customers'] = dropdown_format($customers, 'id', 'name', '');
-
+        $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_customer->all(['status' => 'a']), 'company_name', 'id');
 
         /* get add ons */
         $this->viewpage_settings['products'] = $this->m_customer->get_customer_products($order_info[0]['fk_sales_customer_id']);
@@ -183,11 +178,7 @@ class Orders extends PM_Controller_v2 {
         $this->add_javascript(array('manage-sales-orders.js', 'price-format.js', 'numeral.js', 'jquery-ui.min.js'));
         $this->load->helper('view');
 
-        $customers = $this->m_customer->all(['status' => 'a']);
-        array_walk($customers, function(&$var){
-            $var['name'] = "[{$var['customer_code']}] {$var['company_name']}";
-        });
-        $this->viewpage_settings['customers'] = dropdown_format($customers, 'id', 'name', '');
+        $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_customer->all(['status' => 'a']), 'company_name', 'id');
 
         // get agents list
         $this->viewpage_settings['agents'] = $this->m_agent->all(['status' => 'a']);
