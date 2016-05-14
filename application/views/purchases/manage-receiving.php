@@ -90,20 +90,21 @@
                         <table class="table table-bordered" style="border-bottom: none;border-left: none;border-right: none;" id="receiving-line">
                             <thead>
                                 <tr class="info">
-                                    <th style="width:15%">Product</th>
-                                    <th style="width:7%">Unit</th>
-                                    <th style="width:10%">Ordered Qty</th>
-                                    <th style="width:10%">Qty Received</th>
-                                    <th style="width:15%">This Receive</th>
-                                    <th style="width:8%">Unit Price</th>
-                                    <th style="width:15%">Discount</th>
-                                    <th style="width:10%">Gross Amt</th>
-                                    <th style="width:10%">Net Amt</th>
+                                    <th style="width:15%">ITEM</th>
+                                    <th style="width:5%">UNIT</th>
+                                    <th style="width:10%">ORDERED QTY</th>
+                                    <th style="width:10%">RECEIVED QTY</th>
+                                    <th style="width:15%">THIS RECEIVED</th>
+                                    <th style="width:8%">UNIT PRICE</th>
+                                    <th style="width:10%">DISCOUNT</th>
+                                    <th style="width:9%">NET <br> UNIT PRICE</th>
+                                    <th style="width:9%">GROSS AMT</th>
+                                    <th style="width:9%">NET AMT</th>
                                 </tr>
                             </thead>
                             <tfoot>
 
-                                <tr><td class="no-border" colspan="6"></td><td class="info"><b>Total Amount</b></td><td class="info text-right" colspan="2"><span class="net-total-amount"><?= $defaults['total_amount'] ?></span></td></tr>
+                                <tr><td class="no-border" colspan="7"></td><td class="info"><b>Total Amount</b></td><td class="info text-right" colspan="2"><span class="net-total-amount"><?= $defaults['total_amount'] ?></span></td></tr>
                             </tfoot>
                             <tbody id='receiving-details'>
                                 <?php if (isset($defaults['details']) && is_array($defaults['details'])): ?>
@@ -140,12 +141,13 @@
                                             </td>
                                             <td><span class="unit-price"><?= $detail['unit_price'] ?></span></td>
                                             <td><input name="details[discount][]" type="text" value="<?= number_format($detail['discount'], 2) ?>" class="form-control discount has-amount do-calculation"/></td>
+                                            <td><span class="net-unit-price"></span></td>
                                             <td><span class="gross-amount"><?= number_format($gross_amount, 2) ?></span></td>
                                             <td><span class="net-amount"><?= number_format($gross_amount - $detail['discount'], 2) ?></span></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                    <tr><td  colspan="9" class="text-center">Please select a supplier and the corresponding P.O. No.</td></tr>
+                                    <tr><td  colspan="10" class="text-center">Please select a supplier and the corresponding P.O. No.</td></tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -186,6 +188,7 @@
                 totalAmount += netAmount;
                 $(this).find("span.gross-amount").text(numeral(grossAmount).format('0,0.00'));
                 $(this).find("span.net-amount").text(numeral(netAmount).format('0,0.00'));
+                $(this).find("span.net-unit-price").text(numeral( unitPrice - (discount/thisReceive) ).format('0,0.00'));
             });
             $("span.net-total-amount").text(numeral(totalAmount).format('0,0.00'));
         }
@@ -245,7 +248,8 @@
                 var tableRow = [];
                 $(json.data.details).each(function (i) {
                     var detail = json.data.details[i];
-                    if(detail.quantity_received >= detail.quantity){
+                    // console.log("%f %f", detail.quantity_received,  detail.quantity)
+                    if(parseFloat(detail.quantity_received) >= parseFloat(detail.quantity)){
                         return;
                     }
                     var tableCell = [];
@@ -256,8 +260,9 @@
                     tableCell[4] = '<div class="t"><input type="text" class="form-control this-receive do-calculation  text-right" name="details[this_receive][]"/></div><input type="text" class="form-control text-right" name="details[pieces_received][]"/>';
                     tableCell[5] = '<span class="unit-price">' + detail.unit_price + '</span>';
                     tableCell[6] = '<input name="details[discount][]" type="text" value="0.00" class="form-control discount has-amount do-calculation"/>';
-                    tableCell[7] = '<span class="gross-amount">0.00</span>';
-                    tableCell[8] = '<span class="net-amount">0.00</span>';
+                    tableCell[7] = '<span class="net-unit-price"></span>';
+                    tableCell[8] = '<span class="gross-amount">0.00</span>';
+                    tableCell[9] = '<span class="net-amount">0.00</span>';
                     tableRow.push("<tr><td>" + tableCell.join("</td><td>") + "</td></tr>");
                 });
                 $("tbody#receiving-details").html(tableRow.join(""));
@@ -266,7 +271,7 @@
                 alert("Internal Server Error!");
             });
         });
-        $('tbody#receiving-details').on('keyup', '.do-calculation', function () {
+        $('tbody#receiving-details').on('blur', '.do-calculation', function () {
             doCalculation();
         });
         $("form").submit(function (e) {
@@ -303,6 +308,9 @@
                     $("[type=submit]").removeClass("disabled");
                 }
             });
+
+
         });
+        doCalculation();
     });
 </script>
