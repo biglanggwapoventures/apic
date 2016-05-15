@@ -143,7 +143,6 @@ class Yielding extends PM_Controller_v2
            return;
         }
 
-
         // iterate through payload and validate
         foreach($yield['to'] AS $index => $produce){
 
@@ -224,7 +223,19 @@ class Yielding extends PM_Controller_v2
     		return;
     	}
 
-        if($this->yield->create($this->_format_data('c'))){
+        $data = $this->_format_data('c');
+
+        $unavailable = $this->_check_item_availability(
+            $data['source']['fk_inventory_product_id'],
+            [ 'units' => $data['source']['quantity'], 'pieces' => $data['source']['pieces'] ]
+        );
+
+        if(!empty($unavailable)){
+            $this->generate_response(TRUE, $unavailable)->to_JSON();
+            return;
+        }
+
+        if($this->yield->create($data)){
             $this->generate_response(FALSE)->to_JSON();
             $this->flash_message(FALSE, 'Product processing has been saved successfuly!');
             return;
@@ -241,7 +252,22 @@ class Yielding extends PM_Controller_v2
             return;
         }
 
-        if($this->yield->update($id, $this->_format_data('u'))){
+        $data = $this->_format_data('u');
+
+        $previous = $this->yield->get($id);
+
+        $unavailable = $this->_check_item_availability(
+            $data['source']['fk_inventory_product_id'],
+            [ 'units' => $data['source']['quantity'], 'pieces' => $data['source']['pieces'] ],
+            [ 'units' => $previous['source']['quantity'], 'pieces' => $previous['source']['pieces'] ]
+        );
+
+        if(!empty($unavailable)){
+            $this->generate_response(TRUE, $unavailable)->to_JSON();
+            return;
+        }
+
+        if($this->yield->update($id, $data)){
             $this->flash_message(FALSE, "Process # {$id} has been updated successfully!");
             $this->generate_response(FALSE)->to_JSON();
             return;
@@ -307,5 +333,48 @@ class Yielding extends PM_Controller_v2
             'yielding' => [],
             'data' => $yielding
         ])->generate_page();
+    }
+
+    function _check_item_availability($product_id, $requested, $offset = FALSE)
+    {   
+        $unavailable = [];
+
+        $this->load->model('inventory/m_product', 'product');
+        $product_info = $this->product->identify([$product_id]);
+        $stocks = $this->product->get_stocks($product_id);
+
+        $product = $product_info[$product_id];
+        unset($product_info);
+
+        $available = ['units' => 0, 'pieces' => 0];
+
+        if(isset($stocks[$product_id])){
+            $available['units'] += $stocks[$product_id]['available_units'];
+            $available['pieces'] += $stocks[$product_id]['available_pieces'];
+        }
+
+        if($offset !== FALSE){
+            $available['units'] += $offset['units'];
+            $available['pieces'] += $offset['pieces'];
+        }
+        
+        $lacking = [];  
+
+        if($requested['units'] > $available['units']){
+            $lacking_units = $requested['units'] - $available['units'];
+            $lacking[] = "{$lacking_units} {$product['unit_description']}";
+        }
+
+        if($requested['pieces'] > $available['pieces']){
+            $lacking_pieces = abs($requested['pieces']) - $available['pieces'];
+            $lacking[] = "{$lacking_pieces} pieces";
+        }
+
+        if(!empty($lacking)){
+            $unavailable[] = "Lacking ". implode(' and ', $lacking). " for: {$product['description']}";
+        }
+
+        return $unavailable;
+
     }
 }
