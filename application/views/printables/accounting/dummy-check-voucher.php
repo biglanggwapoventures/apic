@@ -36,7 +36,7 @@
                 <div class="col-xs-offset-1 col-xs-7">
                     <table>
                         <tr><td><?=$data['id']?></td></tr>
-                        <tr><td><?=$data['date']?></td></tr>
+                        <tr><td><?=date_create($data['date'])->format("M d, Y")?></td></tr>
                         <tr><td><?=number_format($data['check_amount'], 2)?></td></tr>
                         <tr><td style="padding-top:5px;"><?=(!empty(trim($data['payee'])) ? trim($data['payee']) : trim($data['supplier']))?></td></tr>
                     </table>
@@ -45,7 +45,7 @@
                     <table>
                         <tr><td>&nbsp;</td></tr>
                         <tr><td>&nbsp;</td></tr>
-                        <tr><td style="padding-left:30px;"><?= ($data['check_date']) ? $data['check_date'] : "" ?></td></tr>
+                        <tr><td style="padding-left:30px;"><?= (date_create($data['check_date'])->format("M d, Y")) ? date_create($data['check_date'])->format("M d, Y") : "" ?></td></tr>
                     </table>
                 </div>
             </div> <!-- end .row -->
@@ -62,7 +62,7 @@
                 <div class="col-xs-2" style="margin-left:-231px;">
                     <table>
                         <tr><td>&nbsp;</td></tr>
-                        <tr><td><?=$data['date']?></td></tr>
+                        <tr><td><?=date_create($data['date'])->format("M d, Y")?></td></tr>
                     </table>
                 </div>
             </div> <!-- end .row -->

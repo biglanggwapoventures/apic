@@ -36,7 +36,7 @@
                 <div class="col-xs-offset-1 col-xs-7">
                     <table>
                         <tr><td><?=$id?></td></tr>
-                        <tr><td><?=$date?></td></tr>
+                        <tr><td><?=date_create($date)->format("M d, Y")?></td></tr>
                         <tr><td><?=number_format($amount, 2)?></td></tr>
                         <tr><td style="padding-top:5px;"><?=(!empty(trim($payee)) ? trim($payee) : trim($supplier))?></td></tr>
                     </table>
@@ -45,7 +45,7 @@
                     <table>
                         <tr><td>&nbsp;</td></tr>
                         <tr><td>&nbsp;</td></tr>
-                        <tr><td style="padding-left:30px;"><?= ($print_check_date) ? $check_date : "" ?></td></tr>
+                        <tr><td style="padding-left:30px;"><?= (date_create($check_date)->format("M d, Y")) ? date_create($check_date)->format("M d, Y") : "" ?></td></tr>
                     </table>
                 </div>
             </div> <!-- end .row -->
@@ -62,7 +62,7 @@
                 <div class="col-xs-2" style="margin-left:-231px;">
                     <table>
                         <tr><td>&nbsp;</td></tr>
-                        <tr><td><?=$date?></td></tr>
+                        <tr><td><?=date_create($date)->format("M d, Y")?></td></tr>
                     </table>
                 </div>
             </div> <!-- end .row -->

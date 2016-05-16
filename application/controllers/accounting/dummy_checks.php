@@ -28,7 +28,7 @@ class Dummy_checks extends PM_Controller_v2
 
     public function create()
     {
-        $this->add_javascript(['price-format.js', 'accounting-dummy-checks/manage.js']);
+        $this->add_javascript(['price-format.js', 'plugins/bootstrap-datetimepicker/moment.js', 'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js', 'accounting-dummy-checks/manage.js']);
         $this->load->model('accounting/m_bank_account', 'account');
         $this->setTabTitle('Create new dummy check');
         $this->set_content(self::VIEW_PATH . 'manage', [
@@ -44,7 +44,7 @@ class Dummy_checks extends PM_Controller_v2
         if ($id === FALSE || !$this->dummy_check->is_valid($id)) {
             show_404();
         }
-        $this->add_javascript(['printer/printer.js', 'price-format.js', 'accounting-dummy-checks/manage.js']);
+        $this->add_javascript(['printer/printer.js', 'price-format.js', 'plugins/bootstrap-datetimepicker/moment.js', 'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js', 'accounting-dummy-checks/manage.js']);
         $this->load->model('accounting/m_bank_account', 'account');
         $this->setTabTitle('Update dummy check');
         $this->set_content(self::VIEW_PATH . 'manage', [
@@ -158,7 +158,7 @@ class Dummy_checks extends PM_Controller_v2
         $this->form_validation->set_rules('date', 'Date', 'required|callback_validate_date');
         $this->form_validation->set_rules('payee', 'Payee', 'required');
         $this->form_validation->set_rules('bank_account', 'Bank account', 'required|callback_validate_bank_account');
-        $this->form_validation->set_rules('check_number', 'Check number', 'required');
+        $this->form_validation->set_rules('check_number', 'Check number', 'required|numeric');
         $this->form_validation->set_rules('check_date', 'Check date', 'required|callback_validate_date');
         $this->form_validation->set_rules('check_amount', 'Check amount', 'required|callback_validate_check_amount');
         // $this->form_validation->set_rules('is_approved', '', 'callback_validate_status');

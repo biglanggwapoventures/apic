@@ -1,10 +1,12 @@
 (function($){
     var initializeDatepicker = function(el){
         if(typeof el === 'string'){
-            $(el).datepicker({dateFormat:'mm/dd/yy'})
+            // $(el).datepicker({dateFormat:'mm/dd/yy'})
+            $(el).datetimepicker({format:'MM/DD/YYYY'})
             return;
         }
-        el.datepicker({dateFormat:'mm/dd/yy'});
+        // el.datepicker({dateFormat:'mm/dd/yy'});
+        el.datetimepicker({format:'MM/DD/YYYY'});
     },
 
     initializePriceformat = function(el){
