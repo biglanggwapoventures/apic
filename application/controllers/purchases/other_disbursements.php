@@ -288,10 +288,10 @@ class Other_Disbursements extends PM_Controller_v2 {
         if ($this->input->post('payment_type') === 'cash') {
             return TRUE;
         }
-        if (strlen(trim($check_number)) > 3) {
+        if ($this->form_validation->integer($check_number)) {
             return TRUE;
         }
-        $this->form_validation->set_message('_validate_check_number', 'The %s is required.');
+        $this->form_validation->set_message('_validate_check_number', 'The %s cannot be empty and can only contain numbers.');
         return FALSE;
     }
 
