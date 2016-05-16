@@ -162,11 +162,11 @@
                        <?= form_dropdown('bank_account', $banks_dropdown, $params['bank_account'], 'class="form-control"') ?>
                     </div>
                     <div class="form-group">
-                       <label>Bank Account</label>
+                       <label>Check No. Start</label>
                        <?= form_input('check_number_start', $params['check_number_start'], 'class="form-control"') ?>
                     </div>
                     <div class="form-group">
-                       <label>Bank Account</label>
+                       <label>Check No. End</label>
                        <?= form_input('check_number_end', $params['check_number_end'], 'class="form-control"') ?>
                     </div>
                 </div>
