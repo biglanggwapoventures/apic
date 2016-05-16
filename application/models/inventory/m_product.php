@@ -227,7 +227,7 @@ class M_Product extends CI_Model {
 
     public function identify($ids)
     {
-        $this->db->select('p.id, p.description, p.code, u.description AS unit_description')->from('inventory_product AS p');
+        $this->db->select('p.id, p.description, p.code, u.description AS unit_description, p.fk_category_id')->from('inventory_product AS p');
         $this->db->join('inventory_unit AS u', 'u.id = p.fk_unit_id');
         $this->db->where_in('p.id', $ids);
         return array_column($this->db->get()->result_array(), NULL, 'id');

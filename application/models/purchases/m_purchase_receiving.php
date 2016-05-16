@@ -424,6 +424,19 @@ class M_Purchase_Receiving extends CI_Model {
         return $this->db->get()->result_array();
 
     }
+
+    function item_ids($rr_detail_ids)
+    {
+
+        $this->db->select('receiving_detail.id, order_detail.fk_inventory_product_id')
+            ->from('purchase_receiving_detail AS receiving_detail')
+            ->join('purchase_order_detail AS order_detail', 'order_detail.id = receiving_detail.fk_purchase_order_detail_id')
+            ->where_in('receiving_detail.id', $rr_detail_ids);
+
+        return array_column($this->db->get()->result_array(), 'fk_inventory_product_id', 'id');
+
+    }
+
         
 
 }

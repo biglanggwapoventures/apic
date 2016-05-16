@@ -71,10 +71,23 @@ class Yielding extends PM_Controller_v2 {
             return;
         }
 
-        $mode = $this->yield->exists($rr_no) ? 'u' : 'c';
-
+        if($this->yield->exists($rr_no)){
+            $previous = $this->yield->get($rr_no);
+            $offset = array_column($previous['source'], NULL, 'fk_purchase_receiving_detail_id');
+            $mode = 'u';
+        }else{
+            $mode = 'c';
+            $offset = FALSE;
+        }
 
         $data = $this->_format_data($mode);
+
+        $unavailable = $this->_check_item_availability($data['source'], $offset);
+        if(!empty($unavailable)){
+            $this->generate_response(TRUE, $unavailable)->to_JSON();
+            return;
+        }
+
         if($mode === 'c'){
             
             // $this->generate_response($data)->to_JSON();
@@ -118,6 +131,7 @@ class Yielding extends PM_Controller_v2 {
             $quantity = $source['quantity'];
 
             $results = [];
+
             $temp = [
                 'fk_purchase_receiving_detail_id' => $source['rr_detail_id'],
                 'quantity' => $quantity,
@@ -210,6 +224,79 @@ class Yielding extends PM_Controller_v2 {
                     $this->validation_errors[] = "Product pieces/heads must be in numeric form for line # {$line} in {$product}";
                 }
                 $line++;
+            }
+        }
+    }
+
+
+    function _check_item_availability($details, $offsets = [])
+    {
+        $this->load->model('inventory/m_product', 'product');
+
+        $unavailable = [];
+
+        $details = array_column($details, NULL, 'fk_purchase_receiving_detail_id');
+        $products = $this->receiving->item_ids(array_keys($details));
+
+        $product_ids = array_values($products);
+
+        $product_details = $this->product->identify($product_ids);
+        $stocks = $this->product->get_stocks($product_ids);
+
+        foreach($products AS $rr_detail_id => $item_id){
+
+            $product = $product_details[$item_id];
+
+            $available = [ 'units' => 0, 'pieces' => 0 ];
+            $requested = [ 'units' => $details[$rr_detail_id]['quantity'], 'pieces' => $details[$rr_detail_id]['pieces'] ];
+
+            if(isset($stocks[$item_id])){
+                $available['units'] += $stocks[$item_id]['available_units'];
+                $available['pieces'] += $stocks[$item_id]['available_pieces'];
+            }
+
+            if(isset($offsets[$rr_detail_id])){
+                $available['units'] += $offsets[$rr_detail_id]['quantity'];
+                $available['pieces'] += $offsets[$rr_detail_id]['pieces'];
+            }
+
+            $lacking = [];  
+
+            if($requested['units'] > $available['units']){
+                $lacking_units = $requested['units'] - $available['units'];
+                $lacking[] = "{$lacking_units} {$product['unit_description']}";
+            }
+
+            if($requested['pieces'] > $available['pieces']){
+                $lacking_pieces = $requested['pieces'] - $available['pieces'];
+                $lacking[] = "{$lacking_pieces} pieces";
+            }
+
+            if(!empty($lacking)){
+                $unavailable[] = "Lacking ". implode(' and ', $lacking). " for: {$product['description']}";
+            }
+        }
+
+        return $unavailable;
+
+    }
+
+
+    // calculates cost of dressed from live
+
+    function _calculate_cost($live_cost, $results)
+    {
+        $this->load->model('inventory/m_product', 'product');
+
+        $results = array_column($results, NULL, 'id');
+
+        $product_details = $this->product->identify(array_values($results));
+
+        $total_units = 0;
+
+        foreach ($product_details as $id => $props) {
+            if($props['fk_category_id'] == M_Product::CATEGORY_FRESH_CHILLED_DRESSED_CHICKEN){
+                $total_units += $props['quantity'];
             }
         }
     }

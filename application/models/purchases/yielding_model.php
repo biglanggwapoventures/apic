@@ -21,9 +21,7 @@ class Yielding_model extends CI_Model
 			$data['source'] = array_column($sources, NULL, 'id');
 
 			foreach($results AS $row){
-				if(isset($data['source'][$row['fk_yieldings_from_id']])){
-					$data['source'][$row['fk_yieldings_from_id']]['result'][] = $row; 
-				}
+				$data['source'][$row['fk_yieldings_from_id']]['result'][] = $row; 
 			}
 
 			return $data;	 

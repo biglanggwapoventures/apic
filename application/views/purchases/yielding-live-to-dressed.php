@@ -249,7 +249,6 @@
 		
 
 		function toggleInputs(el){
-			console.log('lol')
 			var table = el.closest('table');
 			if(el.prop('checked')){
 				table.find('input:not([type=checkbox]),select').removeAttr('disabled')
@@ -291,14 +290,15 @@
 
 			});
 
-			var recovery = (totalDressWeight/yieldQuantity) * 100,
-				dressCost = parseFloat(table.find('.yield-unit-price').data('unit-price')) / (recovery / 100);
+			var recovery = (totalDressWeight/yieldQuantity) * 100;
+
+			dressCost = recovery ? parseFloat(table.find('.yield-unit-price').data('unit-price')) / (recovery / 100) : 0;
 
 			table.find('.total-dress-weight').text(numeral(totalDressWeight).format('0,0.00')+' kgs');
 			table.find('.total-byproducts-weight').text(numeral(totalByproductsWeight).format('0,0.00')+' kgs');
 			table.find('.total-recovery').text(recovery.toFixed(2)+'%');
 			table.find('.dress-cost').text(numeral(dressCost).format('0,0.00'));
-
+			
 		});
 
 		$('.toggle-include').each(function(){
