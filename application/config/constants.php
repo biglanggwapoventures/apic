@@ -79,7 +79,7 @@ define('STANDARD', 's');
 define('ADMIN', 'a');
 
 define('TOGGLE_SALES_AGENT', TRUE);
-define('IGNORE_STOCK_PL_ACTION', TRUE);
+define('IGNORE_STOCK_PL_ACTION', FALSE);
 
 /*END OF PROMIX SYSTEM CONSTANTS*/
 
