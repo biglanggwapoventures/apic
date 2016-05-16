@@ -17,7 +17,7 @@ class Sales_agent_incentives extends PM_Controller_v2
 
 		$get = elements(['start_date', 'end_date', 'sales_agent'], $this->input->get(), FALSE);
 
-		$this->add_javascript(['plugins/sticky-thead.js']);
+		$this->add_javascript(['printer/print.js', 'plugins/sticky-thead.js', 'plugins/loadash.js', 'sales_agent_incentives/sales_agent_incentives.js']);
 		// load necessary models 
 		$this->load->model('sales/m_agent', 'agent');
 		$this->load->model('reports/sales_agent_incentive_model', 'report');

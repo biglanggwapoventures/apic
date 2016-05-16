@@ -12,23 +12,30 @@
     tbody > tr > td:nth-child(7){
         text-align: center;
     }
-    thead > tr:nth-child(4) > th{
+    thead > tr:nth-child(6) > th{
         padding: 3px;
         font-weight: bold;
         border:1px solid black;
         text-transform:uppercase;
         text-align: center;
     }
-    thead > tr:nth-child(3) > th{
+    thead > tr:nth-child(5) > th{
         padding-bottom: 5px;
     }
     thead th{
         background: white;
     }
+    @media screen {
+        .noPrint{}
+        .noScreen{display:none;}
+    }
     @media print {
       a[href]:after {
         content: none !important;
       }
+      .noPrint{display:none;}
+      .noScreen{}
+      table {page-break-after:always;}
     }
     tfoot td:not(:first-child){
         border: 1px solid black;
@@ -36,11 +43,29 @@
     }
 </style>
 <div class="box box-solid">
-   <div class="box-body">
+    <div class="box-header">
+        <div class="box-tools" style="position: absolute;width: 100%;z-index: 999">
+            <a id="print-report" href="#"><i class="fa fa-print"></i> Print page</a>
+        </div>
+    </div>
+    <div class="box-body">
         <div class="row">
             <div class="col-sm-12">
                 <table class="table-striped" style="width:100%">
-                    <thead>
+                    <thead class="first-thead">
+                        <tr class="noScreen">
+                            <th colspan="10" class="text-center">
+                                <h5 style="margin-bottom:0;font-weight: bold">
+                                    ARDITEZZA POULTRY INTEGRATION CORPORATION
+                                </h5>
+                            </th>
+                        </tr>
+                        <tr class="noScreen">
+                            <th colspan="10" class="text-center font-normal">
+                                Ultima Residences Tower 3, Unit 1018, Osmena Blvrd., Cebu City<br>
+                                Tel/Fax Nos.: (032) 253-4570 to 71 / 414-3312 / 512-3067
+                            </th>
+                        </tr>
                         <tr><th colspan="8" class="text-center"><h4 style="margin-bottom:0">SALES AGENT INCENTIVES</h4></th></tr>
                         <tr>
                             <th colspan="8" class="text-center text-primary" style="padding-bottom:10px">
@@ -49,7 +74,7 @@
                                 </a>
                             </th>
                         </tr>
-                        <tr>
+                        <tr id="adjust-font-size">
                             <th class="text-right">Sales Agent : </th>
                             <th class="text-center">
                                 <a  data-toggle="modal" data-target="#select-date" >
@@ -156,6 +181,10 @@
             </form>
         </div>
     </div>
+</div>
+
+<div class="hidden" id="table-dummy">
+    
 </div>
 <script type="text/javascript">
     (function($){
