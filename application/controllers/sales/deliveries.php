@@ -126,6 +126,11 @@ class Deliveries extends PM_Controller
 
     public function _check_item_availability($filled_orders, $exclude = [])
     {
+
+         if(IGNORE_STOCK_PL_ACTION){
+            return [];
+        }
+            
         $unavailable = [];
 
         $this->load->model('sales/m_sales_order', 'sales_order');

@@ -244,7 +244,11 @@ class dressed_packing_list extends PM_Controller_v2
         return $this->agent->exists($sales_agent, TRUE);
     }
 
-    function _check_item_availability($filled_orders, $exclude = []){
+    function _check_item_availability($filled_orders, $exclude = [])
+    {
+        if(IGNORE_STOCK_PL_ACTION){
+            return [];
+        }
 
         $unavailable = [];
 
