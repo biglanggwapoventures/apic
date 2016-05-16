@@ -3,17 +3,24 @@
         margin-left: 10px;
     }
     tbody td{
-        padding: 5px;
+        padding: 3px;
         border: 1px solid black;
     }
-    tbody > tr > td:nth-child(7){
+    tbody > tr > td:nth-child(6){
         text-align: right;
     }
-    thead > tr:nth-child(3) > th{
-        padding: 5px;
+    tbody > tr > td:nth-child(7){
+        text-align: center;
+    }
+    thead > tr:nth-child(4) > th{
+        padding: 3px;
         font-weight: bold;
         border:1px solid black;
         text-transform:uppercase;
+        text-align: center;
+    }
+    thead > tr:nth-child(3) > th{
+        padding-bottom: 5px;
     }
     thead th{
         background: white;
@@ -25,26 +32,40 @@
     }
     tfoot td:not(:first-child){
         border: 1px solid black;
-        padding: 6px;
+        padding: 3px;
     }
 </style>
 <div class="box box-solid">
-   <div class="box-body table-responsive">
+   <div class="box-body">
         <div class="row">
             <div class="col-sm-12">
                 <table class="table-striped" style="width:100%">
                     <thead>
                         <tr><th colspan="8" class="text-center"><h4 style="margin-bottom:0">SALES AGENT INCENTIVES</h4></th></tr>
                         <tr>
-                            <th colspan="8" class="text-center text-primary" style="padding-bottom:20px">
+                            <th colspan="8" class="text-center text-primary" style="padding-bottom:10px">
                                 <a data-toggle="modal" data-target="#select-date">
                                 <?= "{$params['start_date']} - {$params['end_date']}"?>
                                 </a>
                             </th>
                         </tr>
-                        
+                        <tr>
+                            <th class="text-right">Sales Agent : </th>
+                            <th class="text-center">
+                                <a  data-toggle="modal" data-target="#select-date" >
+                                    <?= isset($params['sales_agent']) ? $params['sales_agent']['name'] : '' ?>
+                                </a>
+                            </th>
+                            <th colspan="3"></th>
+                            <th class="text-right">Commission Rate : </th>
+                            <th class="text-center">
+                               <span>
+                                    <?= isset($params['sales_agent']) ? $params['sales_agent']['commission_rate'] : '' ?>
+                                </span>
+                            </th>
+                        </tr>
                         <tr class="active">
-                            <th>SR#</th><th>DEPOSIT DATE</th><th>CUSTOMER</th> <th>PL#</th> <th>PL DATE</th>  <th>DAYS COLLECTED</th><th>AMOUNT</th>
+                            <th>SR#</th><th>DEPOSIT DATE</th><th>CUSTOMER</th> <th>PL#</th> <th>PL DATE</th><th>AMOUNT</th><th>DAYS COLLECTED</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,34 +92,31 @@
                                 <td><?= $row['customer_name']?></td>
                                 <td><a target="_blank" href="<?= "{$pl_url}/{$row['fk_sales_delivery_id']}"?>">PL# <?= $row['fk_sales_delivery_id']?></a></td>
                                 <td><?= date_create($row['delivery_date'])->format('M d, Y')?></td>
+                                 <td><?= number_format($row['amount'], 2)?></td>
                                 <td><?= $row['days_collected']?> day(s)</td>
-                                <td><?= number_format($row['amount'], 2)?></td>
-                                
                             </tr>   
                         <?php endforeach;?>
                     </tbody>
                     <tfoot>
                         <tr>
                             <td colspan="3"></td>
-                            <td colspan="4" class="text-center text-bold" style="background:#eee"><span style="font-size:110%">SUMMARY</span></td>
+                            <td colspan="4" class="text-center text-bold" style="background:#eee">SUMMARY</td>
                         </tr>
                         <tr>
                             <td colspan="3"></td>
-                            <td colspan="2"><span style="font-size:110%">TOTAL COLLECTION</span></td>
-                            <td class="active text-bold text-center " colspan="2"><span style="font-size:110%"><?= number_format($total, 2)?></span></td>
+                            <td colspan="2">TOTAL COLLECTION</td>
+                            <td class="active text-bold text-center " colspan="2"><span><?= number_format($total, 2)?></span></td>
                         </tr>
                         <tr>
                             <td colspan="3"></td>
-                            <td colspan="2"><span style="font-size:110%">TOTAL QUALIFIED COLLECTION</span></td>
-                            <td class="active text-center text-bold" colspan="2"><span style="font-size:110%"><?= number_format($total_qualified, 2)?></span></td>
+                            <td colspan="2">TOTAL QUALIFIED COLLECTION</td>
+                            <td class="active text-center text-bold" colspan="2"><span><?= number_format($total_qualified, 2)?></span></td>
                         </tr>
                         <tr>
                             <td colspan="3"></td>
-                            <td colspan="2"><span style="font-size:110%">TOTAL INCENTIVE</span></td>
+                            <td colspan="2">TOTAL INCENTIVE</td>
                             <td class="active text-center text-bold" colspan="2">
-                                <span style="font-size:110%">
-                                    <?= isset($params['sales_agent']) ? number_format($total_qualified * $params['sales_agent']['commission_rate'], 2) : 0 ?>
-                                </span>
+                                    <?= isset($params['sales_agent']) ? number_format($total_qualified * $params['sales_agent']['commission_rate'], 2) : '0.00' ?>
                             </td>
                         </tr>
                     </tfoot>
