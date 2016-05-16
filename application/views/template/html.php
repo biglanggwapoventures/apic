@@ -208,7 +208,7 @@
                         <?php if ($is_admin || (int) $mod_access['reports'] === 1): ?>
                             <li class="treeview <?= $data_nav === NAV_REPORTS ? 'active' : '' ?>">
                                 <a href="#">
-                                    <i class="fa fa-list-ol"></i> <span>Reports</span>
+                                    <i class="fa fa-line-chart"></i> <span>Reports</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
                                 <ul class="treeview-menu">
