@@ -54,16 +54,12 @@
                 <table class="table-striped" style="width:100%">
                     <thead class="first-thead">
                         <tr class="noScreen">
-                            <th colspan="10" class="text-center">
-                                <h5 style="margin-bottom:0;font-weight: bold">
-                                    ARDITEZZA POULTRY INTEGRATION CORPORATION
-                                </h5>
-                            </th>
-                        </tr>
-                        <tr class="noScreen">
                             <th colspan="10" class="text-center font-normal">
-                                Ultima Residences Tower 3, Unit 1018, Osmena Blvrd., Cebu City<br>
-                                Tel/Fax Nos.: (032) 253-4570 to 71 / 414-3312 / 512-3067
+                                ARDITEZZA POULTRY INTEGRATION CORPORATION<br>
+                                <div style="font-weight:normal">
+                                    Ultima Residences Tower 3, Unit 1018, Osmena Blvrd., Cebu City<br>
+                                    Tel/Fax Nos.: (032) 253-4570 to 71 / 414-3312 / 512-3067
+                                </div>
                             </th>
                         </tr>
                         <tr><th colspan="8" class="text-center"><h4 style="margin-bottom:0">SALES AGENT INCENTIVES</h4></th></tr>

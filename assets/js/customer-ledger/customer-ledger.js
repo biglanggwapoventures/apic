@@ -35,6 +35,6 @@ $(document).ready(function(){
         $('.first-table .active th:first-child, .chunked .active th:first-child').attr('width', '10%');
         $('.chunked, .first-table').css({'font-size': '10px'});
 
-        $('#table-dummy').removeClass('hidden').print().addClass('hidden');
+        $('#table-dummy').removeClass('hidden').print().addClass('hidden').empty();
     });
 })
