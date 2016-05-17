@@ -1,6 +1,17 @@
 $(document).ready(function(){
+
     $('.datepicker').datepicker({dateFormat: 'yy-mm-dd'});
     $('table').stickyTableHeaders({fixedOffset: $('.content-header')});
+
+    $('.editable').editable({
+        placement:'right',
+        url: $('.box-body').data('edit-url'),
+        success: function(data){
+            if(data.error_flag){
+                return "Failed to update check number!";
+            }
+        }
+    });
 
     // var sample = ['sample', 'lol'];
 
