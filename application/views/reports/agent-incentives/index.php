@@ -75,14 +75,14 @@
                             </th>
                         </tr>
                         <tr id="adjust-font-size">
-                            <th class="text-right">Sales Agent : </th>
+                            <th class="text-right"><span>Sales Agent : </span></th>
                             <th class="text-center">
                                 <a  data-toggle="modal" data-target="#select-date" >
-                                    <?= isset($params['sales_agent']) ? $params['sales_agent']['name'] : '' ?>
+                                    <span><?= isset($params['sales_agent']) ? $params['sales_agent']['name'] : '' ?></span>
                                 </a>
                             </th>
                             <th colspan="3"></th>
-                            <th class="text-right">Commission Rate : </th>
+                            <th class="text-right"><span>Commission Rate : </span></th>
                             <th class="text-center">
                                <span>
                                     <?= isset($params['sales_agent']) ? $params['sales_agent']['commission_rate'] : '' ?>
@@ -90,7 +90,7 @@
                             </th>
                         </tr>
                         <tr class="active">
-                            <th>SR#</th><th>DEPOSIT DATE</th><th>CUSTOMER</th> <th>PL#</th> <th>PL DATE</th><th>AMOUNT</th><th>DAYS COLLECTED</th>
+                            <th><span>SR#</span></th><th><span>DEPOSIT DATE</span></th><th><span>CUSTOMER</span></th><th><span>PL#</span></th><th><span>PL DATE</span></th><th><span>AMOUNT</span></th><th><span>DAYS COLLECTED</span></th>
                         </tr>
                     </thead>
                     <tbody>

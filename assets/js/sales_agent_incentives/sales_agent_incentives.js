@@ -1,12 +1,12 @@
 $(document).ready(function(){
 	$('#print-report').click(function(){
         var $main = $('table tr').clone();
-        var total = ($main.length)-4;
-        var $first = $main.slice(5, 24);
-        var $second = $main.slice(24, total);
+        var total = ($main.length);
+        var $first = $main.slice(6, 30);
+        var $second = $main.slice(30, total);
         var $third = $main.slice(total);
 
-        var tr_chunks = _.chunk($second, 17);
+        var tr_chunks = _.chunk($second, 28);
 
         $('#table-dummy').append($first);
         $first.wrapAll('<table class="table first-table"></table>');
@@ -19,7 +19,7 @@ $(document).ready(function(){
         }
 
         $('#table-dummy').append($third);
-        $third.wrapAll('<table class="table"></table>');
+        $third.wrapAll('<table class="table" style="font-size:10px"></table>');
         $third.find('th').css({'border':'1px solid #000'});
 
         $('.chunked').prepend($main.slice(5,6));
@@ -27,14 +27,14 @@ $(document).ready(function(){
         $('._ > td').css({'border':0});
 
         $('.first-table .active th, .chunked .active th').each(function(){
-            $(this).attr('width', '30%');
+            $(this).attr('width', '40%');
         });
         $('.first-table .active th:first-child, .chunked .active th:first-child').attr('width', '10%');
-        $('.first-table .active th:nth-child(7), .chunked .active th:nth-child(7)').attr('width', '40%');
+        $('.first-table .active th:nth-child(5), .chunked .active th:nth-child(5)').attr('width', '10%');
         $('.first-table .active th:nth-child(4), .chunked .active th:nth-child(4)').attr('width', '10%');
         $('.first-table .active th:nth-child(2), .chunked .active th:nth-child(2)').attr('width', '15%');
-        $('.chunked td, .first-table td, .first-table th, .chunked th').css({'padding':'3px', 'font-size':'10px'});
+        $('.chunked td, .first-table td, .first-table span, .chunked span').css({'padding':'3px 3px 3px 3px', 'font-size':'10px'});
 
-        $('#table-dummy').removeClass('hidden').print().addClass('hidden');
+        $('#table-dummy').removeClass('hidden').print().addClass('hidden').empty();
     });
 });
