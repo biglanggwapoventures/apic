@@ -26,7 +26,7 @@ $(document).ready(function(){
 
         firsTable.appendTo(div);
 
-        var remaining = _.chunk(entries.splice(17, entries.length-17), 20);
+        var remaining = _.chunk(entries.splice(17, entries.length-17), 23);
         for(var x in remaining){
             var table = tableClone.clone();
             table.find('tfoot').remove();
