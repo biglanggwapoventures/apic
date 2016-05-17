@@ -7,26 +7,31 @@ $(document).ready(function(){
     $('#print-report').click(function(){
 
         // make virtual div with table inside
-        var div = $('<div />', { html: $('<table />', { css:{'width':'100%', 'page-break-after' : 'always'},  html: $('<tbody />') }) } );
+        var div = $('<div />');
 
         // clone priamry table
-        var clone = $('table').clone();
+        var tableClone = $('table').clone();
+        var entries = tableClone.find('tbody tr');
+        tableClone.find('tbody').empty();
 
-        // cut cloned table thead to table of virtual div
-        var header = clone.find('thead');
-        // var repeatedHeader = header.find('.repeated').clone();
-        div.find('table').prepend(header);
+        var firsTable = tableClone.clone();
+        firsTable.find('tfoot').remove();
 
-        var entries = clone.find('tbody tr');
-        var firstPageEntries = entries.splice(0, 17);
-        div.find('tbody').append(firstPageEntries);
+        
+        firsTable.find('tbody').empty();
+
+        var firstTableEntries = entries.splice(0, 17);
+
+        firsTable.find('tbody').append(firstTableEntries);
+
+        firsTable.appendTo(div);
 
         var remaining = _.chunk(entries.splice(17, entries.length-17), 23);
-
         for(var x in remaining){
-            var table = $('<table />', {css:{'width':'100%', 'page-break-after' : 'always'}});
-            table.append($('.repeated:first').clone().find('th').css({'border':'1px solid black', 'padding': '3px'})).wrap('<thead></thead>')
-            table.append($(remaining[x]).wrap('<tbody>'));
+            var table = tableClone.clone();
+            table.find('tfoot').remove();
+            table.find('thead tr:not(.repeated)').addClass('noPrint');
+            table.find('tbody').html(remaining[x])
             table.appendTo(div);
         }
 
