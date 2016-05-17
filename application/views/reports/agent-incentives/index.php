@@ -12,7 +12,7 @@
     tbody > tr > td:nth-child(7){
         text-align: center;
     }
-    thead > tr:nth-child(6) > th{
+    thead > tr:nth-child(5) > th{
         padding: 3px;
         font-weight: bold;
         border:1px solid black;

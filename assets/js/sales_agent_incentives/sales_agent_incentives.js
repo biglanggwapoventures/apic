@@ -34,6 +34,7 @@ $(document).ready(function(){
         $('.first-table .active th:nth-child(4), .chunked .active th:nth-child(4)').attr('width', '10%');
         $('.first-table .active th:nth-child(2), .chunked .active th:nth-child(2)').attr('width', '15%');
         $('.chunked td, .first-table td, .first-table span, .chunked span').css({'padding':'3px 3px 3px 3px', 'font-size':'10px'});
+        $('.chunked td[colspan=3]').css({'border':0});
 
         $('#table-dummy').removeClass('hidden').print().addClass('hidden').empty();
     });
