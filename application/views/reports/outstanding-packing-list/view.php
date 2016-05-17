@@ -60,7 +60,7 @@
             <h5 style="margin-bottom:0;font-weight: bold">
                 ARDITEZZA POULTRY INTEGRATION CORPORATION
             </h5>
-        </div><br/>
+        </div>
         <div class="col-sm-12 text-center">
             <th colspan="10" class="text-center font-normal">
                 Ultima Residences Tower 3, Unit 1018, Osmena Blvrd., Cebu City<br>

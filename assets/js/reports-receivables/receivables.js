@@ -2,9 +2,9 @@ $('#print-report').click(function(){
     $('#table-dummy').append($('#table-header').clone()).append('<br/>');
 
     var $main = $('#aorr tr').clone();
-    var $first = $main.slice(0, 15);
-    var $second = $main.slice(15);
-    var tr_chunks = _.chunk($second, 16);
+    var $first = $main.slice(0, 25);
+    var $second = $main.slice(25);
+    var tr_chunks = _.chunk($second, 28);
     var header = $main.slice(1,2);
 
     $('#table-dummy').append($first);
@@ -29,6 +29,7 @@ $('#print-report').click(function(){
 
     $('.first-table tbody tr:not(:first-child)').removeClass('b').css('font-weight', 'normal');
     $('.chunked tbody tr:not(:first-child)').removeClass('b').css('font-weight', 'normal');
+    $('.first-table td, .chunked td').css({'padding':'3px'});
 
     $('#print-div').removeClass('hidden').print().addClass('hidden');
     $('#table-dummy').empty();

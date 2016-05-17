@@ -48,7 +48,6 @@ jQuery(function ($) {
             $first.wrapAll('<table class="table table-bordered first-table" style="width:100%"></table>');
             $('.first-table .borderless').remove();
             $('.first-table').prepend(header).prepend(super_header);
-            console.log(tr_chunks.length);
             for(x=0; x<tr_chunks.length; x++){
                 $('#table-dummy').append(tr_chunks[x]);
                 $(tr_chunks[x]).wrapAll('<table class="table table-bordered chunked" style="width:100%"></table>');

@@ -12,7 +12,7 @@
     tbody > tr > td:nth-child(2),td:nth-child(3),td:nth-child(6){
         text-align: center;
     }
-    thead > tr:nth-child(7) > th{
+    thead > tr:nth-child(6) > th{
         padding: 5px;
         border:1px solid #ddd;
         text-transform:uppercase;
@@ -48,7 +48,7 @@
     {
         .noPrint{display:none;}
         .noScreen{}
-        table {page-break-after: always;}
+        table:not(:nth-child(n+2)){page-break-after: always;}
     }
 </style>
 <div class="box box-solid">
@@ -63,56 +63,60 @@
                 <table style="width:100%">
                     <thead class="first-thead">
                         <tr class="noScreen">
-                            <th colspan="10" class="text-center">
-                                <h5 style="margin-bottom:0;font-weight: bold">
-                                    ARDITEZZA POULTRY INTEGRATION CORPORATION
-                                </h5>
+                            <th colspan="8" class="text-center">
+                                ARDITEZZA POULTRY INTEGRATION CORPORATION
+                                <div style="font-weight:normal">
+                                    Ultima Residences Tower 3, Unit 1018, Osmena Blvrd., Cebu City<br>
+                                    Tel/Fax Nos.: (032) 253-4570 to 71 / 414-3312 / 512-3067
+                                </div>
                             </th>
                         </tr>
-                        <tr class="noScreen">
-                            <th colspan="10" class="text-center font-normal">
-                                Ultima Residences Tower 3, Unit 1018, Osmena Blvrd., Cebu City<br>
-                                Tel/Fax Nos.: (032) 253-4570 to 71 / 414-3312 / 512-3067
-                            </th>
-                        </tr>
-                        <tr><th colspan="10" class="text-center"><h4 style="margin-bottom:0;text-decoration: underline;font-weight: bold">CUSTOMER LEDGER REPORT</h4></th></tr>
-                        <tr><th colspan="10" class="text-center"><?= date_create($params['date'])->format('M d, Y')?> - <?= date('M d, Y')?></th></tr>
+                        <tr><th colspan="8" class="text-center"><h4 style="margin-bottom:0;text-decoration: underline;font-weight: bold">CUSTOMER LEDGER REPORT</h4></th></tr>
+                        <tr><th colspan="8" class="text-center"><?= date_create($params['date'])->format('M d, Y')?> - <?= date('M d, Y')?></th></tr>
                         <tr>
-                            <th class="text-right">Customer</th>
+                            <th class="text-right"><span>Customer</span></th>
                             <th class="colon">:</th>
-                            <th colspan="3" class="font-normal">
+                            <th colspan="2" class="font-normal">
                                 <a data-toggle="modal" data-target="#options">
-                                    <?= isset($customer_info['company_name']) ? $customer_info['company_name'] : 'Please select a customer'?>
+                                    <span>
+                                        <?= isset($customer_info['company_name']) ? $customer_info['company_name'] : 'Please select a customer'?>
+                                    </span>
                                 </a>
                             </th>
                             <th colspan="2">&nbsp;</th>
-                            <th class="text-right">Credit Terms <span style="padding-left:4px; padding-right:6px;">:</span></th>
+                            <th class="text-right"><span>Credit Terms</span> <span style="padding-left:4px; padding-right:6px;">:</span></th>
                             <th class="font-normal">
                                 <?php if(isset($customer_info['credit_term'])):?>
-                                    <?= (int)$customer_info['credit_term'] ? "{$customer_info['credit_term']} days(s)" : 'Cash on delivery'?>
+                                    <span>
+                                        <?= (int)$customer_info['credit_term'] ? "{$customer_info['credit_term']} days(s)" : 'Cash on delivery'?>
+                                    </span>
                                 <?php endif;?>
                             </th>
                         </tr>
                         <tr>
-                            <th class="text-right">Customer Code</th>
+                            <th class="text-right"><span>Customer Code</span></th>
                             <th class="colon">:</th>
-                            <th colspan="3" class="font-normal">
-                                <?= isset($customer_info['customer_code']) ? $customer_info['customer_code'] : ''?>
+                            <th colspan="2" class="font-normal">
+                                <span>
+                                    <?= isset($customer_info['customer_code']) ? $customer_info['customer_code'] : ''?>
+                                </span>
                             </th>
                             <th colspan="2">&nbsp;</th>
-                            <th class="text-right">Credit Limit <span style="padding-left:4px; padding-right:6px;">:</span></th>
+                            <th class="text-right"><span>Credit Limit</span> <span style="padding-left:4px; padding-right:6px;">:</span></th>
                             <th class="font-normal">
-                                <?= isset($customer_info['credit_limit']) ? number_format($customer_info['credit_limit'], 2) : ''?>
+                                <span>
+                                    <?= isset($customer_info['credit_limit']) ? number_format($customer_info['credit_limit'], 2) : ''?>
+                                </span>
                             </th>
                         </tr>
                         <tr class="active">
-                            <th colspan="2">DATE</th>
-                            <th >DESCRIPTION</th>
-                            <th>REF NO.</th>
-                            <th>DEBIT AMOUNT</th> 
-                            <th colspan="2">CREDIT AMOUNT</th>
-                            <th>CLEAR DATE</th>
-                            <th>RUNNING BALANCE</th>
+                            <th colspan="2"><span>DATE</span></th>
+                            <th><span>DESCRIPTION</span></th>
+                            <th><span>REF NO.</span></th>
+                            <th><span>DEBIT AMOUNT</span></th> 
+                            <th><span>CREDIT AMOUNT</span></th>
+                            <th><span>CLEAR DATE</span></th>
+                            <th><span>RUNNING BALANCE</span></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -168,7 +172,7 @@
                                              <?= "CR # {$row['ref_number']}"?>
                                         <?php endif;?>
                                     </td>
-                                    <td colspan="2">
+                                    <td>
                                         <?= $debit_amount;?>
                                     </td>
                                     <td>
