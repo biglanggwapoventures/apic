@@ -21,7 +21,7 @@
     {
         .noPrint{display:none;}
         .noScreen{}
-        table {page-break-after: always;}
+        .print {page-break-inside:avoid;}
     }
 </style>
 <div class="row" id="print-area">

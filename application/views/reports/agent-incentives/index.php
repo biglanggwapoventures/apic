@@ -35,7 +35,7 @@
       }
       .noPrint{display:none;}
       .noScreen{}
-      table {page-break-after:always;}
+      .print {page-break-inside:avoid;}
     }
     tfoot td:not(:first-child){
         border: 1px solid black;
@@ -179,9 +179,8 @@
     </div>
 </div>
 
-<div class="hidden" id="table-dummy">
-    
-</div>
+<div class="hidden" id="table-dummy"></div>
+
 <script type="text/javascript">
     (function($){
         $(document).ready(function(){

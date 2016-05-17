@@ -43,12 +43,11 @@
         .noPrint{}
         .noScreen{display:none;}
     }
-
     @media print
     {
         .noPrint{display:none;}
         .noScreen{}
-        table:not(:nth-child(n+2)){page-break-after: always;}
+        .print{page-break-inside: avoid;}
     }
 </style>
 <div class="box box-solid">

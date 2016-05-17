@@ -2,11 +2,11 @@ $(document).ready(function(){
 	$('#print-report').click(function(){
         var $main = $('table tr').clone();
         var total = ($main.length);
-        var $first = $main.slice(5, 30);
-        var $second = $main.slice(30, total);
+        var $first = $main.slice(5, 28);
+        var $second = $main.slice(28, total);
         var $third = $main.slice(total);
 
-        var tr_chunks = _.chunk($second, 28);
+        var tr_chunks = _.chunk($second, 26);
 
         $('#table-dummy').append($first);
         $first.wrapAll('<table class="table first-table"></table>');
@@ -35,6 +35,13 @@ $(document).ready(function(){
         $('.first-table .active th:nth-child(2), .chunked .active th:nth-child(2)').attr('width', '15%');
         $('.chunked td, .first-table td, .first-table span, .chunked span').css({'padding':'3px 3px 3px 3px', 'font-size':'10px'});
         $('.chunked td[colspan=3]').css({'border':0});
+
+        var page = 1;
+        $('#table-dummy table').each(function(){
+            $(this).wrapAll('<div table-number='+page+' class="print"></div>');
+            $('[table-number='+page+']').append('<div class="col-xs-2 col-xs-offset-10" style="font-size:10px; text-align:right;">Page '+page+' of '+$('#table-dummy table').length+'</div>');
+            page++;
+        });
 
         $('#table-dummy').removeClass('hidden').print().addClass('hidden').empty();
     });
