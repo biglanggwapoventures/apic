@@ -5,10 +5,10 @@ class Outstanding_payables extends PM_Controller_v2
 	public function __construct()
 	{
 		parent::__construct();
-		if(!has_access('reports')) show_error('Authorization error.', 401);
+		if(!has_access('special_reports')) show_error('Authorization error.', 401);
 		$this->set_content_title('Reports');
 		$this->set_content_subtitle('Outstanding Payables');
-		$this->set_active_nav(NAV_REPORTS);
+		$this->set_active_nav(NAV_SPECIAL_REPORTS);
 		
 	}
 

@@ -7,7 +7,7 @@ class M_Account extends CI_Model {
     const TYPE_ADMIN = 1;
     const TYPE_NORMAL = 2;
 
-    private static $_modules = array('inventory', 'sales', 'purchases', 'production', 'warehousing', 'accounting', 'reports');
+    private static $_modules = array('inventory', 'sales', 'purchases', 'production', 'warehousing', 'accounting', 'reports', 'special_reports');
     private static $_account_fields = array('Username', 'Password', 'Email', 'TypeID', 'FirstName', 'LastName');
 
     public static function get_modules() {

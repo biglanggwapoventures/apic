@@ -184,7 +184,7 @@ class User_accounts extends PM_Controller_v2
 		if(isset($input['type']) && $input['type'] == M_Account::TYPE_NORMAL)
 		{
 			$module = isset($input['module']) && is_array($input['module']) ? $input['module'] : [];
-			$data['module_access'] = elements(['inventory', 'sales', 'purchases', 'production', 'accounting', 'reports'], $module, 0);
+			$data['module_access'] = elements(['inventory', 'sales', 'purchases', 'production', 'accounting', 'reports', 'special_reports'], $module, 0);
 		}
 		return $data;
 	}

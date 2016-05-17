@@ -99,10 +99,10 @@
                                      <?php $pur = isset($data['module_access']['purchases']) && $data['module_access']['purchases'] ? 'checked="checked"': ''?>
                                     <input class="disabled-type-admin" value="1" name="module[purchases]" type="checkbox" <?=$pur.' '. $no_mod?>/> Purchases 
                                 </label><br/>
-                                <label class="hidden">
+                                <label>
                                      <?php $pro = isset($data['module_access']['production']) && $data['module_access']['production'] ? 'checked="checked"': ''?>
                                     <input class="disabled-type-admin" value="1" name="module[production]" type="checkbox" <?=$pro.' '. $no_mod?>/> Production 
-                                </label><!-- <br/> -->
+                                </label><br>
                                 <label>
                                      <?php $acc = isset($data['module_access']['accounting']) && $data['module_access']['accounting'] ? 'checked="checked"': ''?>
                                     <input class="disabled-type-admin" value="1" name="module[accounting]" type="checkbox" <?=$acc.' '. $no_mod?>/> Accounting 
@@ -110,6 +110,10 @@
                                 <label>
                                  <?php $rep = isset($data['module_access']['reports']) && $data['module_access']['reports'] ? 'checked="checked"': ''?>
                                     <input class="disabled-type-admin" value="1" name="module[reports]" type="checkbox" <?=$rep.' '. $no_mod?>/> Reports 
+                                </label><br/>
+                                <label>
+                                 <?php $rep = isset($data['module_access']['special_reports']) && $data['module_access']['special_reports'] ? 'checked="checked"': ''?>
+                                    <input class="disabled-type-admin" value="1" name="module[special_reports]" type="checkbox" <?=$rep.' '. $no_mod?>/> Special Reports 
                                 </label><br/>
                             </div>
                         </div>  

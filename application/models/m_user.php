@@ -19,7 +19,7 @@ class M_user extends CI_Model {
         $user = $this->db->get_where($this->table, ['id' => $id])->row_array(); 
         if($include_module_access && $user['TypeID'] != M_Account::TYPE_ADMIN)
         {
-            $this->db->select('inventory, sales, purchases, production, accounting, reports');
+            $this->db->select('*');
             $this->db->from('module_access')->where('fk_account_id', $id);
             $user['module_access'] = $this->db->get()->row_array();
         }

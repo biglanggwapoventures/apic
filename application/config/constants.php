@@ -72,6 +72,7 @@ define('NAV_USERS', 027);
 define('NAV_ACCOUNTING', 028);
 define('NAV_WAREHOUSING', 030);
 define('NAV_MAINTAINABLE', 031);
+define('NAV_SPECIAL_REPORTS', 032);
 
 
 define('SUPERUSER', 'su');

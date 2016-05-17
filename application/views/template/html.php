@@ -216,14 +216,27 @@
                                     <li class="hidden"><a  href='<?= $base_url . 'reports/sales' ?>'><i class="fa fa-angle-double-right"></i> Sales</a></li>
                                     <li><a  href='<?= $base_url . 'reports/product_type_sales' ?>'><i class="fa fa-angle-double-right"></i> Product Type Sales</a></li>
                                     <li><a href='<?= $base_url . 'reports/outstanding_packing_list' ?>'><i class="fa fa-angle-double-right"></i> Outstanding Packing List</a></li>
-                                    <li><a  href='<?= $base_url . 'reports/outstanding_payables' ?>'><i class="fa fa-angle-double-right"></i> Outstanding Payables</a></li>
+                                    
                                     <li><a  href='<?= $base_url . 'reports/receivables' ?>'><i class="fa fa-angle-double-right"></i> Aging of Receivables</a></li>
-                                    <li><a  href='<?= $base_url . 'reports/payables' ?>'><i class="fa fa-angle-double-right"></i> Aging of Payables</a></li>
+                                    
                                     <li><a  href='<?= $base_url . 'reports/collection_report' ?>'><i class="fa fa-angle-double-right"></i> Collection Report</a></li>
                                     <li><a  href='<?= $base_url . 'reports/customer_ledger' ?>'><i class="fa fa-angle-double-right"></i> Customer Ledger</a></li>
-                                    <li><a  href='<?= $base_url . 'reports/sales_agent_incentives' ?>'><i class="fa fa-angle-double-right"></i> Sales Agent Incentives</a></li>
+                                    
                                     <li><a  href='<?= $base_url . 'reports/check_master_list' ?>'><i class="fa fa-angle-double-right"></i> Check Master List</a></li>
 
+                                </ul>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($is_admin || (int) $mod_access['special_reports'] === 1): ?>
+                            <li class="treeview <?= $data_nav === NAV_SPECIAL_REPORTS ? 'active' : '' ?>">
+                                <a href="#">
+                                    <i class="fa fa-pie-chart"></i> <span>Special Reports</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a  href='<?= $base_url . 'reports/outstanding_payables' ?>'><i class="fa fa-angle-double-right"></i> Outstanding Payables</a></li>
+                                    <li><a  href='<?= $base_url . 'reports/payables' ?>'><i class="fa fa-angle-double-right"></i> Aging of Payables</a></li>
+                                    <li><a  href='<?= $base_url . 'reports/sales_agent_incentives' ?>'><i class="fa fa-angle-double-right"></i> Sales Agent Incentives</a></li>
                                 </ul>
                             </li>
                         <?php endif; ?>
