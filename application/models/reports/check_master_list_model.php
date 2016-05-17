@@ -11,7 +11,7 @@ class Check_master_list_model extends CI_Model
 			chk.check_date, 
 			chk.amount,
 			dsb.id AS purpose_id,
-			IF(dsb.disbursement_type = "rr", "Disbursement", "Disbursement (Others)") AS purpose,
+			IF(dsb.disbursement_type = "rr", "disbursement", "disbursement_others") AS purpose,
 			IF(dsb.disbursement_type = "others" OR (dsb.payee IS NOT NULL AND dsb.payee != ""), payee, supplier.name) AS payee
 		', FALSE)
 			->from('purchase_disbursement_payments AS chk')
@@ -35,7 +35,7 @@ class Check_master_list_model extends CI_Model
 				chk.payee,
 				chk.check_amount AS amount,
 				chk.id AS purpose_id,
-				"Dummy Check" AS purpose
+				"dummy_check" AS purpose
 			', FALSE)
 				->from('accounting_dummy_checks AS chk')
 				->where('chk.bank_account', $bank_account, FALSE);
@@ -62,5 +62,28 @@ class Check_master_list_model extends CI_Model
 
 		return $results;
 
+	}
+
+	function update_check_number($type, $id, $check_number)
+	{
+		$action = [
+			'disbursement' => [
+				'table' => 'purchase_disbursement_payments',
+				'pk_column_name' => 'fk_purchase_disbursement_id',
+				'check_number_column_name' => 'check_number'
+			],
+			'disbursement_others' => [
+				'table' => 'purchase_disbursement_payments',
+				'pk_column_name' => 'fk_purchase_disbursement_id',
+				'check_number_column_name' => 'check_number'
+			],
+			'dummy_check' => [
+				'table' => 'purchase_disbursement_payments',
+				'pk_column_name' => 'id',
+				'check_number_column_name' => 'check_number'
+			],
+		];
+
+		return $this->db->update($action[$type]['table'], [ $action[$type]['check_number_column_name'] => $check_number ], [ $action[$type]['pk_column_name'] => $id ]);
 	}
 }

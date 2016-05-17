@@ -6,13 +6,13 @@
         padding: 3px;
         border: 1px solid black;
     }
-    tbody > tr > td:nth-child(4){
+    table tbody > tr > td:nth-child(4){
         text-align: right;
     }
-    tbody > tr > td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(5){
+    table tbody > tr > td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(5){
         text-align: center;
     }
-    thead > tr:nth-child(6) > th{
+    table thead > tr:nth-child(6) > th{
         padding: 3px;
         border:1px solid black;
         text-transform:uppercase;
@@ -30,7 +30,7 @@
     .font-normal{
         font-weight: normal;
     }
-    thead > tr:nth-last-child(2) > th{
+    table thead > tr:nth-last-child(2) > th{
         padding-bottom:5px;
     }
     @media print {
@@ -57,7 +57,7 @@
             <a id="print-report" href="#"><i class="fa fa-print"></i> Print page</a>
         </div>
     </div>
-   <div class="box-body">
+   <div class="box-body" data-edit-url="<?= base_url('reports/check_master_list/update_check_number')?>">
         <div class="row">
             <div class="col-sm-12">
                 <table style="width:100%" class="table-striped">
@@ -103,26 +103,39 @@
                         </tr>
                     </thead>
                     <tbody>
-
-                        
                         <?php if(!isset($params['bank_account_details'])):?>
                             <tr><td colspan="7" class="text-center">Choose a bank acount and date to start</td></tr>
                         <?php elseif(empty($data)):?>
                             <tr><td colspan="7" class="text-center">Choose a bank acount and date to start</td></tr>
                         <?php else:?>
+                            <?php
+                                $action = [
+                                    'disbursement' => [
+                                        'description' => 'RR Disbursements',
+                                        'url' => base_url('purchases/disbursements/manage?do=update-purchase-disbursement&id=')
+                                    ],
+                                    'disbursement_others' => [
+                                        'description' => 'Other Disbursements',
+                                        'url' => base_url('purchases/other_disbursements/manage?do=update-check-voucher&id=')
+                                    ],
+                                    'dummy_check' => [
+                                        'description' => 'Dummy Checks',
+                                        'url' => base_url('accounting/dummy_checks/update').'/',
+                                    ],
+                                ];
+                            ?>
                             <?php foreach($data AS $row):?>
                                 <tr>
-                                    <td><?= $row['check_number']?></td>
+                                    <td><a data-pk="<?= $row['purpose_id']?>" data-name="<?= $row['purpose']?>" class="editable"><?= $row['check_number']?><a></td>
                                     <td><?= date_create($row['check_date'])->format('M d, Y')?></td>
                                     <td><?= $row['payee']?></td>
                                     <td><?= number_format($row['amount'], 2)?></td>
-                                    <td><?= "{$row['purpose']} # {$row['purpose_id']}"?></td>
+                                    <td><a target="_blank" href="<?= "{$action[$row['purpose']]['url']}{$row['purpose_id']}"?>"><?= "{$action[$row['purpose']]['description']} # {$row['purpose_id']}"?></a></td>
                                     <td></td>
                                     <td></td>
                                 </tr>
                         <?php endforeach;?>
                         <?php endif;?>
-                        
                     </tbody>
                     <tfoot class="noScreen">
                         <tr class="_">
@@ -153,7 +166,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Select date range</h4>
+                <h4 class="modal-title" id="myModalLabel">Select check no. range</h4>
             </div>
             <form action="<?= current_url()?>" method="GET">
                 <div class="modal-body">

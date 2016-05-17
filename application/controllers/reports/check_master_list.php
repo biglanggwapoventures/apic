@@ -10,17 +10,25 @@ class Check_master_list extends PM_Controller_v2
 		$this->set_content_title('Reports');
 		$this->set_content_subtitle('Check Master List');
 		$this->set_active_nav(NAV_REPORTS);	
+		$this->load->model('reports/check_master_list_model', 'report');
 	}
 
 	function index()
 	{
 		$this->load->helper('pmdate');
-		$this->load->model('reports/check_master_list_model', 'report');
+		
 		$this->load->model('accounting/m_bank_account', 'bank');
 
 		$bank_accounts = array_column($this->bank->get(), NULL, 'id');
 
-		$this->add_javascript(['plugins/sticky-thead.js', 'printer/print.js', 'plugins/loadash.js', 'check-master-list/check-master-list.js']);
+		$this->add_css('bootstrap-editable.css');
+		$this->add_javascript([
+			'plugins/sticky-thead.js', 
+			'printer/print.js', 
+			'plugins/loadash.js', 
+			'check-master-list/check-master-list.js',
+			'bootstrap-editable.min.js'
+		]);
 
 		$params = elements(['bank_account', 'check_number_start', 'check_number_end'], $this->input->get(), FALSE);
 		$data = $this->report->generate($params['bank_account'], $params['check_number_start'], $params['check_number_end']);
@@ -31,6 +39,17 @@ class Check_master_list extends PM_Controller_v2
 
 		$this->set_content('reports/check-master-list/index', compact('params', 'data', 'banks_dropdown'))->generate_page();
 
+	}
+
+	function update_check_number()
+	{
+		$params = elements(['pk', 'name', 'value'], $this->input->post(), NULL);
+		if(!in_array($params['name'], ['dummy_check', 'disbursement', 'disbursement_others']) || !is_numeric($params['pk']) || !is_numeric($params['value'])){
+			$this->generate_response(TRUE)->to_JSON();
+			return;
+		}
+		$this->report->update_check_number($params['name'], $params['pk'], $params['value']);
+		$this->generate_response(FALSE)->to_JSON();
 	}
 
 }
