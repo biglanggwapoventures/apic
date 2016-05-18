@@ -117,4 +117,15 @@ class Yielding_model extends CI_Model
 		}
 	}
 
+	function url_details($id)
+	{
+		return $this->db->select('yield.fk_purchase_receiving_id, yield_from.yield_type')
+			->from($this->table.' AS yield')
+			->join('yieldings_from AS yield_from', 'yield_from.fk_yielding_id = yield.id')
+			->where('yield.id', $id)
+			->limit(1)
+			->get()
+			->row_array();
+	}
+
 }
