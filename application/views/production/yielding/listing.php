@@ -20,6 +20,7 @@
     <div class="box-body no-padding">
         <table id="master-list" class="table table-striped table-condensed promix" 
                 data-edit-url="<?= $url . '/edit' ?>/"
+                data-edit2-url="<?= base_url('purchases/yielding?type=_type_&rr=_rr_') ?>/"
                 data-master-list-url='<?= $url . '/master_list' ?>'
                 data-delete-url='<?= $url . '/delete/' ?>'>
             <thead><tr class="info"><th>Process #</th><th>Date</th><th>Type</th><th>CB</th> <th></th></tr></thead>

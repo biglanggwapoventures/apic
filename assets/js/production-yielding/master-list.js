@@ -2,6 +2,7 @@
 
     var masterListUrl = $('table#master-list').data('master-list-url'),
         updateUrl = $('table#master-list').data('edit-url'),
+        update2Url = $('table#master-list').data('edit2-url'),
         deleteUrl = $('table#master-list').data('delete-url'),
         tbody = $('table#master-list tbody'),
         deleteTemplate = '<a class="btn btn-danger btn-flat btn-xs delete">Delete</a>',
@@ -10,7 +11,10 @@
 
         page = 1,
 
-        goToUpdate = function(id){
+        goToUpdate = function(id, rrId, yieldType){
+            if(rrId && yieldType){
+                return update2Url.replace('_rr_', rrId).replace('_type_', (yieldType === 'dtc' ? 'dressed-to-cutups' : 'live-to-dressed'))
+            }
             return updateUrl+id;
         },
 
@@ -35,7 +39,7 @@
             var tr = [];
             $.each(data, function(i, v){
                 var td = [];
-                td[0] = '<a href="'+goToUpdate(v.id)+'">'+v.id+'</a>';
+                td[0] = '<a href="'+goToUpdate(v.id, v.fk_purchase_receiving_id, v.yield_type)+'">'+v.id+'</a>';
                 td[1] = moment(v.created_at).format('MMM-DD-YYYY');
                 td[2] = v.yield_type_description;
                 td[3] = v.created_by;

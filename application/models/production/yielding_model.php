@@ -62,7 +62,7 @@ class Yielding_model extends CI_Model
 			->from($this->table.' AS yield')
 			->join('yieldings_from AS yield_source', 'yield_source.fk_yielding_id = yield.id')
 			->join('account AS created_by', 'created_by.ID = yield.created_by')
-			->where('fk_purchase_receiving_id IS NULL')
+			// ->where('fk_purchase_receiving_id IS NULL')
 			->group_by('yield.id');
 
 		if($params !== FALSE){
