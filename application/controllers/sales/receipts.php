@@ -213,11 +213,11 @@ class Receipts extends PM_Controller_v2 {
         $this->form_validation->set_rules('status', 'Status', 'callback_validate_status');
         $this->form_validation->set_rules('tracking_type', 'Tracking Type', 'callback_validate_tracking_type');
         $this->form_validation->set_rules('tracking_no', 'Tracking No.', 'required');
+        $this->form_validation->set_rules('pay_to', 'Pay to', 'callback_validate_pay_to');
+        $this->form_validation->set_rules('pay_from', 'customer bank', 'callback_validate_pay_from');
         $this->form_validation->set_rules('deposit_date', 'Deposit date', 'required|callback_validate_deposit_date');
         $this->form_validation->set_rules('payment[type]', 'Payment Type', 'callback_validate_payment_type');
         $this->form_validation->set_rules('payment[amount]', 'Payment Amount', 'callback_validate_payment_amount');
-        $this->form_validation->set_rules('payment[pay_from]', 'Pay from', 'callback_validate_pay_from');
-        $this->form_validation->set_rules('payment[pay_to]', 'Pay to', 'callback_validate_pay_to');
         $this->form_validation->set_rules('payment[check_number]', 'Check number', 'callback_validate_check_number');
         $this->form_validation->set_rules('payment[check_date]', 'Check date', 'callback_validate_check_date');
         if(!$this->form_validation->run())
@@ -248,10 +248,10 @@ class Receipts extends PM_Controller_v2 {
             {
                 $this->validation_errors[] = 'Packing list payment amounts should be in decimal form';
             }
-            if(!$this->delivery->is_valid_customer_deliveries($pl_ids, $this->input->post('customer')))
-            {
-                $this->validation_errors[] = 'Please ensure that the packing lists provided are under the selected customer.';
-            }
+            // if(!$this->delivery->is_valid_customer_deliveries($pl_ids, $this->input->post('customer')))
+            // {
+            //     $this->validation_errors[] = 'Please ensure that the packing lists provided are under the selected customer.';
+            // }
         }
         
     }
@@ -263,54 +263,47 @@ class Receipts extends PM_Controller_v2 {
             'tracking_number_type' => $input['tracking_type'],
             'tracking_number' => $input['tracking_no'],
             'remarks' => $input['remarks'],
-            'deposit_date' => date_create($input['deposit_date'])->format('Y-m-d')
+            'deposit_date' => date_create($input['deposit_date'])->format('Y-m-d'),
+            'pay_to' => $input['pay_to'],
+            'pay_from' => $input['pay_from'],
         ];
-        if($mode ==='create')
-        {
+        if($mode ==='create'){
             $status = isset($input['status']) ? M_Status::STATUS_FINALIZED : M_Status::STATUS_DEFAULT;
             $data['receipt']['fk_sales_customer_id'] = $input['customer'];
             $data['receipt']['created_by'] = $this->session->userdata('user_id');
             $data['receipt']['date'] = date('Y-m-d');
             $data['receipt']['status'] = $status;
             $data['receipt']['approved_by'] = ($status == M_Status::STATUS_FINALIZED ? $this->session->userdata('user_id') : NULL);
-        }
-        else
-        {
-            if($this->session->userdata('type_id') == M_Account::TYPE_ADMIN && isset($input['status']))
-            {
+        }else{
+            if($this->session->userdata('type_id') == M_Account::TYPE_ADMIN && isset($input['status'])){
                 $data['receipt']['status'] =  M_Status::STATUS_FINALIZED;
                 $data['receipt']['approved_by'] =  $this->session->userdata('user_id');
-            }
-            else if($this->session->userdata('type_id') == M_Account::TYPE_ADMIN && !isset($input['status']))
-            {
+            }else if($this->session->userdata('type_id') == M_Account::TYPE_ADMIN && !isset($input['status'])){
                 $data['receipt']['status'] = M_Status::STATUS_DEFAULT;
                 $data['receipt']['approved_by'] =  NULL;
             }
             
         }
-        foreach($input['details'] AS $row)
-        {
+        foreach($input['details'] AS $row){
             $amount = str_replace(',', '', $row['this_payment']);
             $temp  = [
                 'fk_sales_delivery_id' => $row['pl_id'],
                 'payment_method' => ($input['payment']['type'] === 'check' ? 'Check' : 'Cash'),
                 'amount' => $amount
             ];
-            if($mode === 'update' && isset($row['id']))
-            {
+            if($mode === 'update' && isset($row['id'])){
                 $temp['id'] = $row['id'];
             }
             $data['details'][] = $temp;
             
         }
-        if($input['payment']['type'] === 'check')
-        {
+        if($input['payment']['type'] === 'check'){
             $data['check'] = [
-                'bank_account' => $input['payment']['pay_from'],
-                'pay_to' => $input['payment']['pay_to'],
+                'bank_account' => $data['receipt']['pay_from'],
+                'pay_to' => $data['receipt']['pay_to'],
                 'check_number' => $input['payment']['check_number'],
                 'check_date' => date('Y-m-d', strtotime($input['payment']['check_date'])),
-                'deposit_date' => date('Y-m-d', strtotime($data['receipt']['deposit_date'])),
+                'deposit_date' => $data['receipt']['deposit_date'],
                 'check_amount' => str_replace(',', '', $input['payment']['amount'])
             ];
         }
@@ -354,22 +347,12 @@ class Receipts extends PM_Controller_v2 {
 
     public function validate_pay_from($pay_from)
     {
-        $payment = $this->input->post('payment');
-        if(isset($payment['type']) && $payment['type'] === 'cash')
-        {
-            return TRUE;
-        }
         $this->form_validation->set_message('validate_pay_from', 'The %s field is required.');
         return $this->form_validation->required($pay_from);
     }
 
     public function validate_pay_to($pay_to)
     {
-        $payment = $this->input->post('payment');
-        if(isset($payment['type']) && $payment['type'] === 'cash')
-        {
-            return TRUE;
-        }
         $this->load->model('accounting/m_bank_account', 'bank');
         $this->form_validation->set_message('validate_pay_to', 'The %s field is required.');
         return $this->bank->is_valid($pay_to);

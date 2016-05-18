@@ -144,7 +144,7 @@ class M_Receipts extends CI_Model {
     public function get($id)
     {
         // get master reciept  info
-        $this->db->select('customer.company_name AS customer, rec.deposit_date, rec.`date`, rec.`status`, rec.tracking_number AS tracking_no, rec.tracking_number_type AS tracking_type, rec.remarks', FALSE);
+        $this->db->select('customer.company_name AS customer, rec.deposit_date, rec.`date`, rec.`status`, rec.tracking_number AS tracking_no, rec.tracking_number_type AS tracking_type, rec.remarks, rec.pay_to, rec.pay_from', FALSE);
         $this->db->from($this->table.' AS rec')->where('rec.id', $id)->join('sales_customer AS customer', 'customer.id = rec.fk_sales_customer_id');
         $data['receipt'] = $this->db->get()->row_array();
 
