@@ -62,7 +62,7 @@
                          <tr>
                             <th colspan="7" class="text-center" style="padding-bottom:10px">
                                 <a data-toggle="modal" data-target="#options">
-                                    <?= isset($params['bank_account_details']) ? $params['bank_account_details']['bank_name'] : 'Click to choose bank'?>
+                                    <?= isset($params['bank_account_details']) ? $params['bank_account_details']['bank_name'] : '*ALL BANK ACCOUNTS*'?>
                                 </a>
                             </th>
                         </tr>
@@ -86,9 +86,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if(!isset($params['bank_account_details'])):?>
-                            <tr><td colspan="7" class="text-center">Choose a bank acount and date to start</td></tr>
-                        <?php elseif(empty($data)):?>
+                        <?php if(empty($data)):?>
                             <tr><td colspan="7" class="text-center">No results to show.</td></tr>
                         <?php else:?>
                             <?php foreach($data AS $row):?>

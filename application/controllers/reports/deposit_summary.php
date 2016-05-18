@@ -39,7 +39,7 @@ class Deposit_summary extends PM_Controller_v2
 			$params['date'] = date('Y-m-d');
 		}
 
-		$banks_dropdown = ['' => ''] + array_column($bank_accounts, 'bank_name', 'id');
+		$banks_dropdown = ['' => '*ALL BANK ACCOUNTS*'] + array_column($bank_accounts, 'bank_name', 'id');
 
 		$this->set_content('reports/deposit-summary/index', compact('params', 'data', 'banks_dropdown'))->generate_page();
 
