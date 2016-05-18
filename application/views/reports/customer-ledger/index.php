@@ -121,7 +121,7 @@
                     <tbody>
                         
                         <?php if(!isset($data)):?>
-                            <tr><td colspan="7" class="text-center">Choose a customer and date to start</td></tr>
+                            <tr><td colspan="8" class="text-center">Choose a customer and date to start</td></tr>
                         <?php else:?>
                             <?php 
                                 
