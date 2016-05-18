@@ -110,19 +110,14 @@
                                 <?= form_dropdown('payment[type]', ['check' => 'Check', 'cash' => 'Cash'], $payment_type, 'class="form-control" id="pay-opt"') ?>
                             </div>
                             <div class="form-group">
-                                <label>Amount</label>
+                                <label>Customer Bank</label>
+                                <?php $account = isset($data['receipt']['pay_from']) ? $data['receipt']['pay_from'] : ''; ?>
+                                <input type="text" value="<?=$account?>" class="form-control"  name="pay_from"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Check Amount</label>
                                 <?php $amount = isset($data['receipt']['check']['check_amount']) ? $data['receipt']['check']['check_amount'] : 0; ?>
                                 <input type="text" value='<?= number_format($amount, 2) ?>' class="form-control price-format has-amount pay-opt-cash-disabled" id="total-payment" required="required" name="payment[amount]" <?= $add_disabled?>/>
-                            </div>
-                            <div class="form-group">
-                                <label>Customer Bank</label>
-                                <?php $account = isset($data['receipt']['check']['bank_account']) ? $data['receipt']['check']['bank_account'] : ''; ?>
-                                <input type="text" value="<?=$account?>" class="form-control pay-opt-cash-disabled"  name="payment[pay_from]" <?= $add_disabled ?>/>
-                            </div>
-                            <div class="form-group">
-                                <label>Deposit To</label>
-                                <?php $pay_to = isset($data['receipt']['check']['pay_to']) ? $data['receipt']['check']['pay_to'] : FALSE; ?>
-                                <?= arr_group_dropdown('payment[pay_to]', $bank_accounts, 'id', 'bank_name', $pay_to, FALSE, 'class="form-control pay-opt-cash-disabled" required="required"'.$add_disabled) ?>
                             </div>
                             <div class="form-group">
                                 <label>Check Number</label>
@@ -133,6 +128,11 @@
                                 <label>Check Date</label>
                                 <?php $check_date = isset($data['receipt']['check']['check_date']) ? date('m/d/Y', strtotime($data['receipt']['check']['check_date'])) : ''; ?>
                                 <input type="text" class="form-control pay-opt-cash-disabled datepicker" value="<?= $check_date ?>" required="required" name="payment[check_date]" <?= $add_disabled ?>/>
+                            </div>
+                             <div class="form-group">
+                                <label>Deposit To</label>
+                                <?php $pay_to = isset($data['receipt']['pay_to']) ? $data['receipt']['pay_to'] : FALSE; ?>
+                                <?= arr_group_dropdown('pay_to', $bank_accounts, 'id', 'bank_name', $pay_to, FALSE, 'class="form-control" required="required"') ?>
                             </div>
                             <div class="form-group">
                                 <label>Deposit Date</label>

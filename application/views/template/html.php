@@ -237,6 +237,7 @@
                                     <li><a  href='<?= $base_url . 'reports/outstanding_payables' ?>'><i class="fa fa-angle-double-right"></i> Outstanding Payables</a></li>
                                     <li><a  href='<?= $base_url . 'reports/payables' ?>'><i class="fa fa-angle-double-right"></i> Aging of Payables</a></li>
                                     <li><a  href='<?= $base_url . 'reports/sales_agent_incentives' ?>'><i class="fa fa-angle-double-right"></i> Sales Agent Incentives</a></li>
+                                    <li><a  href='<?= $base_url . 'reports/deposit_summary' ?>'><i class="fa fa-angle-double-right"></i> Deposit Summary</a></li>
                                 </ul>
                             </li>
                         <?php endif; ?>

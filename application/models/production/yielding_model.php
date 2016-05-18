@@ -62,7 +62,7 @@ class Yielding_model extends CI_Model
 			->from($this->table.' AS yield')
 			->join('yieldings_from AS yield_source', 'yield_source.fk_yielding_id = yield.id')
 			->join('account AS created_by', 'created_by.ID = yield.created_by')
-			->where('fk_purchase_receiving_id IS NULL')
+			// ->where('fk_purchase_receiving_id IS NULL')
 			->group_by('yield.id');
 
 		if($params !== FALSE){
@@ -115,6 +115,17 @@ class Yielding_model extends CI_Model
 		if(!empty($temp['new'])){
 			$this->db->insert_batch($table, $temp['new']);
 		}
+	}
+
+	function url_details($id)
+	{
+		return $this->db->select('yield.fk_purchase_receiving_id, yield_from.yield_type')
+			->from($this->table.' AS yield')
+			->join('yieldings_from AS yield_from', 'yield_from.fk_yielding_id = yield.id')
+			->where('yield.id', $id)
+			->limit(1)
+			->get()
+			->row_array();
 	}
 
 }

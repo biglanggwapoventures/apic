@@ -74,9 +74,9 @@
                                 <a target="_blank"href="<?= base_url("purchases/receiving/manage?do=update-purchase-receiving&id={$row['rr_no']}")?>">
                                     <?= "Purchase RR # {$row['rr_no']}"?>
                                 </a>
-                            <?php elseif($row['yieldt_no'] || $row['yieldf_no']):?>
-                                <a target="_blank">
-                                    <?= "Process # {$row['yieldt_no']} {$row['yieldf_no']}" ?>
+                            <?php elseif($rr_id1 = $row['yieldt_no'] || $row['yieldf_no']):?>
+                                <a href="<?= base_url("production/yielding/redirect?id={$row['yieldt_no']}{$row['yieldf_no']}")?>"target="_blank">
+                                    <?= "Process # {$row['yieldt_no']}{$row['yieldf_no']}" ?>
                                 </a>
                             <?php endif;?>
                         </td>

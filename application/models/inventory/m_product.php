@@ -207,6 +207,7 @@ class M_Product extends CI_Model {
         $this->db->join('purchase_receiving_detail AS pur', 'pur.id = inv.purchase_receiving_detail_id', 'left');
 
         $this->db->join('yieldings_from AS yf', 'yf.id = inv.fk_yieldings_from_id', 'left');
+
         $this->db->join('yieldings_to AS yt', 'yt.id = inv.fk_yieldings_to_id', 'left');
         $this->db->join('yieldings_from AS ytf', 'ytf.id = yt.fk_yieldings_from_id', 'left');
 

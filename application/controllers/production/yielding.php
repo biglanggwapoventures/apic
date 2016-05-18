@@ -20,6 +20,17 @@ class Yielding extends PM_Controller_v2
         $this->load->model('production/yielding_model', 'yield');
     }
 
+    function redirect()
+    {
+        $yield_types = array_flip($this->yield_types);
+        $yielding_id = $this->input->get('id');
+        $url_details = $this->yield->url_details($yielding_id);
+        if($rr_no = $url_details['fk_purchase_receiving_id']){
+            redirect("purchases/yielding/?type={$yield_types[$url_details['yield_type']]}&rr={$rr_no}");
+        }
+        redirect("production/yielding/edit/{$yielding_id}");
+    }
+
     function master_list()
     {
         if($this->input->is_ajax_request()){
