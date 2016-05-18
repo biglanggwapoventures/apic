@@ -71,6 +71,7 @@
                             <th class="text-center">
                                 <?= date_create($params['date'])->format('M d, Y') ?>
                             </th>
+                            <th colspan="5"></th>
                         </tr>
                         <tr class="repeated">
                             <th rowspan="2">customer</th>

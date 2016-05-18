@@ -19,11 +19,13 @@ class Deposit_summary_model extends CI_Model
 			->join('sales_receipt_check_transaction AS check_trans', 'check_trans.fk_sales_receipt_detail_id = receipt_detail.id', 'left')
 			->where("receipt.deposit_date = '{$date}'");
 
-			if($bank_account){
-				$this->db->where("receipt.pay_to = '{$bank_account}'");
-			}
+		if($bank_account){
+			$this->db->where("receipt.pay_to = '{$bank_account}'");
+		}
 
-			$this->db->group_by('receipt.id');
+		$this->db->group_by('receipt.id')
+			->having('cash_amount > ', 0)
+			->or_having('check_amount > ', 0);
 
 		return $this->db->get()->result_array();
 	}
