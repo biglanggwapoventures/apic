@@ -360,7 +360,7 @@ class M_customer extends CI_Model {
         return $this->db->group_by('delivery.id')->having('total_amount > total_paid')->get()->result_array();
     }
 
-    public function get_undelivered_orders($customer_id) 
+    public function _get_undelivered_orders($customer_id) 
     {
         
         $delivered_so = $this->db->select('fk_sales_order_id AS id')
@@ -383,7 +383,7 @@ class M_customer extends CI_Model {
 
     }
 
-    public function _get_undelivered_orders($customer_id) {
+    public function get_undelivered_orders($customer_id) {
         $this->load->library('subquery');
         $this->db
                 ->select('DISTINCT s_order.id', FALSE)
