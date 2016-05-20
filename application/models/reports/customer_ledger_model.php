@@ -46,6 +46,17 @@ class Customer_ledger_model extends CI_Model
 			->get()
 			->row_array();
 
+
+		$debit_memo = $this->db->select('SUM(amount) AS total_amount', FALSE)
+			->from('accounting_debit_memo')
+			->where([
+				'fk_sales_customer_id' => $customer_id, 
+				'date <' =>  $start_date
+			])
+			->where('approved_by IS NOT NULL AND deleted_at IS NULL')
+			->get()
+			->row_array();
+
 		// SET BALANCE TO 0
 		$balance = 0;
 
@@ -58,6 +69,10 @@ class Customer_ledger_model extends CI_Model
 
 		if($credit_memo){
 			$balance -= $credit_memo['total_amount'];
+		}
+
+		if($debit_memo){
+			$balance += $debit_memo['total_amount'];
 		}
 
 		$receipts = [];
@@ -105,8 +120,18 @@ class Customer_ledger_model extends CI_Model
 				])
 				->get()->result_array();
 
+		$debit_memos = $this->db->select('"DM" AS description, dm.id, dm.`date`, dm.amount, "" AS ref_number', FALSE)
+			->from('accounting_debit_memo AS dm')
+			->where([
+				'dm.`date` >=' =>  $start_date,
+				'dm.fk_sales_customer_id' => $customer_id,
+			])
+			->where('dm.approved_by IS NOT NULL AND dm.deleted_at IS NULL')
+			->get()
+			->result_array();
 
-		$ledger = array_merge(array_merge($receipts, $deliveries), $credit_memos);
+
+		$ledger = array_merge($receipts, $deliveries, $credit_memos, $debit_memos);
 
 
 		function date_compare($a, $b)

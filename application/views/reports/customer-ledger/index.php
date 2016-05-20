@@ -127,7 +127,8 @@
                                 
                                 $amount_balance = $data['balance']; 
                                 $sr_url = base_url('sales/receipts/update/');
-                                $pl_url = base_url('sales/deliveries/update/')
+                                $pl_url = base_url('sales/deliveries/update/');
+                                $dm_url = base_url('accounting/debit_memo/update/')
                             ?>
                             <?php $counter=0; ?>
                             <?php foreach($data['ledger'] AS $row):?>
@@ -137,10 +138,10 @@
                                     $credit_amount = '';
                                     $pdc = '';
                                     $note = '';
-                                    if($row['description'] === 'PL'){
+                                    if($row['description'] === 'PL' || $row['description'] === 'DM'){
                                         $debit_amount =  number_format($row['amount'], 2);
                                         $amount_balance += $row['amount'];
-                                        $url = "{$pl_url}/{$row['id']}";
+                                        $url = $row['description'] === 'PL' ? "{$pl_url}/{$row['id']}" : "{$dm_url}/{$row['id']}";
                                     }else{
                                         $credit_amount =  number_format($row['amount'], 2);
                                         if($row['description'] === 'SR'){
