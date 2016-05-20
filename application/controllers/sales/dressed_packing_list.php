@@ -108,8 +108,12 @@ class dressed_packing_list extends PM_Controller_v2
             $data = $this->_format_input();
 
             $previous = $this->packing_list->get($id);
-            $details = array_column($previous['details'], NULL, 'fk_sales_order_detail_id');
-            $unavailable = $this->_check_item_availability($data['details'], $details);
+            $offset = [
+                'units' => array_sum(array_column($previous['details'], 'this_delivery')), 
+                'pieces' => array_sum(array_column($previous['details'], 'delivered_units')),
+            ];
+
+            $unavailable = $this->_check_item_availability($data['details'], $offset);
             if(!empty($unavailable)){
                 $this->generate_response(TRUE, $unavailable)->to_JSON();
                 return;
@@ -244,7 +248,7 @@ class dressed_packing_list extends PM_Controller_v2
         return $this->agent->exists($sales_agent, TRUE);
     }
 
-    function _check_item_availability($filled_orders, $exclude = [])
+    function _check_item_availability($filled_orders, $offset = [])
     {
         if(IGNORE_STOCK_PL_ACTION){
             return [];
@@ -274,9 +278,9 @@ class dressed_packing_list extends PM_Controller_v2
             $available['pieces'] += $stocks[$product_id]['available_pieces'];
         }
 
-        if(isset($exclude[$filled_orders[0]['fk_sales_order_detail_id']])){
-            $available['units'] += array_sum(array_column($exclude, 'this_delivery'));
-            $available['pieces'] += array_sum(array_column($exclude, 'delivered_units')); 
+        if($offset){
+            $available['units'] += $offset['units'];
+            $available['pieces'] += $offset['pieces'];
         }
 
         if($available['units'] < $requested['units']){
