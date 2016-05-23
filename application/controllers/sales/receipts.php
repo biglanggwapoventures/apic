@@ -214,7 +214,7 @@ class Receipts extends PM_Controller_v2 {
         $this->form_validation->set_rules('tracking_type', 'Tracking Type', 'callback_validate_tracking_type');
         $this->form_validation->set_rules('tracking_no', 'Tracking No.', 'required');
         $this->form_validation->set_rules('pay_to', 'Pay to', 'callback_validate_pay_to');
-        $this->form_validation->set_rules('pay_from', 'customer bank', 'callback_validate_pay_from');
+        // $this->form_validation->set_rules('pay_from', 'customer bank', 'callback_validate_pay_from');
         $this->form_validation->set_rules('deposit_date', 'Deposit date', 'required|callback_validate_deposit_date');
         $this->form_validation->set_rules('payment[type]', 'Payment Type', 'callback_validate_payment_type');
         $this->form_validation->set_rules('payment[amount]', 'Payment Amount', 'callback_validate_payment_amount');
@@ -343,12 +343,6 @@ class Receipts extends PM_Controller_v2 {
         }
         $this->form_validation->set_message('validate_payment_amount', 'Payment amount must be in decimal form.');
         return $this->form_validation->decimal(str_replace(',', '', $payment_amount));
-    }
-
-    public function validate_pay_from($pay_from)
-    {
-        $this->form_validation->set_message('validate_pay_from', 'The %s field is required.');
-        return $this->form_validation->required($pay_from);
     }
 
     public function validate_pay_to($pay_to)
