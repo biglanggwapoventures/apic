@@ -29,7 +29,7 @@ class Deposit_summary extends PM_Controller_v2
 		]);
 
 		$params = elements(['bank_account', 'date'], $this->input->get(), FALSE);
-		$data = $this->report->generate($params['date'], $params['bank_account']);
+		
 
 		if($params['bank_account']){
 			$params['bank_account_details'] = $bank_accounts[$params['bank_account']];
@@ -38,6 +38,8 @@ class Deposit_summary extends PM_Controller_v2
 		if(!is_valid_date($params['date'])){
 			$params['date'] = date('Y-m-d');
 		}
+
+		$data = $this->report->generate($params['date'], $params['bank_account']);
 
 		$banks_dropdown = ['' => '*ALL BANK ACCOUNTS*'] + array_column($bank_accounts, 'bank_name', 'id');
 
