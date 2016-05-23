@@ -17,6 +17,21 @@
         padding-left: 3px;
         text-align: center;
     }
+    tbody tr:nth-last-child(1) td,
+    tbody tr:nth-last-child(2) td,
+    tbody tr:nth-last-child(3) td{
+        background: #fff!important;
+    }
+     tbody tr:nth-last-child(1) td:first-child,
+    tbody tr:nth-last-child(2) td:first-child,
+    tbody tr:nth-last-child(3) td:first-child{
+        text-align: left;
+    }
+     tbody tr:nth-last-child(1) td:last-child,
+    tbody tr:nth-last-child(2) td:last-child,
+    tbody tr:nth-last-child(3) td:last-child{
+        font-weight: bold;
+    }
     .font-normal{ font-weight: normal; }
     table thead > tr:nth-last-child(2) > th{ padding-bottom:5px; }
     @media print {
@@ -86,9 +101,16 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php
+                            $total = [
+                                'check' => 0,
+                                'cash' => 0
+                            ];
+                        ?>
                         <?php if(empty($data)):?>
                             <tr><td colspan="7" class="text-center">No results to show.</td></tr>
                         <?php else:?>
+
                             <?php foreach($data AS $row):?>
                                 <tr>
                                     <td><?= $row['customer']?></td>
@@ -99,8 +121,17 @@
                                     <td><?= $row['depositor_bank']?></td>
                                     <td></td>
                                 </tr>
+                                <?php 
+                                    $total['cash'] += $row['cash_amount'];
+                                    $total['check'] += $row['check_amount'];
+                                ?>
                         <?php endforeach;?>
                         <?php endif;?>
+                        <tr><td colspan="2" class="text-bold" style="background:#eee">SUMMARY</td> </tr>
+                        
+                        <tr ><td>CHECK AMOUNT</td><td><?= number_format($total['check'], 2)?></td></tr>
+                         <tr><td>CASH AMOUNT</td><td><?= number_format($total['cash'], 2)?></td></tr>
+                         <tr><td> TOTAL</td><td><?=number_format($total['cash']+$total['check'], 2)?></td> </tr>
                     </tbody>
                 </table>
                 <small>Process time: <?= $this->benchmark->elapsed_time();?> second(s)</small>
@@ -114,7 +145,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Select check no. range</h4>
+                <h4 class="modal-title" id="myModalLabel">Select bank and/or desposit date</h4>
             </div>
             <form action="<?= current_url()?>" method="GET">
                 <div class="modal-body">
@@ -123,7 +154,7 @@
                        <?= form_dropdown('bank_account', $banks_dropdown, $params['bank_account'], 'class="form-control"') ?>
                     </div>
                     <div class="form-group">
-                       <label>Check No. Start</label>
+                       <label>Deposit date</label>
                        <?= form_input('date', $params['date'], 'class="form-control datepicker"') ?>
                     </div>
                 </div>
@@ -134,8 +165,4 @@
             </form>
         </div>
     </div>
-</div>
-
-<div class="hidden" id="table-dummy">
-    
 </div>

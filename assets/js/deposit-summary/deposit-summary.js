@@ -21,13 +21,13 @@ $(document).ready(function(){
         
         firsTable.find('tbody').empty();
 
-        var firstTableEntries = entries.splice(0, 17);
+        var firstTableEntries = entries.splice(0, 16);
 
         firsTable.find('tbody').append(firstTableEntries);
 
         firsTable.appendTo(div);
 
-        var remaining = _.chunk(entries.splice(17, entries.length-17), 23);
+        var remaining = _.chunk(entries, 22);
         for(var x in remaining){
             var table = tableClone.clone();
             table.find('tfoot').remove();
