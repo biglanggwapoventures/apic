@@ -7,7 +7,7 @@ class Deposit_summary_model extends CI_Model
 		$this->db->select("
 			customer.company_name AS customer,
 			SUM(IF(receipt_detail.payment_method = 'Cash', receipt_detail.amount, 0)) AS cash_amount,
-			IFNULL(check_trans.check_amount, 0) AS check_amount,
+			check_trans.check_amount,
 			receipt_detail.payment_method,
 			check_trans.check_number,
 			check_trans.check_date,
