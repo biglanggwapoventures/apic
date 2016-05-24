@@ -1,0 +1,7 @@
+ALTER TABLE `apic_v2`.`pm_accounting_dummy_checks` 
+CHANGE COLUMN `check_date` `check_date` DATE NOT NULL COMMENT '' ,
+ADD COLUMN `print_check_date` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '' AFTER `deleted_at`;
+
+ALTER TABLE `apic_v2`.`pm_accounting_dummy_checks` 
+DROP COLUMN `printed`,
+CHANGE COLUMN `print_check_date` `print_check_date` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '' AFTER `payee`;

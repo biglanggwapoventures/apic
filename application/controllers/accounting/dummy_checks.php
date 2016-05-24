@@ -159,9 +159,9 @@ class Dummy_checks extends PM_Controller_v2
         $this->form_validation->set_rules('payee', 'Payee', 'required');
         $this->form_validation->set_rules('bank_account', 'Bank account', 'required|callback_validate_bank_account');
         $this->form_validation->set_rules('check_number', 'Check number', 'required|numeric');
-        $this->form_validation->set_rules('check_date', 'Check date', 'callback_validate_date');
+        $this->form_validation->set_rules('check_date', 'Check date', 'required|callback_validate_date');
         $this->form_validation->set_rules('check_amount', 'Check amount', 'required|callback_validate_check_amount');
-        // $this->form_validation->set_rules('is_approved', '', 'callback_validate_status');
+        // $this->form_validation->set_rules('is_approved', '', 'required|callback_validate_status');
         if ($this->form_validation->run() === FALSE) {
             $this->validation_errors = $this->form_validation->error_array();
         }
@@ -170,9 +170,6 @@ class Dummy_checks extends PM_Controller_v2
 
     public function validate_date($val)
     {
-        if(!trim($val)){
-            return TRUE;
-        }
         $this->load->helper('pmdate');
         $this->form_validation->set_message('validate_date', 'Please enter a valid %s with format: mm/dd/yyyy');
         return is_valid_date($val, 'm/d/Y');
@@ -207,6 +204,7 @@ class Dummy_checks extends PM_Controller_v2
             $data['approved_by'] = user_id();
         // }
         $data['crossed'] = isset($input['crossed']) && (int)$input['crossed'] ? 1 : 0;
+        $data['print_check_date'] = (int)!(isset($input['hide_check_date_on_print']) && (int)$input['hide_check_date_on_print']);
         $data['check_amount'] = str_replace(',', '', $input['check_amount']);
         $data['date'] = date_create($input['date'])->format('Y-m-d');
         $data['check_date']  = isset($input['check_date']) && $input['check_date']  ? date_create($input['check_date'])->format('Y-m-d') :  NULL;

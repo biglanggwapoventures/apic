@@ -121,7 +121,11 @@
                         </p>
                     <?php endif;?>
                 </div>
-                <div class="col-xs-3"><div style="padding-left:45px; padding-top:-1px;"><?= $data['check_date'] ? date_create($data['check_date'])->format("M d, Y") : '&nbsp;' ?></div></div>
+                <div class="col-xs-3">
+                    <div style="padding-left:45px; padding-top:-1px;">
+                        <?= (int)$data['print_check_date'] ? date_create($data['check_date'])->format("M d, Y") : '&nbsp;' ?>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-xs-offset-1 col-xs-7">*** <?=(!empty(trim($data['payee'])) ? trim($data['payee']) : trim($data['supplier']))?> ***</div>
