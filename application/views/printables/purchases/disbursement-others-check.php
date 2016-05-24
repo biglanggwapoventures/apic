@@ -45,7 +45,7 @@
                     <table>
                         <tr><td>&nbsp;</td></tr>
                         <tr><td>&nbsp;</td></tr>
-                        <tr><td style="padding-left:30px;"><?= (date_create($check_date)->format("M d, Y")) ? date_create($check_date)->format("M d, Y") : "" ?></td></tr>
+                        <tr><td style="padding-left:30px;"> <?= (int)$print_check_date ? date_create($check_date)->format("M d, Y") : '&nbsp;' ?></td></tr>
                     </table>
                 </div>
             </div> <!-- end .row -->
