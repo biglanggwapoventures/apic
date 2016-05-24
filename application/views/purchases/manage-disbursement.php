@@ -137,11 +137,6 @@
                                 </div>
                                 <?php $add_disabled = $defaults['payment_type'] === 'cash' ? 'disabled="disabled"' : '' ?>
                                 <div class="form-group">
-                                    <label>Check Type</label>
-                                    <?= select_cheque('check_type', isset($defaults['check_type']) ? $defaults['check_type'] : FALSE, 'class="form-control pay-opt-cash-disabled" required="required"'.$add_disabled)?>
-                                   
-                                </div>
-                                <div class="form-group">
                                     <label>Account</label>
                                     <?= generate_dropdown('fk_accounting_bank_account_id', $bank_accounts, $defaults['fk_accounting_bank_account_id'], 'class="form-control pay-opt-cash-disabled" required="required"' . $add_disabled) ?>
                                 </div>
@@ -153,8 +148,18 @@
                                     <label>Check Date</label>
                                     <input type="text" class="form-control pay-opt-cash-disabled datepicker" value="<?= $defaults['check_date'] ?>" required="required" name="check_date" <?= $add_disabled ?>/>
                                 </div>
+                                <?php $crossed = isset($defaults['crossed']) &&  (int)$defaults['crossed'] ? 'checked="checked"' : '' ?>
+                                <div class="checkbox"><label><input type="checkbox" name="crossed" value="1" <?=$crossed?>/> <b>Cross checked?</b></label></div>
                                 <div class="checkbox">
-                                    <label><input type="checkbox" name="print_check_date" value="1" <?php if(isset($defaults['print_check_date'])){ echo ($defaults['print_check_date']) ? "checked" : ""; }else ""; ?> > Include 'Check Date' in print</label>
+                                    <label>
+                                        <?php 
+                                            $hide_check_date_on_print = '';
+                                            if(isset($defaults['print_check_date']) && (int)$defaults['print_check_date'] === 0){
+                                                $hide_check_date_on_print ='checked="checked"';
+                                            }
+                                        ?>
+                                        <input type="checkbox" name="hide_check_date_on_print" value="1" <?= $hide_check_date_on_print?> /> <b>Hide check date on print?</b> 
+                                    </label>
                                 </div>
                             </div><!-- /.box-body -->
                         </div>

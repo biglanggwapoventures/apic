@@ -67,11 +67,6 @@ class Disbursements extends PM_Controller_v2 {
             'rules' => 'callback__validate_check_date'
         ),
         array(
-            'name' => 'check_type',
-            'label' => 'Check Type',
-            'rules' => 'callback__validate_check_type'
-        ),
-        array(
             'name' => 'status',
             'label' => 'Status',
             'rules' => 'callback__validate_status'
@@ -245,7 +240,10 @@ class Disbursements extends PM_Controller_v2 {
         $line_temp = array_key_exists('disbursement_details', $data) ? $data['disbursement_details'] : [];
         $line = array();
         //separate the payment
-        $payment = elements(['payment_type', 'check_date', 'check_number', 'fk_accounting_bank_account_id', 'check_type', 'print_check_date'], $data, NULL);
+        $payment = elements(['payment_type', 'check_date', 'check_number', 'fk_accounting_bank_account_id'], $data, NULL);
+        $payment['print_check_date'] = (int)!(isset($data['hide_check_date_on_print']) && (int)$data['hide_check_date_on_print']);
+        $payment['crossed'] = (int)(isset($data['crossed']) && (int)$data['crossed']);
+        $payment['check_date'] = $payment['check_date']  ?: NULL;
         $payment['amount'] = str_replace(',', '', $data['amount']);
         //destroy variables not used in the db table
         unset($data['disbursement_details'], $data['payment']);

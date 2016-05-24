@@ -182,8 +182,8 @@ class Other_Disbursements extends PM_Controller_v2 {
         $this->form_validation->set_rules('fk_accounting_bank_account_id', '', 'callback__validate_bank_account');
         $this->form_validation->set_rules('check_number', 'Check Number', 'callback__validate_check_number');
         $this->form_validation->set_rules('check_date', '', 'callback__validate_check_date');
-        $this->form_validation->set_rules('check_type', 'Check Type', 'callback__validate_check_type');
-        $this->form_validation->set_rules('status', 'Status', 'integer|callback__validate_status');
+        // $this->form_validation->set_rules('check_type', 'Check Type', 'callback__validate_check_type');
+        // $this->form_validation->set_rules('status', 'Status', 'integer|callback__validate_status');
         $this->form_validation->set_rules('vreference', 'Voucher Reference', 'required');
         if ($this->form_validation->run()) {
             return $this->response(FALSE, '', $this->_format_data($method));
@@ -204,8 +204,10 @@ class Other_Disbursements extends PM_Controller_v2 {
             $data['general']['is_locked'] = 0;
             $data['general']['status'] = M_Status::STATUS_DEFAULT;
         }
-        $data['payment'] = elements(['payment_type', 'check_type', 'fk_accounting_bank_account_id', 'check_number', 'check_date', 'print_check_date'], $input, NULL);
+        $data['payment'] = elements(['payment_type', 'fk_accounting_bank_account_id', 'check_number', 'check_date', 'print_check_date'], $input, NULL);
         $data['payment']['amount'] = str_replace(',', '', $input['amount']);
+        $data['payment']['print_check_date'] = (int)!(isset($input['hide_check_date_on_print']) && (int)$input['hide_check_date_on_print']);
+        $data['payment']['crossed'] = (int)(isset($input['crossed']) && (int)$input['crossed']);
         $data['liquidation'] = array_map(function($var) USE ($method) {
             $temp = elements(['date', 'account_id', 'description'], $var);
             $temp['amount'] = str_replace(",", "", $var['amount']);
@@ -296,6 +298,9 @@ class Other_Disbursements extends PM_Controller_v2 {
     }
 
     public function _validate_check_date($check_date) {
+        if(!trim($check_date)){
+            return TRUE;
+        }
         $this->load->helper('pmdate');
         if ($this->input->post('payment_type') === 'cash') {
             return TRUE;

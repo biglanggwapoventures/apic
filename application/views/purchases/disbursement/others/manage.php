@@ -102,15 +102,11 @@
                                         <label>Amount</label>
                                         <input value="<?= isset($data['amount']) ? number_format($data['amount'], 2) : '' ?>" type="text" class="form-control price-format" name="amount" id="payment-amount"/>
                                     </div>
-                                    <?php $disabled = 'disabled="disabled"' ?>
+                                    <?php $disabled = ' disabled="disabled"' ?>
                                     <?php if (isset($data['fk_accounting_bank_account_id']) && $data['fk_accounting_bank_account_id']): ?>
                                         <?php $bank = $data['fk_accounting_bank_account_id']; ?>
                                         <?php $disabled = ''; ?>
                                     <?php endif; ?>
-                                    <div class="form-group">
-                                        <label>Check Type</label>
-                                        <?= select_cheque('check_type', isset($data['check_type']) ? $data['check_type'] : FALSE, 'class="form-control pay-opt-cash-disabled" required="required"'.$disabled)?>
-                                    </div>
                                     <div class="form-group">
                                         <label>Account</label>
                                         <?= generate_dropdown('fk_accounting_bank_account_id', $bank_accounts, isset($bank) ? $bank : FALSE, 'class="form-control pay-opt-cash-disabled" required="required"' . $disabled) ?>
@@ -129,8 +125,18 @@
                                         <label>Check Date</label>
                                         <input value="<?= isset($check_date) ? $check_date : '' ?>" type="text" class="form-control pay-opt-cash-disabled datepicker" required="required" name="check_date" <?= $disabled ?>/>
                                     </div>
+                                    <?php $crossed = isset($data['crossed']) &&  (int)$data['crossed'] ? 'checked="checked"' : '' ?>
+                                    <div class="checkbox"><label><input type="checkbox" class="pay-opt-cash-disabled" name="crossed" value="1" <?=$crossed.$disabled?>/> <b>Cross checked?</b></label></div>
                                     <div class="checkbox">
-                                        <label><input type="checkbox" name="print_check_date" value="1" <?php if(isset($data['print_check_date'])){ echo ($data['print_check_date']) ? "checked" : ""; }else ""; ?> > Include 'Check Date' in print</label>
+                                        <label>
+                                           <?php 
+                                                $hide_check_date_on_print = '';
+                                                if(isset($data['print_check_date']) && (int)$data['print_check_date'] === 0){
+                                                    $hide_check_date_on_print ='checked="checked"';
+                                                }
+                                            ?>
+                                            <input class="pay-opt-cash-disabled" type="checkbox" name="hide_check_date_on_print" value="1" <?= $hide_check_date_on_print.$disabled?> /> <b>Hide check date on print?</b> 
+                                        </label>
                                     </div>
                                 </div><!-- /.box-body -->
                             </div>
