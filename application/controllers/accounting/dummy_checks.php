@@ -206,6 +206,7 @@ class Dummy_checks extends PM_Controller_v2
         // if (is_admin()) {
             $data['approved_by'] = user_id();
         // }
+        $data['crossed'] = isset($input['crossed']) && (int)$input['crossed'] ? 1 : 0;
         $data['check_amount'] = str_replace(',', '', $input['check_amount']);
         $data['date'] = date_create($input['date'])->format('Y-m-d');
         $data['check_date']  = isset($input['check_date']) && $input['check_date']  ? date_create($input['check_date'])->format('Y-m-d') :  NULL;

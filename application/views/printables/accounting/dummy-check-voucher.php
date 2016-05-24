@@ -115,7 +115,12 @@
         </div> <!-- end .container-fluid -->
         <div class="container" style="margin-top:-17px">
             <div class="row">
-                <div class="col-xs-offset-1 col-xs-7"></div>
+                <div class="col-xs-offset-1 col-xs-7">
+                    <?php if((int)$data['crossed']):?>
+                        <p style="margin-left:-70px;position:absolute;transform: rotate(-35deg);width:100px;border-top:1px solid black;border-bottom:1px solid black;">A/C PAYEE ONLY
+                        </p>
+                    <?php endif;?>
+                </div>
                 <div class="col-xs-3"><div style="padding-left:45px; padding-top:-1px;"><?= $data['check_date'] ? date_create($data['check_date'])->format("M d, Y") : '&nbsp;' ?></div></div>
             </div>
             <div class="row">
