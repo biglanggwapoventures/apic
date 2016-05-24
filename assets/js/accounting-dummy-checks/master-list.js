@@ -11,6 +11,9 @@
             return '<a href="'+printURL+id+'" class="btn btn-flat btn-xs btn-primary '+ (approved ? 'print' : 'disabled') +'">Print</a>';
         },
         fetchData = function(){
+            if(page==0){
+                $('tbody tr:first-child').addClass('hidden');
+            }
             var request = $.getJSON(getURL+'/'+(page*100));
             request.done(function(response){
                 $('#btn-view-more').text('Loading...').addClass('disabled');
