@@ -15,7 +15,7 @@ class M_dummy_check extends CI_Model
         return $this->db->update($this->table, $data, ['id' => $id]);
     }
 
-    public function all($show_deleted = FALSE)
+    public function all($show_deleted = FALSE, $offset=0)
     {
         $this->db->order_by('id', 'DESC');
         if ($show_deleted === FALSE) {
@@ -24,6 +24,7 @@ class M_dummy_check extends CI_Model
         $this->db->select('dc.id, dc.payee, DATE_FORMAT(dc.date, "%m/%d/%Y") AS `formatted_date`,  dc.date, dc.check_amount, account.Username as created_by', FALSE);
         $this->db->from($this->table.' as dc');
         $this->db->join('account', 'account.id=dc.created_by');
+        $this->db->limit(100, $offset);
         return $this->db->get()->result_array();
     }
 

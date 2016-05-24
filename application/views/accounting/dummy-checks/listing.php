@@ -34,6 +34,9 @@
                             <tbody>
                                 <tr><td colspan="6" class="text-center">Loading data...</td></tr>
                             </tbody>
+                            <tfoot>
+                                <tr ><td id="view-more-section" colspan="7" class="text-center"><span class="notification"></span><button id="btn-view-more" class="btn btn-flat btn-xs btn-default" type="button">Click to view more</button></td></tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

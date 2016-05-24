@@ -56,9 +56,9 @@ class Dummy_checks extends PM_Controller_v2
         $this->generate_page();
     }
 
-    public function ajax_get()
+    public function ajax_get($offset)
     {
-        $this->generate_response($this->dummy_check->all())->to_JSON();
+        $this->generate_response($this->dummy_check->all(FALSE, $offset))->to_JSON();
     }
 
     public function ajax_create()

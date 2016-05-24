@@ -1,5 +1,6 @@
 (function($, n){
 
+    var page=0;
     var table = $('#list'),
         getURL = table.data('get'),
         updateURL = table.data('update'),
@@ -10,8 +11,9 @@
             return '<a href="'+printURL+id+'" class="btn btn-flat btn-xs btn-primary '+ (approved ? 'print' : 'disabled') +'">Print</a>';
         },
         fetchData = function(){
-            var request = $.getJSON(getURL);
+            var request = $.getJSON(getURL+'/'+(page*100));
             request.done(function(response){
+                $('#btn-view-more').text('Loading...').addClass('disabled');
                 var tr = [];
                 console.log(response);
                 $.each(response, function(i, v){
@@ -25,10 +27,12 @@
                     td[5] = (isAdmin ? deleteTemplate : '') + (actionTemplate(v.approved_by !== null, v.id));
                     tr.push('<tr data-pk="'+v.id+'"><td>'+td.join('</td><td>')+'</td></tr>');
                 })
-                if(response.length){
-                    table.find('tbody').html(tr.join(''));
-                }else{
-                    table.find('tbody').html('<tr><td colspan="6" class="text-center">No more data to display</td></tr>');
+                page++;
+                table.find('tbody').append(tr.join(''));
+                $('#btn-view-more').text('Click to view more').removeClass('disabled');
+                if(response.length == 0 || response.length < 100){
+                    table.find('tbody').append('<tr><td colspan="6" class="text-center">End of list. No more data to show</td></tr>');
+                    $('tfoot').empty();
                 }
                 $('.print').printPage();
             });
@@ -64,6 +68,9 @@
         });
         table.on('click', '.print', function(){
 
+        });
+        $('#view-more-section').click(function(e){
+            fetchData();
         });
     });
 
