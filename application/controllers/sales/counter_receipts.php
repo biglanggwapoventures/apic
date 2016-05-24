@@ -40,7 +40,7 @@ class Counter_receipts extends PM_Controller_v2
         }
         if($params['end_date'] && is_valid_date($params['end_date'], 'M-d-Y'))
         {
-            $query['cr.`date` <='] = ddate_create_from_format('M-d-Y', $params['end_date'])->format('Y-m-d');
+            $query['cr.`date` <='] = date_create_from_format('M-d-Y', $params['end_date'])->format('Y-m-d');
         }
         if($params['customer'] && $this->customer->is_valid($params['customer']))
         {

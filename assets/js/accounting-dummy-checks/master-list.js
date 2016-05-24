@@ -1,6 +1,7 @@
 (function($, n){
 
     var page=0;
+    var params_global;
     var table = $('#list'),
         getURL = table.data('get'),
         updateURL = table.data('update'),
@@ -10,11 +11,11 @@
         actionTemplate = function(approved, id){
             return '<a href="'+printURL+id+'" class="btn btn-flat btn-xs btn-primary '+ (approved ? 'print' : 'disabled') +'">Print</a>';
         },
-        fetchData = function(){
+        fetchData = function(params){
             if(page==0){
                 $('tbody tr:first-child').addClass('hidden');
             }
-            var request = $.getJSON(getURL+'/'+(page*100));
+            var request = $.getJSON(getURL+'/'+(page*100), params);
             request.done(function(response){
                 $('#btn-view-more').text('Loading...').addClass('disabled');
                 var tr = [];
@@ -40,9 +41,9 @@
                 $('.print').printPage();
             });
             request.fail(function(){
-                
+                table.find('tbody').append('<tr><td colspan="6" class="text-center">An error has occured while triyng to fetch data. Please refresh the page to try again.</td></tr>');
             });
-        }
+        },
         remove = function(id){
             var request = $.post(deleteURL, {id:id});
             request.done(function(response){
@@ -60,7 +61,17 @@
 
         printVoucher = function(){
 
-        }
+        },
+
+        getParams = function(){
+            var form = $('#advanced-search');
+            return {
+                'check_number' : form.find('[name=check_number]').val(),
+                'payee': form.find('[name=payee]').val(),
+                'start_date': form.find('[name=start_date]').val(),
+                'end_date': form.find('[name=end_date]').val()
+            };
+        };
 
     $(document).ready(function(){
         fetchData();
@@ -73,7 +84,16 @@
 
         });
         $('#view-more-section').click(function(e){
-            fetchData();
+            fetchData(params_global);
+        });
+        $('#advanced-search').submit(function(e){
+            e.preventDefault();
+            $('tbody').empty();
+            page = 0;
+            if(page==0){
+                params_global = getParams();
+            }
+            fetchData(params_global);
         });
     });
 

@@ -15,7 +15,7 @@ class M_dummy_check extends CI_Model
         return $this->db->update($this->table, $data, ['id' => $id]);
     }
 
-    public function all($show_deleted = FALSE, $offset=0)
+    public function all($show_deleted = FALSE, $offset=0, $where=array())
     {
         $this->db->order_by('id', 'DESC');
         if ($show_deleted === FALSE) {
@@ -25,6 +25,9 @@ class M_dummy_check extends CI_Model
         $this->db->from($this->table.' as dc');
         $this->db->join('account', 'account.id=dc.created_by');
         $this->db->limit(100, $offset);
+        if(!empty($where)){
+            $this->db->where($where);
+        }
         return $this->db->get()->result_array();
     }
 

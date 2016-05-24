@@ -20,7 +20,7 @@ class Dummy_checks extends PM_Controller_v2
 
     public function index()
     {
-        $this->add_javascript(['printer/printer.js', 'numeral.js', 'accounting-dummy-checks/master-list.js']);
+        $this->add_javascript(['printer/printer.js', 'numeral.js', 'plugins/bootstrap-datetimepicker/moment.js', 'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js', 'accounting-dummy-checks/master-list.js']);
         $this->setTabTitle('Dummy Checks');
         $this->set_content(self::VIEW_PATH . 'listing');
         $this->generate_page();
@@ -58,7 +58,32 @@ class Dummy_checks extends PM_Controller_v2
 
     public function ajax_get($offset)
     {
-        $this->generate_response($this->dummy_check->all(FALSE, $offset))->to_JSON();
+        $where = $this->_search_params();
+        $this->generate_response($this->dummy_check->all(FALSE, $offset, $where))->to_JSON();
+    }
+
+    public function _search_params()
+    {
+        $this->load->helper('pmdate');
+        $query = [];
+        $params = elements(['check_number', 'payee', 'start_date', 'end_date'], $this->input->get());
+        if($params['check_number'])
+        {
+            $query['dc.check_number'] = $params['check_number'];
+        }
+        if($params['payee'])
+        {
+            $query['dc.payee'] = $params['payee'];
+        }
+        if($params['start_date'] && is_valid_date($params['start_date'], 'M-d-Y'))
+        {
+            $query['dc.`date` >='] = date_create_from_format('M-d-Y', $params['start_date'])->format('Y-m-d');
+        }
+        if($params['end_date'] && is_valid_date($params['end_date'], 'M-d-Y'))
+        {
+            $query['dc.`date` <='] = date_create_from_format('M-d-Y', $params['end_date'])->format('Y-m-d');
+        }
+        return empty($query) ? FALSE : $query;
     }
 
     public function ajax_create()
