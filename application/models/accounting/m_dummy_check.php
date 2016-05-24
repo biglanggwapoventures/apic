@@ -25,6 +25,10 @@ class M_dummy_check extends CI_Model
         $this->db->from($this->table.' as dc');
         $this->db->join('account', 'account.id=dc.created_by');
         $this->db->limit(100, $offset);
+        if(isset($where['dc.payee'])){
+            $this->db->like('dc.payee', $where['dc.payee']);
+            unset($where['dc.payee']);
+        }
         if(!empty($where)){
             $this->db->where($where);
         }
