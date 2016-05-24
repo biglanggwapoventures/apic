@@ -127,7 +127,7 @@
                             <?php foreach($data AS $row):?>
                                 <tr>
                                     <td><a data-pk="<?= $row['purpose_id']?>" data-name="<?= $row['purpose']?>" class="editable"><?= $row['check_number']?><a></td>
-                                    <td><?= date_create($row['check_date'])->format('M d, Y')?></td>
+                                    <td><?= $row['check_date'] ? date_create($row['check_date'])->format('M d, Y') : ''?></td>
                                     <td><?= $row['payee']?></td>
                                     <td><?= number_format($row['amount'], 2)?></td>
                                     <td><a target="_blank" href="<?= "{$action[$row['purpose']]['url']}{$row['purpose_id']}"?>"><?= "{$action[$row['purpose']]['description']} # {$row['purpose_id']}"?></a></td>
