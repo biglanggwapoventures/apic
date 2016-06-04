@@ -347,6 +347,79 @@
             </div>
         </div>
 
+
+
+        <div class="row">
+            <div class="col-md-3 col-md-offset-9" style="right:0;bottom:0;position:fixed;z-index:1000">
+                <div class="box box-primary direct-chat direct-chat-primary collapsed-box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Direct Chat</h3>
+                        <div class="box-tools pull-right">
+                            <span data-toggle="tooltip" title="3 New Messages" class="badge bg-light-blue">3</span>
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                            <button class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts"><i class="fa fa-comments"></i></button>
+                            <!-- <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
+                        </div>
+                    </div><!-- /.box-header -->
+                    <div class="box-body" style="display:none">
+                        <!-- Conversations are loaded here -->
+                        <div class="direct-chat-messages">
+                            <!-- Message. Default to the left -->
+                            <div class="direct-chat-msg">
+                                <div class="direct-chat-info clearfix">
+                                    <span class="direct-chat-name pull-left">Alexander Pierce</span>
+                                    <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
+                                </div><!-- /.direct-chat-info -->
+                                <img class="direct-chat-img" src="<?=base_url('assets/img/user1-128x128.jpg')?>" alt="message user image"><!-- /.direct-chat-img -->
+                                <div class="direct-chat-text">
+                                    Is this template really for free? That's unbelievable!
+                                </div><!-- /.direct-chat-text -->
+                            </div><!-- /.direct-chat-msg -->
+
+                            <!-- Message to the right -->
+                            <div class="direct-chat-msg right">
+                                <div class="direct-chat-info clearfix">
+                                    <span class="direct-chat-name pull-right">Sarah Bullock</span>
+                                    <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
+                                </div><!-- /.direct-chat-info -->
+                                <img class="direct-chat-img" src="<?=base_url('assets/img/user3-128x128.jpg')?>" alt="message user image"><!-- /.direct-chat-img -->
+                                <div class="direct-chat-text">
+                                    You better believe it!
+                                </div><!-- /.direct-chat-text -->
+                            </div><!-- /.direct-chat-msg -->
+                        </div><!--/.direct-chat-messages-->
+
+                        <!-- Contacts are loaded here -->
+                        <div class="direct-chat-contacts">
+                            <ul class="contacts-list">
+                                <li class="user-list" id="user-dummy">
+                                    <a href="#" class="user_click">
+                                        <img class="contacts-list-img" src="<?=base_url('assets/img/user1-128x128.jpg')?>" alt="Contact Avatar">
+                                        <div class="contacts-list-info">
+                                            <span class="contacts-list-name">
+                                                Count Dracula
+                                            </span>
+                                        </div><!-- /.contacts-list-info -->
+                                    </a>
+                                </li>
+                            </ul><!-- /.contatcts-list -->
+                        </div><!-- /.direct-chat-pane -->
+                    </div><!-- /.box-body -->
+                    <div class="box-footer" style="display:none">
+                        <form action="#" method="post">
+                            <div class="input-group">
+                                <input type="text" name="message" placeholder="Type Message ..." class="form-control">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary btn-flat">Send</button>
+                                </span>
+                            </div>
+                        </form>
+                    </div><!-- /.box-footer-->
+                </div>
+            </div>
+        </div>
+
+
         <!-- Bootstrap -->
         <script src="<?= $js_url . 'bootstrap.min.js' ?>" type="text/javascript"></script>
         <!-- AdminLTE App -->
@@ -357,7 +430,57 @@
         <script src="<?= $js_url . 'main.js' ?>" type="text/javascript"></script>
         <script src="<?= $js_url . 'jquery.form.min.js' ?>" type="text/javascript"></script>
         <script src="<?= $js_url . 'update-profile.js' ?>" type="text/javascript"></script>
+        <script src="<?= $js_url . 'plugins/socket.io.min.js' ?>" type="text/javascript"></script>
 
+        <script>
+
+             $(document).ready(function(){
+
+                var socket = io('localhost:3000'),
+                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW5fdXNlcm5hbWUiOiJIQ0IiLCJmdWxsbmFtZSI6IlRoZSBGbGFzaCIsImxvZ2luX3R5cGUiOiJzdSIsImlhdCI6MTQ2NDkzMTg0OH0.nNpWLgyahtxGhfSAp7aHGx99k1bA90seLgTshanIC0s";
+
+                function emit(eventName, data){
+                    var payload = data || {};
+                    payload['token'] = token;
+                    socket.emit(eventName, payload);
+                }
+
+                emit('user.reconnect.attempt');
+                emit('user.list.request.attempt');
+
+                socket.on('user.list.request.success', function(response){
+                    var user_dummy = $('#user-dummy').clone();
+                    for(x=0; x<response.data.userList.length; x++){
+                        var user_dummy = $('#user-dummy').clone();
+                        user_dummy.find('.contacts-list-name').text(response.data.userList[x].fullname);
+                        for(y=0; y<response.data.onlineUsers.length; y++){
+                            if(parseInt(response.data.onlineUsers[y]) == response.data.userList[x].id){
+                                user_dummy.find('img').addClass('online');
+                            }
+                        }
+                        user_dummy.removeClass('hidden');
+                        user_dummy.removeAttr('id');
+                        $('.contacts-list').append(user_dummy);
+                    }
+                });
+
+                socket.on('user.connected', function(response){
+                    console.log(response);
+                    console.log('hey');
+                });
+
+                socket.on('user.disconnected', function(response){
+                    console.log(response);
+                });
+
+                $('li').on('click', '.user_click', function(e){
+                    e.preventDefault();
+                    $('.direct-primary').removeClass('direct-chat-contacts-open');
+                    console.log('gana na please!!!!');
+                });
+            })
+
+        </script>
         <?php isset($data_javascript) ? include_js($data_javascript) : NULL; ?>
     </body>
 </html>
