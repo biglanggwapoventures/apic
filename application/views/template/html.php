@@ -355,7 +355,7 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">Direct Chat</h3>
                         <div class="box-tools pull-right">
-                            <span data-toggle="tooltip" title="3 New Messages" class="badge bg-light-blue">3</span>
+                            <!-- <span data-toggle="tooltip" title="3 New Messages" class="badge bg-light-blue">3</span> -->
                             <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
                             <button class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts"><i class="fa fa-comments"></i></button>
                             <!-- <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
@@ -364,37 +364,41 @@
                     <div class="box-body" style="display:none">
                         <!-- Conversations are loaded here -->
                         <div class="direct-chat-messages">
-                            <!-- Message. Default to the left -->
-                            <div class="direct-chat-msg">
-                                <div class="direct-chat-info clearfix">
-                                    <span class="direct-chat-name pull-left">Alexander Pierce</span>
-                                    <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
-                                </div><!-- /.direct-chat-info -->
-                                <img class="direct-chat-img" src="<?=base_url('assets/img/user1-128x128.jpg')?>" alt="message user image"><!-- /.direct-chat-img -->
-                                <div class="direct-chat-text">
-                                    Is this template really for free? That's unbelievable!
-                                </div><!-- /.direct-chat-text -->
-                            </div><!-- /.direct-chat-msg -->
+                            <div class="chat-dummy-bubbles-container">
+                                <div id="chat-select-user" style="text-align:center">Please select a user...</div>
+                                <!-- Message. Default to the left -->
+                                <div class="direct-chat-msg hidden" id="chat-sender-bubble">
+                                    <div class="direct-chat-info clearfix">
+                                        <!-- <span class="direct-chat-name pull-left">Alexander Pierce</span> -->
+                                        <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
+                                    </div><!-- /.direct-chat-info -->
+                                    <img class="direct-chat-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="message user image"><!-- /.direct-chat-img -->
+                                    <div class="direct-chat-text">
+                                        Is this template really for free? That's unbelievable!
+                                    </div><!-- /.direct-chat-text -->
+                                </div><!-- /.direct-chat-msg -->
 
-                            <!-- Message to the right -->
-                            <div class="direct-chat-msg right">
-                                <div class="direct-chat-info clearfix">
-                                    <span class="direct-chat-name pull-right">Sarah Bullock</span>
-                                    <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
-                                </div><!-- /.direct-chat-info -->
-                                <img class="direct-chat-img" src="<?=base_url('assets/img/user3-128x128.jpg')?>" alt="message user image"><!-- /.direct-chat-img -->
-                                <div class="direct-chat-text">
-                                    You better believe it!
-                                </div><!-- /.direct-chat-text -->
-                            </div><!-- /.direct-chat-msg -->
+                                <!-- Message to the right -->
+                                <div class="direct-chat-msg right hidden" id="chat-recipient-bubble">
+                                    <div class="direct-chat-info clearfix">
+                                        <!-- <span class="direct-chat-name pull-right">Sarah Bullock</span> -->
+                                        <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
+                                    </div><!-- /.direct-chat-info -->
+                                    <img class="direct-chat-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="message user image"><!-- /.direct-chat-img -->
+                                    <div class="direct-chat-text">
+                                        You better believe it!
+                                    </div><!-- /.direct-chat-text -->
+                                </div><!-- /.direct-chat-msg -->
+                            </div><!-- /.chat-dummy-bubbles-container -->
+                            <div class="chat-bubbles-container"></div>
                         </div><!--/.direct-chat-messages-->
 
                         <!-- Contacts are loaded here -->
                         <div class="direct-chat-contacts">
                             <ul class="contacts-list">
-                                <li class="user-list" id="user-dummy">
+                                <li class="user-list hidden" id="user-dummy">
                                     <a href="#" class="user_click">
-                                        <img class="contacts-list-img" src="<?=base_url('assets/img/user1-128x128.jpg')?>" alt="Contact Avatar">
+                                        <img class="contacts-list-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="Contact Avatar">
                                         <div class="contacts-list-info">
                                             <span class="contacts-list-name">
                                                 Count Dracula
@@ -405,9 +409,9 @@
                             </ul><!-- /.contatcts-list -->
                         </div><!-- /.direct-chat-pane -->
                     </div><!-- /.box-body -->
-                    <div class="box-footer" style="display:none">
-                        <form action="#" method="post">
-                            <div class="input-group">
+                    <div class="box-footer hidden" style="display:none">
+                        <form action="#" method="post" id="send-message">
+                            <div class="input-group" id="chat-send">
                                 <input type="text" name="message" placeholder="Type Message ..." class="form-control">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-primary btn-flat">Send</button>
@@ -437,16 +441,22 @@
              $(document).ready(function(){
 
                 var socket = io('localhost:3000'),
-                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW5fdXNlcm5hbWUiOiJIQ0IiLCJmdWxsbmFtZSI6IlRoZSBGbGFzaCIsImxvZ2luX3R5cGUiOiJzdSIsImlhdCI6MTQ2NDkzMTg0OH0.nNpWLgyahtxGhfSAp7aHGx99k1bA90seLgTshanIC0s";
+                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW5fdXNlcm5hbWUiOiJoY2IiLCJmdWxsbmFtZSI6IlRoZSBGbGFzaCIsImxvZ2luX3R5cGUiOiJzdSIsImlhdCI6MTQ2NTE4NTExOH0.UJEuRDPbBlnqjbuKDjddsLMByD6uLakSuX9kJoVGpC0",
+                    user_id,
+                    message;
 
                 function emit(eventName, data){
                     var payload = data || {};
                     payload['token'] = token;
+                    payload['excludeSelf'] = true;
                     socket.emit(eventName, payload);
                 }
 
                 emit('user.reconnect.attempt');
-                emit('user.list.request.attempt');
+
+                socket.on('user.reconnect.success', function(response){
+                    emit('user.list.request.attempt');
+                });
 
                 socket.on('user.list.request.success', function(response){
                     var user_dummy = $('#user-dummy').clone();
@@ -458,6 +468,7 @@
                                 user_dummy.find('img').addClass('online');
                             }
                         }
+                        user_dummy.find('img').attr('user-id', response.data.userList[x].id);
                         user_dummy.removeClass('hidden');
                         user_dummy.removeAttr('id');
                         $('.contacts-list').append(user_dummy);
@@ -465,18 +476,68 @@
                 });
 
                 socket.on('user.connected', function(response){
-                    console.log(response);
-                    console.log('hey');
+                    $('[user-id='+response.data+']').addClass('online');
                 });
 
                 socket.on('user.disconnected', function(response){
-                    console.log(response);
+                    $('[user-id='+response.data+']').removeClass('online');
                 });
 
-                $('li').on('click', '.user_click', function(e){
+                socket.on('user.message.received', function(response){
+                    console.log(response);
+                    var recipient_bubble = $('#chat-sender-bubble').clone();
+                    recipient_bubble.find('.direct-chat-timestamp').text(response.data.created_at);
+                    recipient_bubble.find('.direct-chat-text').text(response.data.message);
+                    recipient_bubble.removeClass('hidden');
+                    $('.chat-bubbles-container').append(recipient_bubble);
+                    $('.direct-chat-messages').animate({scrollTop: $('.direct-chat-messages').prop("scrollHeight")}, 500);
+                });
+
+                socket.on('user.message.logs.success', function(response){
+                    for(x=0; x<response.data.length; x++){
+                        if(response.data[x].recipient_id == user_id){
+                            var recipient_bubble = $('#chat-recipient-bubble').clone();
+                            recipient_bubble.find('.direct-chat-timestamp').text(response.data[x].created_at);
+                            recipient_bubble.find('.direct-chat-text').text(response.data[x].message);
+                            recipient_bubble.removeClass('hidden');
+                            $('.chat-bubbles-container').append(recipient_bubble);
+                        }else{
+                            var recipient_bubble = $('#chat-sender-bubble').clone();
+                            recipient_bubble.find('.direct-chat-timestamp').text(response.data[x].created_at);
+                            recipient_bubble.find('.direct-chat-text').text(response.data[x].message);
+                            recipient_bubble.removeClass('hidden');
+                            $('.chat-bubbles-container').append(recipient_bubble);
+                        }
+                    }
+                    $('.direct-chat-messages').animate({scrollTop: $('.direct-chat-messages').prop("scrollHeight")}, 500);
+                    $('.box-footer').removeClass('hidden');
+                });
+
+                socket.on('user.message.send.success', function(response){
+                    var recipient_bubble = $('#chat-recipient-bubble').clone();
+                    recipient_bubble.find('.direct-chat-timestamp').text(new Date().toLocaleString());
+                    recipient_bubble.find('.direct-chat-text').text(message);
+                    recipient_bubble.removeClass('hidden');
+                    $('.chat-bubbles-container').append(recipient_bubble);
+                    $('.direct-chat-messages').animate({scrollTop: $('.direct-chat-messages').prop("scrollHeight")}, 500);
+                    $('[name=message]').val('');
+                });
+
+                $('ul').on('click', '.user_click', function(e){
                     e.preventDefault();
-                    $('.direct-primary').removeClass('direct-chat-contacts-open');
-                    console.log('gana na please!!!!');
+                    $('.direct-chat-primary').removeClass('direct-chat-contacts-open');
+                    $('.chat-bubbles-container').empty();
+
+                    user_id = $(this).find('img').attr('user-id');
+                    var user_name = $(this).find('.contacts-list-name').text();
+                    $('#chat-select-user').text(user_name);
+                    emit('user.message.logs', {token: token, data:{recipientId:user_id}});
+                });
+
+                $('#send-message').submit(function(e){
+                    e.preventDefault();
+                    message = $('[name=message]').val();
+                    emit('user.message.send', {token: token, message:{recipientId:user_id, content:message}});
                 });
             })
 
