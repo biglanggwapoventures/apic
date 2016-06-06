@@ -506,12 +506,10 @@
                             $('.chat-bubbles-container').append(recipient_bubble);
                             $('.direct-chat-messages').animate({scrollTop: $('.direct-chat-messages').prop("scrollHeight")}, 500);
                         }else{  // recipient does not own the container logs
-                            console.log('hoy');
                             message_counter++;
                             var sender_counter = parseInt($('[user-id='+response.data.senderId+']').text());
                             sender_counter = (!sender_counter) ? 0 : sender_counter;
                             sender_counter++;
-                            // console.log($('#chat-box-toggle').attr('state'));
                             $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
                             $('.chat-message-counter-individual[user-id='+response.data.senderId+']').attr('title', sender_counter+' New Messages').text(sender_counter).removeClass('hidden');
                         }
