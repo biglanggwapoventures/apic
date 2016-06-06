@@ -353,10 +353,10 @@
             <div class="col-md-3 col-md-offset-9" style="right:0;bottom:0;position:fixed;z-index:1000">
                 <div class="box box-primary direct-chat direct-chat-primary collapsed-box">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Direct Chat</h3>
+                        <h3 class="box-title" id="recipient-title">Direct Chat</h3>
                         <div class="box-tools pull-right">
-                            <!-- <span data-toggle="tooltip" title="3 New Messages" class="badge bg-light-blue">3</span> -->
-                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                            <span data-toggle="tooltip" title="0 New Messages" id="chat-message-counter" class="badge bg-light-blue">0</span>
+                            <button class="btn btn-box-tool" data-widget="collapse" id="chat-box-toggle" state="0"><i class="fa fa-plus"></i></button>
                             <button class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts"><i class="fa fa-comments"></i></button>
                             <!-- <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
                         </div>
@@ -398,11 +398,12 @@
                             <ul class="contacts-list">
                                 <li class="user-list hidden" id="user-dummy">
                                     <a href="#" class="user_click">
-                                        <img class="contacts-list-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="Contact Avatar">
+                                        <img class="contacts-list-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="Contact Avatar" message-counter="0">
                                         <div class="contacts-list-info">
                                             <span class="contacts-list-name">
                                                 Count Dracula
                                             </span>
+                                            <span data-toggle="tooltip" title="0 New Messages" user-id="" class="badge bg-light-blue hidden chat-message-counter-individual">0</span>
                                         </div><!-- /.contacts-list-info -->
                                     </a>
                                 </li>
@@ -410,7 +411,7 @@
                         </div><!-- /.direct-chat-pane -->
                     </div><!-- /.box-body -->
                     <div class="box-footer hidden" style="display:none">
-                        <form action="#" method="post" id="send-message">
+                        <form action="#" id="send-message">
                             <div class="input-group" id="chat-send">
                                 <input type="text" name="message" placeholder="Type Message ..." class="form-control">
                                 <span class="input-group-btn">
@@ -443,7 +444,11 @@
                 var socket = io('localhost:3000'),
                     token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW5fdXNlcm5hbWUiOiJoY2IiLCJmdWxsbmFtZSI6IlRoZSBGbGFzaCIsImxvZ2luX3R5cGUiOiJzdSIsImlhdCI6MTQ2NTE4NTExOH0.UJEuRDPbBlnqjbuKDjddsLMByD6uLakSuX9kJoVGpC0",
                     user_id,
-                    message;
+                    message,
+                    message_counter=0,
+                    opened_message_counter=0;
+
+                $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
 
                 function emit(eventName, data){
                     var payload = data || {};
@@ -468,7 +473,7 @@
                                 user_dummy.find('img').addClass('online');
                             }
                         }
-                        user_dummy.find('img').attr('user-id', response.data.userList[x].id);
+                        user_dummy.find('img,.chat-message-counter-individual').attr('user-id', response.data.userList[x].id).attr('message-counter', 0);
                         user_dummy.removeClass('hidden');
                         user_dummy.removeAttr('id');
                         $('.contacts-list').append(user_dummy);
@@ -484,13 +489,40 @@
                 });
 
                 socket.on('user.message.received', function(response){
-                    console.log(response);
-                    var recipient_bubble = $('#chat-sender-bubble').clone();
-                    recipient_bubble.find('.direct-chat-timestamp').text(response.data.created_at);
-                    recipient_bubble.find('.direct-chat-text').text(response.data.message);
-                    recipient_bubble.removeClass('hidden');
-                    $('.chat-bubbles-container').append(recipient_bubble);
-                    $('.direct-chat-messages').animate({scrollTop: $('.direct-chat-messages').prop("scrollHeight")}, 500);
+                    var has_active_log = $('div[active-user-id]'); // check if element exist. will only exist if user has clicked a user to send msg.
+                    if(has_active_log.length != 0){
+                        var active_id = $('.direct-chat-messages').attr('active-user-id');
+                        if(active_id == response.data.senderId){   // recipient is the owner of the container logs
+
+                            if(!parseInt($('#chat-box-toggle').attr('state'))){
+                                opened_message_counter++;
+                                message_counter += opened_message_counter;
+                                $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
+                            }
+                            var recipient_bubble = $('#chat-sender-bubble').clone();
+                            recipient_bubble.find('.direct-chat-timestamp').text(response.data.created_at);
+                            recipient_bubble.find('.direct-chat-text').text(response.data.message);
+                            recipient_bubble.removeClass('hidden');
+                            $('.chat-bubbles-container').append(recipient_bubble);
+                            $('.direct-chat-messages').animate({scrollTop: $('.direct-chat-messages').prop("scrollHeight")}, 500);
+                        }else{  // recipient does not own the container logs
+                            console.log('hoy');
+                            message_counter++;
+                            var sender_counter = parseInt($('[user-id='+response.data.senderId+']').text());
+                            sender_counter = (!sender_counter) ? 0 : sender_counter;
+                            sender_counter++;
+                            // console.log($('#chat-box-toggle').attr('state'));
+                            $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
+                            $('.chat-message-counter-individual[user-id='+response.data.senderId+']').attr('title', sender_counter+' New Messages').text(sender_counter).removeClass('hidden');
+                        }
+                    }else{  // no opened logs
+                        message_counter++;
+                        var sender_counter = parseInt($('[user-id='+response.data.senderId+']').text());
+                        sender_counter = (!sender_counter) ? 0 : sender_counter;
+                        sender_counter++;
+                        $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
+                        $('.chat-message-counter-individual[user-id='+response.data.senderId+']').attr('title', sender_counter+' New Messages').text(sender_counter).removeClass('hidden');
+                    }
                 });
 
                 socket.on('user.message.logs.success', function(response){
@@ -509,7 +541,7 @@
                             $('.chat-bubbles-container').append(recipient_bubble);
                         }
                     }
-                    $('.direct-chat-messages').animate({scrollTop: $('.direct-chat-messages').prop("scrollHeight")}, 500);
+                    $('.direct-chat-messages').animate({scrollTop: $('.direct-chat-messages').prop("scrollHeight")}, 500).attr('active-user-id', user_id);
                     $('.box-footer').removeClass('hidden');
                 });
 
@@ -530,7 +562,12 @@
 
                     user_id = $(this).find('img').attr('user-id');
                     var user_name = $(this).find('.contacts-list-name').text();
-                    $('#chat-select-user').text(user_name);
+                    var user_message_counter = parseInt($('.chat-message-counter-individual[user-id='+user_id+']').text());
+                    user_message_counter = (!user_message_counter) ? 0 : user_message_counter;
+                    message_counter = message_counter - user_message_counter;
+                    $('.chat-message-counter-individual[user-id='+user_id+']').attr('title', '0 New Messages').text(0).addClass('hidden');
+                    $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
+                    $('#chat-select-user,#recipient-title').text(user_name);
                     emit('user.message.logs', {token: token, data:{recipientId:user_id}});
                 });
 
@@ -538,6 +575,17 @@
                     e.preventDefault();
                     message = $('[name=message]').val();
                     emit('user.message.send', {token: token, message:{recipientId:user_id, content:message}});
+                });
+
+                $('#chat-box-toggle').click(function(e){
+                    e.preventDefault();
+                    var curr_state = parseInt($(this).attr('state'));
+                    if(opened_message_counter != 0){
+                        message_counter = message_counter - opened_message_counter;
+                        opened_message_counter = 0;
+                        $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
+                    }
+                    $(this).attr('state', ((curr_state) ? 0 : 1));
                 });
             })
 
