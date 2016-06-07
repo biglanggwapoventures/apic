@@ -419,6 +419,10 @@
                                 </span>
                             </div>
                         </form>
+                        <audio id="chatAudio">
+                            <source src="<?=base_url('assets/audio/chat.ogg')?>" type="audio/ogg">    
+                            </source>
+                        </audio>
                     </div><!-- /.box-footer-->
                 </div>
             </div>
@@ -490,6 +494,7 @@
 
                 socket.on('user.message.received', function(response){
                     var has_active_log = $('div[active-user-id]'); // check if element exist. will only exist if user has clicked a user to send msg.
+                    $('#chatAudio')[0].play();
                     if(has_active_log.length != 0){
                         var active_id = $('.direct-chat-messages').attr('active-user-id');
                         if(active_id == response.data.senderId){   // recipient is the owner of the container logs
