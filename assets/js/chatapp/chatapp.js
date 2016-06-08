@@ -25,10 +25,12 @@ $(document).ready(function(){
         var user_dummy = $('#user-dummy').clone();
         for(x=0; x<response.data.userList.length; x++){
             var user_dummy = $('#user-dummy').clone();
-            user_dummy.find('.contacts-list-name').text(response.data.userList[x].fullname);
+            user_dummy.find('.contact-name').text(response.data.userList[x].fullname);
             for(y=0; y<response.data.onlineUsers.length; y++){
                 if(parseInt(response.data.onlineUsers[y]) == response.data.userList[x].id){
-                    user_dummy.find('img').addClass('online');
+                    user_dummy.find('.contact-status').text('Online').css('color', 'green');
+                }else{
+                    user_dummy.find('.contact-status').text('Offline').css('color', 'red');
                 }
             }
             user_dummy.find('img,.chat-message-counter-individual').attr('user-id', response.data.userList[x].id).attr('message-counter', 0);

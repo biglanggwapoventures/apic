@@ -394,16 +394,16 @@
                         </div><!--/.direct-chat-messages-->
 
                         <!-- Contacts are loaded here -->
-                        <div class="direct-chat-contacts">
-                            <ul class="contacts-list">
+                        <div class="direct-chat-contacts" style="background-color:#fff; color:#000; width:100%">
+                            <ul class="contacts-list" style="list-style:none; padding:0px">
                                 <li class="user-list hidden" id="user-dummy">
                                     <a href="#" class="user_click">
                                         <img class="contacts-list-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="Contact Avatar" message-counter="0">
                                         <div class="contacts-list-info">
-                                            <span class="contacts-list-name">
-                                                Count Dracula
+                                            <span class="contacts-list-name" style="color:#000">
+                                                <span class="contact-name"></span> <span data-toggle="tooltip" title="0 New Messages" user-id="" class="badge bg-light-blue hidden chat-message-counter-individual">0</span>
                                             </span>
-                                            <span data-toggle="tooltip" title="0 New Messages" user-id="" class="badge bg-light-blue hidden chat-message-counter-individual">0</span>
+                                            <span class="contact-status"></span>
                                         </div><!-- /.contacts-list-info -->
                                     </a>
                                 </li>
