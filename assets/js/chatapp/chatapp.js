@@ -1,10 +1,12 @@
 $(document).ready(function(){
     var socket = io('localhost:3000'),
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW5fdXNlcm5hbWUiOiJoY2IiLCJmdWxsbmFtZSI6IlRoZSBGbGFzaCIsImxvZ2luX3R5cGUiOiJzdSIsImlhdCI6MTQ2NTE4NTExOH0.UJEuRDPbBlnqjbuKDjddsLMByD6uLakSuX9kJoVGpC0",
+        token = $('html').attr('jwt'),
         user_id,
         message,
         message_counter=0,
         opened_message_counter=0;
+
+    (!token.length) ? $('#chat-select-user').text('No shared token. Please contact administrator') : '';
 
     $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
 
@@ -29,11 +31,9 @@ $(document).ready(function(){
             for(y=0; y<response.data.onlineUsers.length; y++){
                 if(parseInt(response.data.onlineUsers[y]) == response.data.userList[x].id){
                     user_dummy.find('.contact-status').text('Online').css('color', 'green');
-                }else{
-                    user_dummy.find('.contact-status').text('Offline').css('color', 'red');
                 }
             }
-            user_dummy.find('img,.chat-message-counter-individual').attr('user-id', response.data.userList[x].id).attr('message-counter', 0);
+            user_dummy.find('img,.chat-message-counter-individual,.contact-status').attr('user-id', response.data.userList[x].id).attr('message-counter', 0);
             user_dummy.removeClass('hidden');
             user_dummy.removeAttr('id');
             $('.contacts-list').append(user_dummy);
@@ -41,11 +41,11 @@ $(document).ready(function(){
     });
 
     socket.on('user.connected', function(response){
-        $('[user-id='+response.data+']').addClass('online');
+        $('.contact-status[user-id='+response.data+']').text('Online').css('color', 'green');
     });
 
     socket.on('user.disconnected', function(response){
-        $('[user-id='+response.data+']').removeClass('online');
+        $('.contact-status[user-id='+response.data+']').text('Offline').css('color', 'red');
     });
 
     socket.on('user.message.received', function(response){
@@ -120,13 +120,14 @@ $(document).ready(function(){
         $('.chat-bubbles-container').empty();
 
         user_id = $(this).find('img').attr('user-id');
-        var user_name = $(this).find('.contacts-list-name').text();
+        var user_name = $(this).find('span.contact-name').text();
         var user_message_counter = parseInt($('.chat-message-counter-individual[user-id='+user_id+']').text());
         user_message_counter = (!user_message_counter) ? 0 : user_message_counter;
         message_counter = message_counter - user_message_counter;
         $('.chat-message-counter-individual[user-id='+user_id+']').attr('title', '0 New Messages').text(0).addClass('hidden');
         $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
-        $('#chat-select-user,#recipient-title').text(user_name);
+        $('#chat-select-user').addClass('hidden');
+        $('#recipient-title').text(user_name);
         emit('user.message.logs', {token: token, data:{recipientId:user_id}});
     });
 

@@ -27,6 +27,27 @@ class Login extends CI_Controller {
         }
     }
 
+    public function _curl_request($token){
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_RETURNTRANSFER  =>  1,
+            CURLOPT_URL             => 'http://localhost:3000',
+            CURLOPT_USERAGENT       =>  '',
+            CURLOPT_POST            =>  1,
+            CURLOPT_POSTFIELDS      =>  'token='.$token,
+            CURLOPT_HTTPHEADER      =>  [
+                'Content-Type: application/x-www-form-urlencoded'
+            ]
+        ]);
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        return $response;
+    }
+
     public function a_do_login() {
         $response = '';
         $this->output->set_content_type('json');
@@ -38,6 +59,7 @@ class Login extends CI_Controller {
             if ($authentic) {
                 $response = $this->_response(FALSE, $this->lang->line('authentic_login'));
                 $mod_access = $this->m_account->get_module_access($authentic['id']);
+                $jwt = json_decode($this->_curl_request($authentic['shared_token']), true);
                 $this->session->set_userdata([
                     'username' => $this->input->post('username'),
                     'name'    => $authentic['name'],
@@ -45,7 +67,9 @@ class Login extends CI_Controller {
                     'user_id' => $authentic['id'],
                     'role' => $authentic['role'],
                     'module_access' => empty($mod_access)?array():$mod_access,
-                    'avatar' => $authentic['Avatar']
+                    'avatar' => $authentic['Avatar'],
+                    'shared_token' => $authentic['shared_token'],
+                    'jwt' => ($jwt['result']) ? $jwt['jwt'] : ''
                 ]);
             } else {
                 $response = $this->_response(TRUE, array(array('password' => $this->lang->line('err_invalid_password'))));

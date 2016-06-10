@@ -54,6 +54,13 @@
                     </div>
                     <hr/>
                     <div class="form-group">
+                        <label class="control-label col-sm-3">Shared Token</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="shared_token" value="<?= isset($data['shared_token']) ? $data['shared_token'] : '' ?>"/>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
                         <label class="control-label col-sm-3">Display photo</label>
                         <div class="col-sm-8">
                             <input type="file" name="dp"/>

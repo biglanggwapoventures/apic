@@ -37,7 +37,7 @@ class M_Account extends CI_Model {
 
     //authentcates and returns id, typeid and name if authentic
     public function is_authentic($username, $password) {
-        return $this->db->select('ID as id, TypeID as typeid, CONCAT(FirstName," ",LastName) as name, Avatar, role', FALSE)
+        return $this->db->select('ID as id, TypeID as typeid, CONCAT(FirstName," ",LastName) as name, Avatar, role, shared_token', FALSE)
                         ->get_where(self::TABLE_NAME_GENERAL, array('Username' => $username, 'Password' => md5($password)), 1)->row_array();
     }
 

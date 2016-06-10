@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html jwt="<?= $this->session->userdata('jwt') ? $this->session->userdata('jwt') : '' ?>">
     <head>
         <meta charset="UTF-8">
         <title><?= isset($data_tab_title) && $data_tab_title ? $data_tab_title . ' | ' : '' ?>Arditezza Poultry Intergration Corporation</title>
@@ -331,6 +331,13 @@
                                 </div>
                                 <hr/>
                                 <div class="form-group">
+                                    <label class="control-label col-sm-3">Shared Token</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static"><?= $this->session->userdata('shared_token') ?></p>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="form-group">
                                     <label class="control-label col-sm-3">Display photo</label>
                                     <div class="col-sm-8">
                                         <input type="file" name="dp"/>
@@ -403,7 +410,7 @@
                                             <span class="contacts-list-name" style="color:#000">
                                                 <span class="contact-name"></span> <span data-toggle="tooltip" title="0 New Messages" user-id="" class="badge bg-light-blue hidden chat-message-counter-individual">0</span>
                                             </span>
-                                            <span class="contact-status"></span>
+                                            <span class="contact-status" style="color:red;">Offline</span>
                                         </div><!-- /.contacts-list-info -->
                                     </a>
                                 </li>

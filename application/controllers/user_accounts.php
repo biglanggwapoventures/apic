@@ -169,6 +169,9 @@ class User_accounts extends PM_Controller_v2
 				$data['user']['role'] = 'su';
 			}
 		}
+		if(isset($input['shared_token'])){
+			$data['user']['shared_token'] = $input['shared_token'];
+		}
 		if(isset($input['password']) && trim($input['password']))
 		{
 			$data['user']['Password'] = md5($input['password']);
