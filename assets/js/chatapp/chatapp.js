@@ -1,12 +1,18 @@
 $(document).ready(function(){
-    var socket = io('localhost:3000'),
+    var socket,
         token = $('html').attr('jwt'),
         user_id,
         message,
-        message_counter=0,
-        opened_message_counter=0;
+        message_counter = 0,
+        opened_message_counter = 0;
 
-    (!token.length) ? $('#chat-select-user').text('No shared token. Please contact administrator') : '';
+    if(!token.length){
+        $('#chat-select-user').text('No chat account. Please contact administrator');
+        socket.disconnect();
+        return;
+    }else{
+        socket = io('localhost:3000');
+    }
 
     $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
 
@@ -24,16 +30,14 @@ $(document).ready(function(){
     });
 
     socket.on('user.list.request.success', function(response){
-        var user_dummy = $('#user-dummy').clone();
-        for(x=0; x<response.data.userList.length; x++){
+        var users = response.data.userList;
+        for(var x = 0; x < users.length; x++){
             var user_dummy = $('#user-dummy').clone();
             user_dummy.find('.contact-name').text(response.data.userList[x].fullname);
-            for(y=0; y<response.data.onlineUsers.length; y++){
-                if(parseInt(response.data.onlineUsers[y]) == response.data.userList[x].id){
-                    user_dummy.find('.contact-status').text('Online').css('color', 'green');
-                }
+            if(response.data.onlineUsers.indexOf(users[x].id+'') !== -1){
+                user_dummy.find('.contact-status').text('Online').css('color', 'green');
             }
-            user_dummy.find('img,.chat-message-counter-individual,.contact-status').attr('user-id', response.data.userList[x].id).attr('message-counter', 0);
+            user_dummy.find('img,.chat-message-counter-individual,.contact-status').attr('user-id', users[x].id).attr('message-counter', 0);
             user_dummy.removeClass('hidden');
             user_dummy.removeAttr('id');
             $('.contacts-list').append(user_dummy);

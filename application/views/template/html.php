@@ -357,14 +357,15 @@
 
 
         <div class="row">
-            <div class="col-md-3 col-md-offset-9" style="right:0;bottom:0;position:fixed;z-index:1000">
-                <div class="box box-primary direct-chat direct-chat-primary collapsed-box">
+            <div class="col-md-4 col-md-offset-8 col-xs-5 col-xs-offset-7" style="right:0;bottom:0;position:fixed;z-index:1000">
+                <div class="box box-solid direct-chat direct-chat-primary collapsed-box" style="border-radius:0">
                     <div class="box-header with-border">
-                        <h3 class="box-title" id="recipient-title">Direct Chat</h3>
+                        <h3 class="box-title" id="recipient-title">
+                            Chat <span data-toggle="tooltip" title="0 New Messages" id="chat-message-counter" class="badge bg-light-blue">0</span>
+                        </h3>
                         <div class="box-tools pull-right">
-                            <span data-toggle="tooltip" title="0 New Messages" id="chat-message-counter" class="badge bg-light-blue">0</span>
-                            <button class="btn btn-box-tool" data-widget="collapse" id="chat-box-toggle" state="0"><i class="fa fa-plus"></i></button>
-                            <button class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts"><i class="fa fa-comments"></i></button>
+                            <a class="btn btn-box-tool" data-widget="collapse" id="chat-box-toggle" state="0"><i class="fa fa-plus"></i></a>
+                            <a class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts"><i class="fa fa-comments"></i></a>
                             <!-- <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
                         </div>
                     </div><!-- /.box-header -->
@@ -427,8 +428,7 @@
                             </div>
                         </form>
                         <audio id="chatAudio">
-                            <source src="<?=base_url('assets/audio/chat.ogg')?>" type="audio/ogg">    
-                            </source>
+                            <source src="<?=base_url('assets/audio/chat.ogg')?>" type="audio/ogg"></source>
                         </audio>
                     </div><!-- /.box-footer-->
                 </div>
