@@ -23,6 +23,19 @@ $(document).ready(function(){
         socket.emit(eventName, payload);
     }
 
+    function timeConverter(UNIX_timestamp){
+        var a = new Date(UNIX_timestamp * 1000);
+        var months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
+        var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
+        var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+        return time;
+    }
+
     emit('user.reconnect.attempt');
 
     socket.on('user.reconnect.success', function(response){
@@ -53,6 +66,10 @@ $(document).ready(function(){
     });
 
     socket.on('user.message.received', function(response){
+        console.log(response);
+        var timestamp = moment.unix(response.data.created_at);
+        var created_at = timestamp.format("MM/DD/YY hh:mmA");
+        console.log(created_at);
         var has_active_log = $('div[active-user-id]'); // check if element exist. will only exist if user has clicked a user to send msg.
         $('#chatAudio')[0].play();
         if(has_active_log.length != 0){
@@ -65,7 +82,7 @@ $(document).ready(function(){
                     $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
                 }
                 var recipient_bubble = $('#chat-sender-bubble').clone();
-                recipient_bubble.find('.direct-chat-timestamp').text(response.data.created_at);
+                recipient_bubble.find('.direct-chat-timestamp').text(created_at);
                 recipient_bubble.find('.direct-chat-text').text(response.data.message);
                 recipient_bubble.removeClass('hidden');
                 $('.chat-bubbles-container').append(recipient_bubble);

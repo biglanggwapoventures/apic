@@ -331,13 +331,6 @@
                                 </div>
                                 <hr/>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-3">Shared Token</label>
-                                    <div class="col-sm-8">
-                                        <p class="form-control-static"><?= $this->session->userdata('shared_token') ?></p>
-                                    </div>
-                                </div>
-                                <hr/>
-                                <div class="form-group">
                                     <label class="control-label col-sm-3">Display photo</label>
                                     <div class="col-sm-8">
                                         <input type="file" name="dp"/>
@@ -447,6 +440,7 @@
         <script src="<?= $js_url . 'jquery.form.min.js' ?>" type="text/javascript"></script>
         <script src="<?= $js_url . 'update-profile.js' ?>" type="text/javascript"></script>
         <script src="<?= $js_url . 'plugins/socket.io.min.js' ?>" type="text/javascript"></script>
+        <script src="<?= $js_url . 'moment.js' ?>" type="text/javascript"></script>
         <script src="<?= $js_url . 'chatapp/chatapp.js' ?>" type="text/javascript"></script>
         <?php isset($data_javascript) ? include_js($data_javascript) : NULL; ?>
     </body>
