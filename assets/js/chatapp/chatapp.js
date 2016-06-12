@@ -53,10 +53,8 @@ $(document).ready(function(){
     });
 
     socket.on('user.message.received', function(response){
+        console.log(response);
         if(response.data.senderId == owerner_id) return;
-        var timestamp = moment.unix(response.data.created_at);
-        var created_at = timestamp.format("MM/DD/YY hh:mmA");
-        console.log(created_at);
         var has_active_log = $('div[active-user-id]'); // check if element exist. will only exist if user has clicked a user to send msg.
         $('#chatAudio')[0].play();
         if(has_active_log.length != 0){
@@ -69,7 +67,7 @@ $(document).ready(function(){
                     $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
                 }
                 var recipient_bubble = $('#chat-sender-bubble').clone();
-                recipient_bubble.find('.direct-chat-timestamp').text(created_at);
+                recipient_bubble.find('.direct-chat-timestamp').text(response.data.created_at);
                 recipient_bubble.find('.direct-chat-text').text(response.data.message);
                 recipient_bubble.removeClass('hidden');
                 $('.chat-bubbles-container').append(recipient_bubble);
@@ -93,6 +91,7 @@ $(document).ready(function(){
     });
 
     socket.on('user.message.logs.success', function(response){
+        console.log(response);
         for(x=0; x<response.data.length; x++){
             if(response.data[x].recipient_id == user_id){
                 var recipient_bubble = $('#chat-recipient-bubble').clone();
@@ -112,9 +111,18 @@ $(document).ready(function(){
         $('.box-footer').removeClass('hidden');
     });
 
+    function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+        return i;
+    }
+
     socket.on('user.message.send.success', function(response){
+        var date = new Date();
+        var datetime = ( addZero(date.getMonth()+1) ) + "/" + ( addZero(date.getDate()) ) + "/" + ( date.getFullYear() ) + " " + ( date.toLocaleTimeString(navigator.language,{hour:'2-digit', minute:'2-digit'}) );
         var recipient_bubble = $('#chat-recipient-bubble').clone();
-        recipient_bubble.find('.direct-chat-timestamp').text(new Date().toLocaleString());
+        recipient_bubble.find('.direct-chat-timestamp').text(datetime);
         recipient_bubble.find('.direct-chat-text').text(message);
         recipient_bubble.removeClass('hidden');
         $('.chat-bubbles-container').append(recipient_bubble);
