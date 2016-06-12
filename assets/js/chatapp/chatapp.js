@@ -55,7 +55,7 @@ $(document).ready(function(){
     socket.on('user.message.received', function(response){
         console.log(response);
         var has_active_log = $('div[active-user-id]'); // check if element exist. will only exist if user has clicked a user to send msg.
-        $('#chatAudio')[0].play();
+        if(response.data.senderId != owner_id) $('#chatAudio')[0].play();
         if(has_active_log.length != 0){
             var active_id = $('.direct-chat-messages').attr('active-user-id');
             if(active_id == response.data.senderId || response.data.senderId == owner_id){   // recipient is the owner of the container logs
@@ -79,6 +79,7 @@ $(document).ready(function(){
                 $('.chat-message-counter-individual[user-id='+response.data.senderId+']').attr('title', sender_counter+' New Messages').text(sender_counter).removeClass('hidden');
             }
         }else{  // no opened logs
+            if(response.data.senderId == owner_id) return;
             message_counter++;
             var sender_counter = parseInt($('[user-id='+response.data.senderId+']').text());
             sender_counter = (!sender_counter) ? 0 : sender_counter;
