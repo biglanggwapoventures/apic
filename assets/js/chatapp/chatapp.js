@@ -4,7 +4,7 @@ $(document).ready(function(){
         user_id,
         message,
         message_counter = 0,
-        owerner_id = parseInt($('html').attr('chatapp')),
+        owner_id = parseInt($('html').attr('chatapp')),
         opened_message_counter = 0;
 
     if(!token.length){
@@ -54,19 +54,17 @@ $(document).ready(function(){
 
     socket.on('user.message.received', function(response){
         console.log(response);
-        if(response.data.senderId == owerner_id) return;
         var has_active_log = $('div[active-user-id]'); // check if element exist. will only exist if user has clicked a user to send msg.
         $('#chatAudio')[0].play();
         if(has_active_log.length != 0){
             var active_id = $('.direct-chat-messages').attr('active-user-id');
-            if(active_id == response.data.senderId){   // recipient is the owner of the container logs
-
+            if(active_id == response.data.senderId || response.data.senderId == owner_id){   // recipient is the owner of the container logs
                 if(!parseInt($('#chat-box-toggle').attr('state'))){
                     opened_message_counter++;
                     message_counter += opened_message_counter;
                     $('#chat-message-counter').attr('title', message_counter+' New Messages').text(message_counter);
                 }
-                var recipient_bubble = $('#chat-sender-bubble').clone();
+                var recipient_bubble = (response.data.senderId == active_id) ? $('#chat-sender-bubble').clone() : $('#chat-recipient-bubble').clone();
                 recipient_bubble.find('.direct-chat-timestamp').text(response.data.created_at);
                 recipient_bubble.find('.direct-chat-text').text(response.data.message);
                 recipient_bubble.removeClass('hidden');

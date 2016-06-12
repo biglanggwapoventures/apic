@@ -351,7 +351,7 @@
 
         <div class="row">
             <div class="col-md-4 col-md-offset-8 col-xs-5 col-xs-offset-7" style="right:0;bottom:0;position:fixed;z-index:1000;">
-                <div class="box box-solid direct-chat direct-chat-solid collapsed-box" style="border-radius:0">
+                <div class="box box-solid direct-chat direct-chat-primary collapsed-box" style="border-radius:0">
                     <div class="box-header with-border">
                         <h3 class="box-title" id="recipient-title">
                             Chat <span data-toggle="tooltip" title="0 New Messages" id="chat-message-counter" class="badge bg-yellow">0</span>
