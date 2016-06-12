@@ -350,11 +350,11 @@
 
 
         <div class="row">
-            <div class="col-md-4 col-md-offset-8 col-xs-5 col-xs-offset-7" style="right:0;bottom:0;position:fixed;z-index:1000">
-                <div class="box box-solid direct-chat direct-chat-primary collapsed-box" style="border-radius:0">
+            <div class="col-md-4 col-md-offset-8 col-xs-5 col-xs-offset-7" style="right:0;bottom:0;position:fixed;z-index:1000;">
+                <div class="box box-solid direct-chat direct-chat-solid collapsed-box" style="border-radius:0">
                     <div class="box-header with-border">
                         <h3 class="box-title" id="recipient-title">
-                            Chat <span data-toggle="tooltip" title="0 New Messages" id="chat-message-counter" class="badge bg-light-blue">0</span>
+                            Chat <span data-toggle="tooltip" title="0 New Messages" id="chat-message-counter" class="badge bg-yellow">0</span>
                         </h3>
                         <div class="box-tools pull-right">
                             <a class="btn btn-box-tool" data-widget="collapse" id="chat-box-toggle" state="0"><i class="fa fa-plus"></i></a>
@@ -362,7 +362,7 @@
                             <!-- <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
                         </div>
                     </div><!-- /.box-header -->
-                    <div class="box-body" style="display:none">
+                    <div class="box-body" style="display:none;">
                         <!-- Conversations are loaded here -->
                         <div class="direct-chat-messages">
                             <div class="chat-dummy-bubbles-container">
@@ -374,7 +374,7 @@
                                         <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
                                     </div><!-- /.direct-chat-info -->
                                     <img class="direct-chat-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="message user image"><!-- /.direct-chat-img -->
-                                    <div class="direct-chat-text">
+                                    <div class="direct-chat-text" style="margin-right:0; word-wrap:break-word;overflow:hidden">
                                         Is this template really for free? That's unbelievable!
                                     </div><!-- /.direct-chat-text -->
                                 </div><!-- /.direct-chat-msg -->
@@ -385,8 +385,8 @@
                                         <!-- <span class="direct-chat-name pull-right">Sarah Bullock</span> -->
                                         <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
                                     </div><!-- /.direct-chat-info -->
-                                    <img class="direct-chat-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="message user image"><!-- /.direct-chat-img -->
-                                    <div class="direct-chat-text">
+                                    <!-- <img class="direct-chat-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="message user image"> --><!-- /.direct-chat-img -->
+                                    <div class="direct-chat-text" style="margin-right:0; word-wrap:break-word;overflow:hidden">
                                         You better believe it!
                                     </div><!-- /.direct-chat-text -->
                                 </div><!-- /.direct-chat-msg -->

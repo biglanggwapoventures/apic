@@ -124,7 +124,7 @@ $(document).ready(function(){
 
     $('ul').on('click', '.user_click', function(e){
         e.preventDefault();
-        $('.direct-chat-primary').removeClass('direct-chat-contacts-open');
+        $('.box').removeClass('direct-chat-contacts-open');
         $('.chat-bubbles-container').empty();
 
         user_id = $(this).find('img').attr('user-id');
