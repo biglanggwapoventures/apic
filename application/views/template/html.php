@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html jwt="<?= $this->session->userdata('jwt') ? $this->session->userdata('jwt') : '' ?>">
+<html chatapp="<?= $this->session->userdata('curl_data')['result'] ? $this->session->userdata('curl_data')['profile']['id'] : '' ?>" jwt="<?= $this->session->userdata('curl_data')['result'] ? $this->session->userdata('curl_data')['jwt'] : '' ?>">
     <head>
         <meta charset="UTF-8">
         <title><?= isset($data_tab_title) && $data_tab_title ? $data_tab_title . ' | ' : '' ?>Arditezza Poultry Intergration Corporation</title>
@@ -416,7 +416,7 @@
                             <div class="input-group" id="chat-send">
                                 <input type="text" name="message" placeholder="Type Message ..." class="form-control">
                                 <span class="input-group-btn">
-                                    <button type="button" class="btn btn-primary btn-flat">Send</button>
+                                    <button type="submit" class="btn btn-primary btn-flat">Send</button>
                                 </span>
                             </div>
                         </form>

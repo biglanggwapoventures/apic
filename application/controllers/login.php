@@ -69,7 +69,7 @@ class Login extends CI_Controller {
                     'module_access' => empty($mod_access)?array():$mod_access,
                     'avatar' => $authentic['Avatar'],
                     'shared_token' => $authentic['shared_token'],
-                    'jwt' => ($jwt['result']) ? $jwt['jwt'] : ''
+                    'curl_data' => $jwt
                 ]);
             } else {
                 $response = $this->_response(TRUE, array(array('password' => $this->lang->line('err_invalid_password'))));
