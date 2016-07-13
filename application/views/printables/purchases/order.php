@@ -160,7 +160,7 @@
                             <div class="form-group">
                                 <label>Approved by:</label>
                                 <p class="form-control-static  text-right" style="border-bottom:1px solid black;"></p>
-                                <span class="help-block text-center">Mr Gilbert Yap (President)</span>
+                                <span class="help-block text-center">Mr Gerald Campos (President)</span>
                             </div>
                         </div>
                     </div>
