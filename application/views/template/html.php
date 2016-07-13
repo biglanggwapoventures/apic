@@ -346,101 +346,16 @@
                 </div>
             </div>
         </div>
-
-
-
-        <div class="row">
-            <div class="col-md-4 col-md-offset-8 col-xs-5 col-xs-offset-7" style="right:0;bottom:0;position:fixed;z-index:1000;">
-                <div class="box box-solid direct-chat direct-chat-primary collapsed-box" style="border-radius:0">
-                    <div class="box-header with-border">
-                        <h3 class="box-title" id="recipient-title">
-                            Chat <span data-toggle="tooltip" title="0 New Messages" id="chat-message-counter" class="badge bg-yellow">0</span>
-                        </h3>
-                        <div class="box-tools pull-right">
-                            <a class="btn btn-box-tool" data-widget="collapse" id="chat-box-toggle" state="0"><i class="fa fa-plus"></i></a>
-                            <a class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts"><i class="fa fa-comments"></i></a>
-                            <!-- <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
-                        </div>
-                    </div><!-- /.box-header -->
-                    <div class="box-body" style="display:none;">
-                        <!-- Conversations are loaded here -->
-                        <div class="direct-chat-messages">
-                            <div class="chat-dummy-bubbles-container">
-                                <div id="chat-select-user" style="text-align:center">Please select a user...</div>
-                                <!-- Message. Default to the left -->
-                                <div class="direct-chat-msg hidden" id="chat-sender-bubble">
-                                    <div class="direct-chat-info clearfix">
-                                        <!-- <span class="direct-chat-name pull-left">Alexander Pierce</span> -->
-                                        <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
-                                    </div><!-- /.direct-chat-info -->
-                                    <img class="direct-chat-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="message user image"><!-- /.direct-chat-img -->
-                                    <div class="direct-chat-text" style="margin-right:0; word-wrap:break-word;overflow:hidden">
-                                        Is this template really for free? That's unbelievable!
-                                    </div><!-- /.direct-chat-text -->
-                                </div><!-- /.direct-chat-msg -->
-
-                                <!-- Message to the right -->
-                                <div class="direct-chat-msg right hidden" id="chat-recipient-bubble">
-                                    <div class="direct-chat-info clearfix">
-                                        <!-- <span class="direct-chat-name pull-right">Sarah Bullock</span> -->
-                                        <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
-                                    </div><!-- /.direct-chat-info -->
-                                    <!-- <img class="direct-chat-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="message user image"> --><!-- /.direct-chat-img -->
-                                    <div class="direct-chat-text" style="margin-right:0; word-wrap:break-word;overflow:hidden">
-                                        You better believe it!
-                                    </div><!-- /.direct-chat-text -->
-                                </div><!-- /.direct-chat-msg -->
-                            </div><!-- /.chat-dummy-bubbles-container -->
-                            <div class="chat-bubbles-container"></div>
-                        </div><!--/.direct-chat-messages-->
-
-                        <!-- Contacts are loaded here -->
-                        <div class="direct-chat-contacts" style="background-color:#fff; color:#000; width:100%">
-                            <ul class="contacts-list" style="list-style:none; padding:0px">
-                                <li class="user-list hidden" id="user-dummy">
-                                    <a href="#" class="user_click">
-                                        <img class="contacts-list-img" src="<?=base_url('assets/img/display-photo-placeholder.png')?>" alt="Contact Avatar" message-counter="0">
-                                        <div class="contacts-list-info">
-                                            <span class="contacts-list-name" style="color:#000">
-                                                <span class="contact-name"></span> <span data-toggle="tooltip" title="0 New Messages" user-id="" class="badge bg-light-blue hidden chat-message-counter-individual">0</span>
-                                            </span>
-                                            <span class="contact-status" style="color:red;">Offline</span>
-                                        </div><!-- /.contacts-list-info -->
-                                    </a>
-                                </li>
-                            </ul><!-- /.contatcts-list -->
-                        </div><!-- /.direct-chat-pane -->
-                    </div><!-- /.box-body -->
-                    <div class="box-footer hidden" style="display:none">
-                        <form action="#" id="send-message">
-                            <div class="input-group" id="chat-send">
-                                <input type="text" name="message" placeholder="Type Message ..." class="form-control">
-                                <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-primary btn-flat">Send</button>
-                                </span>
-                            </div>
-                        </form>
-                        <audio id="chatAudio">
-                            <source src="<?=base_url('assets/audio/chat.ogg')?>" type="audio/ogg"></source>
-                        </audio>
-                    </div><!-- /.box-footer-->
-                </div>
-            </div>
-        </div>
-
-
         <!-- Bootstrap -->
         <script src="<?= $js_url . 'bootstrap.min.js' ?>" type="text/javascript"></script>
         <!-- AdminLTE App -->
-        <script src="<?= $js_url . 'AdminLTE/app.js' ?>" type="text/javascript"></script>
+        <script src="<?= $js_url . 'AdminLTE/app1.js' ?>" type="text/javascript"></script>
         <!-- Gritter script -->
         <script src="<?= $js_url . 'plugins/growl/jquery.growl.js' ?>" type="text/javascript"></script>
         <!-- Main App -->
         <script src="<?= $js_url . 'main.js' ?>" type="text/javascript"></script>
         <script src="<?= $js_url . 'jquery.form.min.js' ?>" type="text/javascript"></script>
         <script src="<?= $js_url . 'update-profile.js' ?>" type="text/javascript"></script>
-        <script src="<?= $js_url . 'plugins/socket.io.min.js' ?>" type="text/javascript"></script>
-        <script src="<?= $js_url . 'chatapp/chatapp.js' ?>" type="text/javascript"></script>
         <?php isset($data_javascript) ? include_js($data_javascript) : NULL; ?>
     </body>
 </html>
