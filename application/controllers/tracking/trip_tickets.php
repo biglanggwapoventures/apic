@@ -10,7 +10,7 @@ class Trip_tickets extends PM_Controller_v2
         $this->set_content_title('Tracking');
         $this->set_content_subtitle('Trip Tickets');
         $this->set_active_nav(NAV_TRACKING);
-        $this->load->model('tracking/m_trip_tickets', 'trip_tickets');
+        $this->load->model('tracking/m_trip_tickets', 'trip_ticket');
     }
 
     public function _search_params()
@@ -43,16 +43,16 @@ class Trip_tickets extends PM_Controller_v2
 
         $params = $this->_search_params();
 
-        $this->set_content('tracking/trip_tickets/listing', [
-            'items' => $this->agent->all($params['search'], $params['wildcards'])
+        $this->set_content('tracking/trip-ticket/listing', [
+            'items' => $this->trip_ticket->all()
         ])->generate_page();
     }
 
     public function create() 
     {
-        $this->add_javascript('tracking-trip-tickets/manage.js');
-        $this->set_content('tracking/trip_tickets/manage', [
-            'title' => 'Create new sales agent',
+        $this->add_javascript('tracking-trip-ticket/manage.js');
+        $this->set_content('tracking/trip-ticket/manage', [
+            'title' => 'Create new Trip Ticket',
             'action' => base_url('tracking/trip_tickets/store'),
             'data' => []
         ])->generate_page();
@@ -60,14 +60,14 @@ class Trip_tickets extends PM_Controller_v2
 
     public function edit($id = FALSE)
     {
-        if(!$id || !$agent = $this->agent->get($id)){
+        if(!$id || !$trip_ticket = $this->trip_ticket->get($id)){
             show_404();
         }
         $this->add_javascript('tracking-trip-tickets/manage.js');
-        $this->set_content('tracking/trip_tickets/manage', [
-            'title' => "Update sales agent: {$agent['name']}",
+        $this->set_content('tracking/trip-ticket/manage', [
+            'title' => "Update sales trip ticket: {$trip_ticket['name']}",
             'action' => base_url("tracking/trip_tickets/update/{$id}"),
-            'data' => $agent
+            'data' => $trip_ticket
         ])->generate_page();
     }
 
@@ -77,9 +77,9 @@ class Trip_tickets extends PM_Controller_v2
         $this->_perform_validation();
 
         if($this->form_validation->run()){
-            $agent = $this->_format_data();
-            $this->agent->create($agent);
-            $this->flash_message(FALSE, 'New agent has been created sucessfully!');
+            $trip_ticket = $this->_format_data();
+            $this->trip_ticket->create($trip_ticket);
+            $this->flash_message(FALSE, 'New trip_ticket has been created sucessfully!');
             $this->generate_response(FALSE)->to_JSON();
             return;
         }
@@ -90,19 +90,19 @@ class Trip_tickets extends PM_Controller_v2
     public function update($id = FALSE)
     {
 
-        if(!$id || !$agent = $this->agent->get($id)){
-            $this->generate_response(TRUE, 'Please select a valid agent to update.')->to_JSON();
+        if(!$id || !$trip_ticket = $this->trip_ticket->get($id)){
+            $this->generate_response(TRUE, 'Please select a valid trip_ticket to update.')->to_JSON();
             return;
         }
-        if(!can_update($agent)){
+        if(!can_update($trip_ticket)){
             $this->generate_response(TRUE, 'You are not allowed to perform the desired action.')->to_JSON();
             return;
         }
         $this->id = $id;
         $this->_perform_validation();
         if($this->form_validation->run()){
-            $agent = $this->_format_data();
-            $this->agent->update($id, $agent);
+            $trip_ticket = $this->_format_data();
+            $this->trip_ticket->update($id, $trip_ticket);
             $this->generate_response(FALSE)->to_JSON();
             $this->flash_message(FALSE, 'Update successful!');
             return;
@@ -112,15 +112,15 @@ class Trip_tickets extends PM_Controller_v2
 
     public function delete($id)
     {
-        if(!$id || !$agent = $this->agent->get($id)){
-            $this->generate_response(TRUE, 'Please select a valid agent to delete.')->to_JSON();
+        if(!$id || !$trip_ticket = $this->trip_ticket->get($id)){
+            $this->generate_response(TRUE, 'Please select a valid trip_ticket to delete.')->to_JSON();
             return;
         }
-        if(!can_delete($agent)){
+        if(!can_delete($trip_ticket)){
             $this->generate_response(TRUE, 'Cannot perform action')->to_JSON();
             return;
         }
-        if($this->agent->delete($id)){
+        if($this->trip_ticket->delete($id)){
             $this->generate_response(FALSE)->to_JSON();
             return;
         }
@@ -130,38 +130,38 @@ class Trip_tickets extends PM_Controller_v2
     public function _perform_validation()
     {
         if($this->action('new')){
-            $this->form_validation->set_rules('name', 'agent name', 'trim|required|is_unique[sales_agent.name]');
-            $this->form_validation->set_rules('agent_code', 'agent code', 'trim|required|alpha_numeric|is_unique[pm_sales_agent.agent_code]');
+            $this->form_validation->set_rules('name', 'trip_ticket name', 'trim|required|is_unique[sales_trip_ticket.name]');
+            $this->form_validation->set_rules('trip_ticket_code', 'trip_ticket code', 'trim|required|alpha_numeric|is_unique[pm_sales_trip_ticket.trip_ticket_code]');
         }else{
-            $this->form_validation->set_rules('name', 'agent name', 'trim|required|callback__validate_agent_name');
-            $this->form_validation->set_rules('agent_code', 'agent code', 'trim|required|alpha_numeric|callback__validate_agent_code');
+            $this->form_validation->set_rules('name', 'trip_ticket name', 'trim|required|callback__validate_trip_ticket_name');
+            $this->form_validation->set_rules('trip_ticket_code', 'trip_ticket code', 'trim|required|alpha_numeric|callback__validate_trip_ticket_code');
         }
-        $this->form_validation->set_rules('area', 'agent area', 'trim|required');
-        $this->form_validation->set_rules('commission_rate', 'agent commission rate', 'trim|required|numeric');
+        $this->form_validation->set_rules('area', 'trip_ticket area', 'trim|required');
+        $this->form_validation->set_rules('commission_rate', 'trip_ticket commission rate', 'trim|required|numeric');
         if(can_set_status()){
-            $this->form_validation->set_rules('status', 'agent status', 'trim|required|in_list[a,ia]', ['in_list' => 'Please provide a valid %s']);
+            $this->form_validation->set_rules('status', 'trip_ticket status', 'trim|required|in_list[a,ia]', ['in_list' => 'Please provide a valid %s']);
         }
         
     }
 
     public function _format_data()
     {
-        $input = elements(['name', 'area', 'commission_rate', 'agent_code', 'status'], $this->input->post());
+        $input = elements(['name', 'area', 'commission_rate', 'trip_ticket_code', 'status'], $this->input->post());
         if(!can_set_status()){
            unset($input['status']);
         }
         return $input;
     }
 
-    public function _validate_agent_name($name)
+    public function _validate_trip_ticket_name($name)
     {
         $this->form_validation->set_message('_validate_unit_description', 'The %s is already in use.');
-        return $this->agent->has_unique_name($name, $this->id);
+        return $this->trip_ticket->has_unique_name($name, $this->id);
     }
 
-    public function _validate_agent_code($code)
+    public function _validate_trip_ticket_code($code)
     {
-        $this->form_validation->set_message('_validate_agent_code', 'The %s is already in use.');
-        return $this->agent->has_unique_code($code, $this->id);
+        $this->form_validation->set_message('_validate_trip_ticket_code', 'The %s is already in use.');
+        return $this->trip_ticket->has_unique_code($code, $this->id);
     }
 }

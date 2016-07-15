@@ -1,6 +1,6 @@
 <?php $url = base_url('tracking/tariffs'); ?>
 <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header bg-light-blue-gradient" style="color:#fff">
                 <h3 class="box-title">Master List</h3>
@@ -17,23 +17,19 @@
                 </div><!-- /. tools -->
             </div><!-- /.box-header -->
 
-            <div class="box-body no-padding">
+
+    <div class="box-body no-padding">
                 <table class="table table-striped"> 
-                    <thead><tr class="info"><th>Tariff code</th><th>Name</th><th>Location</th><th>Rate</th><th>Kms</th><th></th></tr></thead>
+                    <thead><tr class="info"><th>Tariff code</th><th>Option</th><th>Location </th><th></th></tr></thead>
                     <tbody>
                         <?php foreach($items AS $row):?>   
                             <tr data-pk="<?= $row['id']?>">
-                                <td><a href="<?= "{$url}/edit/{$row['id']}"?>"><?= $row['agent_code']?></a></td>
-                                <td><?= $row['name']?></td>   
-                                <td><?= $row['area']?></td>
-                                
-                                <td>x <?= $row['commission_rate']?></td>
+
+                                <td><a href="<?= "{$url}/edit/{$row['id']}"?>"><?= $row['code']?></a></td>
+                                <td><?php if($row['option']==1) echo "Origin";else echo "Destination"; ?></td> 
+                                <td><?= $row['location_tariff']?></td>   
                                 <td>
-                                    <?php $status = status($row['status'])?>
-                                    <span class="label <?= $status['class']?>"><?= $status['text']?></span>
-                                </td>
-                                <td>
-                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>
+                                    <a class="btn btn-xs btn-flat btn-danger toDelete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>
                                 </td>
                             </tr>
                         <?php endforeach;?>
@@ -42,7 +38,7 @@
                         <?php endif;?>
                     </tbody>
                 </table>
-            </div><!-- /.box-body -->  
+            </div> 
         </div>
     </div>
 </div>
@@ -54,7 +50,7 @@
                 <h4 class="modal-title" id="mySmallModalLabel">Confirm action</h4>
             </div>
             <div class="modal-body">
-                <p class="text-danger text-center text-bold">Do you really want to delete this sales agent?<br> <u>This action cannot be undone.<u></p>
+                <p class="text-danger text-center text-bold">Do you really want to delete this tariff?<br> <u>This action cannot be undone.<u></p>
             </div>
             <div class="modal-footer">
                 <a class="btn btn-flat btn-danger" id="delete-confirmed" data-delete-url="<?= "{$url}/delete/"?>">Yes</a>
@@ -94,3 +90,4 @@
         </div>
     </div>
 </div>
+

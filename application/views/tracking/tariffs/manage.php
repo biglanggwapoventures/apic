@@ -1,11 +1,10 @@
 <?php $url = base_url('tracking/tariffs'); ?>
-<div class="row">
+<div class="row" id="form">
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header bg-light-blue-gradient" style="color:#fff">
                 <h3 class="box-title"><?= $title ?></h3>
-            </div><!-- /.box-header -->
-            
+            </div>
             <form data-action="<?= $action ?>">
                 <div class="box-body">
                     <div class="callout callout-danger hidden">
@@ -16,47 +15,49 @@
                     <div class="row">
                         <div class="form-group col-md-4">
                             <label>Code: </label>
-                            <input name="agent_code" style="text-align: left" type="text" class="form-control" value="<?= put_value($data, 'tariff_code', '')?>">
+                            <input name="code" style="text-align: left" type="text" class="form-control" value="<?= put_value($data, 'code', '')?>">
                         </div>
                     </div>
                     <div class="row">
                          <div class="form-group col-md-4">
                             <label>Option</label>
-                            <?= option_dropdown('option', put_value($data, 'option', ''), 'class="form-control"')?>
+                            <?=option_dropdown('option', put_value($data, 'option', ''), 'class="form-control option"')?>
                         </div>
                         <div class="form-group col-md-4">
                             <label>Location</label>
-                            <?= option_dropdown('option', put_value($data, 'option', ''), 'class="form-control"')?>
+                            <?= form_dropdown('fk_location_id', ['' => ''] + array_column($locations, 'name', 'id'), put_value($data, 'fk_location_id', ''), 'class="form-control"')?>
                         </div>
                     </div>
+                </div> 
 
-                </div><!-- /.box-body -->  
-
-                <fieldset style="margin-top:15px;">
+            <fieldset style="margin-top:15px;">
+                <legend class="tableLabel"></legend>
                 <div class="row">
-                    <div class="col-md-12">
-                        <table class="table location-details">
+                    <div class="col-md-12" id="tableData">
+                        <table class="table location-details" id="less">
                             <thead>
                                 <tr class="active">
                                     <th>Location</th><th>Rate</th><th>Kms</th><th>&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                    <?php $less_items = empty($data['less']) ? [[]] : $data['less']; ?>
+                                    <?php foreach($less_items AS $index => $item):?>
                                     <tr>
                                         <td>
-                                                <input type="hidden" value="" name="" data-name="" />
-                                             <?= option_dropdown('option', put_value($data, 'option', ''), 'class="form-control"')?>
+                                        <?php if(isset($item['id'])):?>
+                                            <?= form_hidden("less[{$index}]['id']", $item['id'])?>
+                                            <?php endif;?>
+                                            <input type="hidden" value="" name="" data-name="" />
+                                            <?= form_dropdown("less[{$index}][fk_location_id]", ['' => ''] + array_column($locations, 'name', 'id'), put_value($item, 'fk_location_id', ''), 'class=" form-control" data-name="less[idx][fk_location_id]"')?>
                                         </td>
-                                        <td>   
-                                            <input name="rate" style="text-align: left" type="text" class="form-control" value="<?= put_value($data, 'Rate', '')?>">
-                                        </td>
-                                        <td class="text-right line-average">
-                                            <input name="kms" style="text-align: left" type="text" class="form-control" value="<?= put_value($data, 'Kms', '')?>">
-                                        </td>
+                                        <td><?= form_input("less[{$index}][rate]",put_value($item, 'rate',''), 'class="form-control rate" type="number" data-name="less[idx][rate]"')?></td>
+                                        <td><?= form_input("less[{$index}][kms]",put_value($item, 'kms', ''), 'class="form-control kms" type="number" data-name="less[idx][kms]"')?></td>
                                         <td>
                                             <a class="btn btn-danger btn-flat btn-sm remove-line" role="button"><i class="fa fa-times"></i></a>
                                         </td>
                                     </tr>
+                                    <?php endforeach; ?>
                             </tbody>
                             <tfoot>
                                 <tr>
@@ -70,43 +71,14 @@
                 </fieldset>
 
                 <div class="box-body">
-                    <button class="btn btn-flat btn-success <?= can_update($data) ? '' : 'disabled'?>">Submit</button>
+                    <button id="send" class="btn btn-flat btn-success <?= can_update($data) ? '' : 'disabled'?>">Submit</button>
                     <a class="btn btn-flat btn-warning" id="cancel" href="<?= $url?>">Cancel</a>
-                </div><!-- /.box-footer -->  
+                </div>
             </form>
         </div>
     </div>
 </div>
+
 <script>
 
-$(document).ready(function(){
-    var index = $('.location-details tbody tr').length;
-    $('#add-line').click(function(){
-            var tr = $('.location-details tbody tr');
-            if(tr.hasClass('hidden')){
-                tr.find('input').removeAttr('disabled');
-                tr.removeClass('hidden');
-            }else{
-                var clone = $(tr[0]).clone();
-                // clone.find('input').val('').attr('name', function(){
-                //     return $(this).data('name').replace('idx', index);
-                // });
-                clone.find('[type=hidden]').remove();
-                clone.appendTo('.location-details tbody');
-                index++;
-            }
-            doSequencing();
-    });
-
-    $('.location-details').on('click', '.remove-line', function(){
-            if($('.location-details tbody tr').length > 1){
-                $(this).closest('tr').remove();
-            }else{
-                $(this).closest('tr').addClass('hidden')
-                    .find('input').val('').attr('disabled', 'disabled')
-                    .end()
-                    .find('[type=hidden]').remove();
-            }
-        });
-});
 </script>

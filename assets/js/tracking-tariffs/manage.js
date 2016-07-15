@@ -31,5 +31,52 @@
 			});
 		});
 
+var idx = $('#less tbody tr').length;
+
+
+    $('#add-line').click(function(){
+        var tr = $('#less tbody tr');
+
+        if(tr.hasClass('hidden')){
+            tr.removeClass('hidden').find('input,select').removeAttr('disabled');
+            return;
+        }
+
+        var clone = $(tr[0]).clone();
+        clone.find('[type=hidden]').remove();
+        clone.find('input,select').val('').attr('name', function(){
+            return $(this).data('name').replace('idx', idx);
+        });
+        clone.find('.rate').val('');
+        clone.find('.kms').val('');
+        idx++;
+
+        clone.appendTo('#less tbody');
+    });
+
+    $('#form').on('click', '.remove-line', function(){
+        var rows = $(this).closest('tbody').find('tr');
+
+        if(rows.length === 1){
+            rows.find('input,select').val('').attr('disabled', 'disabled')
+            rows.find('[type=hidden]').remove();
+            rows.addClass('hidden');
+        }else{
+            $(this).closest('tr').remove();
+        }
+
+    });
+
+	
+	(function(){
+		var tr = $('#less tbody tr');
+		// if(tr.length === 1 && !tr.find('.item-less').val()){
+		// 	tr.find('.remove-line').trigger('click');
+		// 	alert("asd")
+		// }else{
+		// 	tr.find('.item-less').trigger('change');
+		// 	alert("sdsd")
+		// }
+	})();
 	})
 })(jQuery)

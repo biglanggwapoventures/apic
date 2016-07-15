@@ -1,4 +1,4 @@
-<?php $url = base_url('sales/agents'); ?>
+<?php $url = base_url('tracking/trip_tickets'); ?>
 <div class="row">
     <div class="col-md-10">
         <div class="box box-solid">

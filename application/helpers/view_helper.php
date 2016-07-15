@@ -272,7 +272,7 @@ if(!function_exists('status_dropdown')){
 if(!function_exists('option_dropdown')){
     function option_dropdown($name, $default = '', $attrs = '',$first_option_text = '', $add_all_option = FALSE)
     {
-        $options = [null=>$first_option_text,0 => 'Origin', 1 => 'Destination'];
+        $options = [null=>$first_option_text,1 => 'Origin', 2 => 'Destination'];
         if($add_all_option === TRUE){
             $options['all'] = '-All statuses-';
         }

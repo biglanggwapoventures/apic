@@ -3,49 +3,49 @@
 class Tariffs extends PM_Controller_v2
 {
 
-    public function __construct()
+    protected $id = NULL;
+
+    function __construct()
     {
         parent::__construct();
         if(!has_access('tracking')) show_error('Authorization error', 401);
         $this->set_content_title('Tracking');
         $this->set_content_subtitle('Tariffs');
         $this->set_active_nav(NAV_TRACKING);
-        $this->load->model('tracking/m_tariffs', 'tariff');
+        $this->load->model(array('tracking/m_tariffs', 'tracking/m_locations'));
     }
 
-    public function _search_params()
+    function index()
     {
-        $search = [];
-        $wildcards = [];
-
-        $params = elements(['status', 'name', 'area'], $this->input->get(), FALSE);
-
-        if($params['status'] && in_array($params['status'], ['a', 'ia'])){
-            $search['status'] = $params['status'];
-        }elseif($params['status'] === FALSE){
-            $search['status'] = 'a';
-        }
-
-        if($params['name'] && trim($params['name'])){
-            $wildcards['name'] = $params['name'];
-        }
-        if($params['area'] && trim($params['area'])){
-            $wildcards['area'] = $params['area'];
-        }
-
-        
-        return compact(['search', 'wildcards']);
-    }
-
-    public function index() 
-    {
-        $this->add_javascript(['tracking-tariffs/listing.js', 'plugins/sticky-thead.js']);
-
-        $params = $this->_search_params();
+        $this->add_javascript([
+            'plugins/sticky-thead.js',
+            'tracking-tariffs/listing.js',
+            'plugins/moment.min.js'
+        ]);
+        $data = $this->m_tariffs->all();
 
         $this->set_content('tracking/tariffs/listing', [
-            'items' => $this->tariff->all()
+            'items' => $data
         ])->generate_page();
+    }
+
+    function master_list()
+    {
+        $params = $this->input->get();
+
+        $items = $this->receiving->all([
+            'limit' => $params['length'] ?: 100,
+            'offset' => $params['start'] ?: 0,
+        ]);
+
+        $count_all = $this->receiving->count_all();
+
+        $this->generate_response([
+            'data' => $items,
+            'draw' => (int)$params['draw'] ?: 1,
+            'recordsFiltered' => $count_all,
+            'recordsTotal' => $count_all
+        ])->to_JSON();
     }
 
     public function create() 
@@ -54,114 +54,148 @@ class Tariffs extends PM_Controller_v2
         $this->set_content('tracking/tariffs/manage', [
             'title' => 'Create new tariff',
             'action' => base_url('tracking/tariffs/store'),
+            'locations' => $this->m_locations->all(),
             'data' => []
         ])->generate_page();
     }
 
-    public function edit($id = FALSE)
+    function edit($id = FALSE)
     {
-        if(!$id || !$agent = $this->agent->get($id)){
+        if(!$id || !$tariff = $this->m_tariffs->get($id)){
             show_404();
         }
         $this->add_javascript('tracking-tariffs/manage.js');
         $this->set_content('tracking/tariffs/manage', [
-            'title' => "Update sales agent: {$agent['name']}",
-            'action' => base_url("tracking/tariffs/update/{$id}"),
-            'data' => $agent
+            'data' => $tariff,
+            'title' => "Update tariff #{$tariff['id']}",
+            'action' => base_url("tracking/tariffs/update/{$tariff['id']}"),
+            'locations' => $this->m_locations->all()
         ])->generate_page();
     }
 
-    public function store()
+    function store()
     {
         $this->set_action('new');
-        $this->_perform_validation();
-
-        if($this->form_validation->run()){
-            $agent = $this->_format_data();
-            $this->agent->create($agent);
-            $this->flash_message(FALSE, 'New agent has been created sucessfully!');
-            $this->generate_response(FALSE)->to_JSON();
-            return;
+        $validation = $this->_validate();
+        if($validation['status']){
+            $id = $this->m_tariffs->create($validation['data']);
+            $this->generate_response(FALSE, '', ['id' => $id])->to_JSON();
+        }else{
+            $this->generate_response(TRUE, $validation['errors'])->to_JSON();
         }
-
-        $this->generate_response(TRUE, $this->form_validation->errors())->to_JSON();
     }
 
-    public function update($id = FALSE)
+    function update($id = FALSE)
     {
-
-        if(!$id || !$agent = $this->agent->get($id)){
-            $this->generate_response(TRUE, 'Please select a valid agent to update.')->to_JSON();
-            return;
-        }
-        if(!can_update($agent)){
-            $this->generate_response(TRUE, 'You are not allowed to perform the desired action.')->to_JSON();
+        if(!$id || !$this->m_tariffs->exists($id)){
+            $this->generate_response(TRUE, ['The tariff you are trying to update does not exist!'])->to_JSON();
             return;
         }
         $this->id = $id;
-        $this->_perform_validation();
-        if($this->form_validation->run()){
-            $agent = $this->_format_data();
-            $this->agent->update($id, $agent);
-            $this->generate_response(FALSE)->to_JSON();
-            $this->flash_message(FALSE, 'Update successful!');
-            return;
+
+        $validation = $this->_validate();
+        if($validation['status']){
+            $this->m_tariffs->update($id, $validation['data']);
+            $this->generate_response(FALSE, '')->to_JSON();;
+        }else{
+            $this->generate_response(TRUE, $validation['errors'])->to_JSON();
         }
-        $this->generate_response(TRUE, $this->form_validation->errors())->to_JSON();
     }
 
-    public function delete($id)
+public function delete($id)
     {
-        if(!$id || !$agent = $this->agent->get($id)){
-            $this->generate_response(TRUE, 'Please select a valid agent to delete.')->to_JSON();
+        if(!$id || !$tariff = $this->m_tariffs->find($id)){
+            $this->generate_response(TRUE, 'Please select a valid tariff to delete.')->to_JSON();
             return;
         }
-        if(!can_delete($agent)){
+        if(!can_delete($tariff)){
             $this->generate_response(TRUE, 'Cannot perform action')->to_JSON();
             return;
         }
-        if($this->agent->delete($id)){
+        if($this->m_tariffs->delete($id)){
             $this->generate_response(FALSE)->to_JSON();
             return;
         }
         $this->generate_response(TRUE, 'Cannot perform action due to an unknown error. Please try again later.')->to_JSON();
     }
 
-    public function _perform_validation()
+ function _validate()
     {
+
+        $errors = [];
+
         if($this->action('new')){
-            $this->form_validation->set_rules('name', 'agent name', 'trim|required|is_unique[sales_agent.name]');
-            $this->form_validation->set_rules('agent_code', 'agent code', 'trim|required|alpha_numeric|is_unique[pm_sales_agent.agent_code]');
+            $this->form_validation->set_rules('code', 'tariff code', 'trim|required|alpha_numeric|is_unique[tracking_tariff.code]');
         }else{
-            $this->form_validation->set_rules('name', 'agent name', 'trim|required|callback__validate_agent_name');
-            $this->form_validation->set_rules('agent_code', 'agent code', 'trim|required|alpha_numeric|callback__validate_agent_code');
+            $this->form_validation->set_rules('code', 'tariff code', 'trim|required|alpha_numeric|callback__validate_code_name');
         }
-        $this->form_validation->set_rules('area', 'agent area', 'trim|required');
-        $this->form_validation->set_rules('commission_rate', 'agent commission rate', 'trim|required|numeric');
-        if(can_set_status()){
-            $this->form_validation->set_rules('status', 'agent status', 'trim|required|in_list[a,ia]', ['in_list' => 'Please provide a valid %s']);
+        $this->form_validation->set_rules('option', 'option name', 'required|numeric');
+        $this->form_validation->set_rules('fk_location_id', 'location name', 'required');
+       
+        $less = $this->input->post('less');
+        if(is_array($less) || !empty($less)){
+            foreach($less AS $key => $item){
+                $line = $key + 1;
+                if(!is_array($item)){
+                    $errors[] = "Less items in line # {$line} must contain a product and quantity.";
+                    continue;
+                }
+                if(!isset($item['fk_location_id']) || !is_numeric($item['fk_location_id'])){
+                    // echo "lol";
+                    $errors[] = "Provide location for item in line # {$line}";
+                }
+                if(!isset($item['rate']) || !is_numeric($item['rate'])){
+                    $errors[] = "Provide rate for item in line # {$line}";
+                }
+                if(!isset($item['kms']) || !is_numeric($item['kms'])){
+                    $errors[] = "Provide kms for item in line # {$line}";
+                }
+            }
+        } else{
+            $errors[] = "Provide entry";
         }
-        
-    }
 
-    public function _format_data()
-    {
-        $input = elements(['name', 'area', 'commission_rate', 'agent_code', 'status'], $this->input->post());
-        if(!can_set_status()){
-           unset($input['status']);
+        if($this->form_validation->run() && empty($errors)){
+            $input = $this->input->post();
+            if(isset($input['code']) && $code = trim($input['code']))
+                $data['tariff']['code'] = $code;
+
+            if(isset($input['option']) && $option = trim($input['option']))
+                $data['tariff']['option'] = $option;
+
+            if(isset($input['fk_location_id']) && $fk_location_id = trim($input['fk_location_id']))
+                $data['tariff']['fk_location_id'] = $fk_location_id;
+
+
+            if(!empty($input['less'])){
+                foreach($input['less'] AS $less){
+                    $temp = [
+                        'fk_location_id' => $less['fk_location_id'],
+                        'rate' => $less['rate'],
+                        'kms' => $less['kms']
+                    ];
+                    if(isset($less['id'])){
+                        $temp['id'] = $less['id'];
+                    }
+                    $data['tariff_details'][] = $temp;
+                }
+            }
+
+            return [
+                    'status' => TRUE,
+                    'data' => $data
+                ];
         }
-        return $input;
+        return [
+            'status' => FALSE,
+            'errors' => array_merge($this->form_validation->errors(), $errors)
+        ];
     }
-
-    public function _validate_agent_name($name)
+    public function _validate_code_name($code)
     {
-        $this->form_validation->set_message('_validate_unit_description', 'The %s is already in use.');
-        return $this->agent->has_unique_name($name, $this->id);
+        return $this->m_tariffs->has_unique_code($code, $this->id);
     }
+ 
 
-    public function _validate_agent_code($code)
-    {
-        $this->form_validation->set_message('_validate_agent_code', 'The %s is already in use.');
-        return $this->agent->has_unique_code($code, $this->id);
-    }
 }
+
