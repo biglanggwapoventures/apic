@@ -18,19 +18,10 @@ class Locations extends PM_Controller_v2
         $search = [];
         $wildcards = [];
 
-        $params = elements(['status', 'name', 'area'], $this->input->get(), FALSE);
-
-        if($params['status'] && in_array($params['status'], ['a', 'ia'])){
-            $search['status'] = $params['status'];
-        }elseif($params['status'] === FALSE){
-            $search['status'] = 'a';
-        }
+        $params = elements(['name'], $this->input->get(), FALSE);
 
         if($params['name'] && trim($params['name'])){
             $wildcards['name'] = $params['name'];
-        }
-        if($params['area'] && trim($params['area'])){
-            $wildcards['area'] = $params['area'];
         }
 
         
@@ -44,7 +35,7 @@ class Locations extends PM_Controller_v2
         $params = $this->_search_params();
 
         $this->set_content('tracking/locations/listing', [
-            'items' => $this->location->all()
+            'items' => $this->location->all(null,$params['wildcards'])
         ])->generate_page();
     }
 

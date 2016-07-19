@@ -1,6 +1,10 @@
 (function($){
 	$(document).ready(function(){	
 
+
+		$('.pformat').priceFormat({prefix:''})
+
+
 		var messageBox = $('.callout.callout-danger');
 
 		$('form').submit(function(e){
@@ -47,8 +51,9 @@ var idx = $('#less tbody tr').length;
         clone.find('input,select').val('').attr('name', function(){
             return $(this).data('name').replace('idx', idx);
         });
-        clone.find('.rate').val('');
-        clone.find('.kms').val('');
+        clone.find('.pformat').priceFormat({prefix: ''});
+        // clone.find('.rate').val('');
+        // clone.find('.kms').val('');
         idx++;
 
         clone.appendTo('#less tbody');
@@ -67,6 +72,12 @@ var idx = $('#less tbody tr').length;
 
     });
 
+    $('.option').change(function(){
+    	if($(this).val()== 1)
+    		$('#optionVal').text('Location Destination');
+    	if($(this).val()== 2)
+    		$('#optionVal').text('Location Origin');
+    });
 	
 	(function(){
 		var tr = $('#less tbody tr');

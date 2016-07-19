@@ -1,57 +1,63 @@
-<?php $url = base_url('sales/agents'); ?>
-<div class="row">
-    <div class="col-md-6">
-        <div class="box box-solid">
-            <div class="box-header bg-light-blue-gradient" style="color:#fff">
-                <h3 class="box-title"><?= $title ?></h3>
-            </div><!-- /.box-header -->
-            
-            <form data-action="<?= $action ?>">
-                <div class="box-body">
-                    <div class="callout callout-danger hidden">
-                      <ul class="list-unstyled">
-                        
-                      </ul>
-                    </div>
+<?php $url = base_url('tracking/trip_tickets'); ?>
+<div class="box box-solid">
+    <div class="box-header with-border"><h3 class="box-title"><?= $section_title ?></h3></div>
+    <div class="box-body">
+        <div class="callout callout-danger hidden"><ul class="list-unstyled"></ul></div>
+        <form data-action="<?= $form_action ?>">
+            <div class="row">
+                <div class="col-sm-4">
                     <div class="form-group">
-                        <label>Agent code</label>
-                        <input name="agent_code" style="text-align: left" type="text" class="form-control" value="<?= put_value($data, 'agent_code', '')?>">
+                        <label>Customer</label>
+                        <?php if(!isset($data['company_name'])):?>
+                            <?= generate_customer_dropdown('fk_sales_customer_id', FALSE,  'class="form-control"')?>
+                        <?php else:?>
+                            <?= generate_customer_dropdown('fk_sales_customer_id', $data['fk_sales_customer_id'],  'class="form-control"')?>
+                        <?php endif;?>
                     </div>
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input name="name" class="form-control" value="<?= put_value($data, 'name', '')?>">
-                    </div>
-                    <div class="form-group">
-                        <label>Area</label>
-                        <input name="area" class="form-control" value="<?= put_value($data, 'area', '')?>">
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-sm-5">
-                            <div class="form-group">
-                                <label>Commission Rate</label>
-                                <div class="input-group">
-                                <span class="input-group-addon" id="basic-addon2">x</span>
-                                  <input name="commission_rate" class="form-control" value="<?= put_value($data, 'commission_rate', '')?>" aria-describedby="basic-addon2">
-                                  
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <?php if(can_set_status()):?>
+                </div>
+                <div class="col-sm-4">
                         <div class="form-group">
-                            <label>Status</label>
-                            <?= status_dropdown('status', put_value($data, 'status', ''), 'class="form-control"')?>
-                        </div>
-                    <?php endif;?>
-                </div><!-- /.box-body -->  
+                            <label for="date">Date</label>
+                            <?php $date = isset($data['date']) ? date_create($data['date'])->format('m/d/Y'): ''?>
+                            <input type="text" class="form-control datepicker" value="<?= $date?>" name="date"/>
 
-                <div class="box-body">
-                    <button class="btn btn-flat btn-success <?= can_update($data) ? '' : 'disabled'?>">Submit</button>
-                    <a class="btn btn-flat btn-warning" id="cancel" href="<?= $url?>">Cancel</a>
-                </div><!-- /.box-footer -->  
-            </form>
-        </div>
+                        </div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Trucking</label>
+                        <?= form_dropdown('fk_sales_trucking_id', $truckings, put_value($data, 'fk_sales_trucking_id', FALSE), 'class="form-control"');?>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Trucking Assistant</label>
+                        <?= form_dropdown('fk_trucking_assistant_id', $trucking_assistants, put_value($data, 'fk_trucking_assistant_id', FALSE), 'class="form-control"');?>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Trip Type</label>
+                        <?=trip_dropdown('trip_type', put_value($data, 'trip_type', ''), 'class="form-control option"')?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="date">Remarks</label>
+                         <?= form_textarea('remarks', put_value($data, 'remarks', ''), 'class="form-control" rows="3"')?>
+                    </div>  
+                </div>
+            </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="approved_by"<?= ($data['approved_by'])?" checked":"";?>/> Mark this trip ticket as <b>approved</b></label>
+                </div>
+            <hr>
+            <button class="btn btn-flat btn-success">Submit</button>
+            <a class="btn btn-default btn-flat" id="go-back" href="<?= base_url('tracking/trip_tickets')?>" role="button">Go back</a>
+        </form>
     </div>
 </div>

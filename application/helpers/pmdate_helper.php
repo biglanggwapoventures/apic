@@ -9,3 +9,10 @@ function is_valid_date($date, $format = 'Y-m-d') {
                 return $d && $d->format($format) == $var;
             }) === $date;
 }
+
+
+function formatDate($date, $toFormat, $originalFormat = FALSE)
+{
+	$dateInstance = $originalFormat ? date_create_from_format($originalFormat, $date) : date_create($date);
+	return $dateInstance->format($toFormat);
+}

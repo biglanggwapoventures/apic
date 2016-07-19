@@ -97,12 +97,19 @@ function sync($table, $value_array, $table_pk_column_name, $table_fk_column_name
         return FALSE;
     }
 
-    function all($params = [])
+    function all($search=[] ,$wildcards = [])
     {
         $data = [];
         $this->db->select('DISTINCT p.*, u.name AS location_tariff, p.option , p.code AS code', FALSE);
         $this->db->from('tracking_tariff AS p');
         $this->db->join('tracking_location AS u', 'u.id = p.fk_location_id');
+        if(!empty($search)){
+           $this->db->where($search);
+        }
+        if(!empty($wildcards)){
+            $this->db->like($wildcards);
+        }
+
         $this->db->order_by('p.id', 'DESC');
 
         $data = $this->db->get($this->table)->result_array();

@@ -24,7 +24,7 @@ class Sales_order_model extends CI_Model
 	}
 
 	 
-	 function update($id, $sales_order, $order_line)
+	function update($id, $sales_order, $order_line)
 	{
 		$this->db->trans_start();
 

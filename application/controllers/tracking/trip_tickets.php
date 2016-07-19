@@ -1,122 +1,145 @@
 <?php
 
 class Trip_tickets extends PM_Controller_v2
-{
 
-    public function __construct()
+{
+    
+
+    protected $validation_errors = [];
+    protected $action;
+    protected $id;
+
+    
+    function __construct()
     {
         parent::__construct();
         if(!has_access('tracking')) show_error('Authorization error', 401);
         $this->set_content_title('Tracking');
         $this->set_content_subtitle('Trip Tickets');
         $this->set_active_nav(NAV_TRACKING);
-        $this->load->model('tracking/m_trip_tickets', 'trip_ticket');
+
+
+        $this->load->model('tracking/m_trip_tickets','trip_ticket');
+        $this->load->model('sales/m_trucking', 'trucking');
+        $this->load->model('sales/trucking_assistant_model', 'assistant');
+        $this->load->model('sales/m_customer', 'customer');
     }
 
-    public function _search_params()
+    function _search_params()
     {
         $search = [];
         $wildcards = [];
 
-        $params = elements(['status', 'name', 'area'], $this->input->get(), FALSE);
-
-        if($params['status'] && in_array($params['status'], ['a', 'ia'])){
-            $search['status'] = $params['status'];
-        }elseif($params['status'] === FALSE){
-            $search['status'] = 'a';
+        $params = elements(['fk_sales_customer_id','truck','trip_type'], $this->input->get(), FALSE);
+        if($params['trip_type'] && in_array($params['trip_type'], ['1', '2','3'])){
+            $search['tt.trip_type'] = $params['trip_type'];
         }
 
-        if($params['name'] && trim($params['name'])){
-            $wildcards['name'] = $params['name'];
+        if($params['fk_sales_customer_id'] && is_numeric($params['fk_sales_customer_id'])){
+            $search['tt.fk_sales_customer_id'] = $params['fk_sales_customer_id'];
         }
-        if($params['area'] && trim($params['area'])){
-            $wildcards['area'] = $params['area'];
-        }
-
         
         return compact(['search', 'wildcards']);
     }
 
-    public function index() 
+    function index()
     {
-        $this->add_javascript(['tracking-trip-tickets/listing.js', 'plugins/sticky-thead.js']);
+        $this->load->helper('customer');
+        $this->add_javascript([
+            'plugins/sticky-thead.js',
+            'tracking-trip-tickets/listing.js',
+            'plugins/moment.min.js'
+        ]);
 
         $params = $this->_search_params();
+        $data = $this->trip_ticket->all($params['search'], $params['wildcards']);
 
         $this->set_content('tracking/trip-ticket/listing', [
-            'items' => $this->trip_ticket->all()
+            'items' => $data
         ])->generate_page();
     }
 
-    public function create() 
+
+    function create()
     {
-        $this->add_javascript('tracking-trip-ticket/manage.js');
+        $this->load->helper('customer');
+        $truckings = $this->trucking->all(['status' => 'a']);
+        $trucking_assistants = $this->assistant->all(['status' => 'a']);
+        $this->add_javascript([
+            'plugins/moment.min.js',
+            'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
+            'jquery-ui.min.js', 
+            'numeral.js',
+            'tracking-trip-tickets/manage.js'
+        ]);
         $this->set_content('tracking/trip-ticket/manage', [
-            'title' => 'Create new Trip Ticket',
-            'action' => base_url('tracking/trip_tickets/store'),
-            'data' => []
+            'section_title' => 'Create new trip ticket', 
+            'form_action' => base_url('tracking/trip_tickets/store'),
+            'truckings' => dropdown_format($truckings, 'id', ['trucking_name', 'plate_number'], ' ', '(', ')'),
+            'trucking_assistants' => ['' => ''] + array_column($trucking_assistants, 'name', 'id'),
+            'data' => ['approved_by'=> NULL]
         ])->generate_page();
     }
 
-    public function edit($id = FALSE)
+    function store()
+    {
+        $this->action('store');
+        $validation = $this->_validate();
+        if($validation['status']){
+            $id = $this->trip_ticket->create($validation['data']);
+            $this->generate_response(FALSE, '', ['id' => $id])->to_JSON();
+        }else{
+            $this->generate_response(TRUE, $validation['errors'])->to_JSON();
+        }
+    }
+
+    function get($id  = FALSE)
     {
         if(!$id || !$trip_ticket = $this->trip_ticket->get($id)){
             show_404();
         }
-        $this->add_javascript('tracking-trip-tickets/manage.js');
+        $this->load->helper('customer');
+        $truckings = $this->trucking->all(['status' => 'a']);
+        $trucking_assistants = $this->assistant->all(['status' => 'a']);
+        $this->add_javascript([
+            'plugins/moment.min.js',
+            'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
+            'jquery-ui.min.js',
+            'numeral.js',
+            'tracking-trip-tickets/manage.js'
+        ]);
         $this->set_content('tracking/trip-ticket/manage', [
-            'title' => "Update sales trip ticket: {$trip_ticket['name']}",
-            'action' => base_url("tracking/trip_tickets/update/{$id}"),
+            'section_title' => "Update trip-ticket for # {$id}", 
+            'form_action' => base_url("tracking/trip_tickets/update/{$id}"),
+            'truckings' => dropdown_format($truckings, 'id', ['trucking_name', 'plate_number'], ' ', '(', ')'),
+            'trucking_assistants' => ['' => ''] + array_column($trucking_assistants, 'name', 'id'),
             'data' => $trip_ticket
         ])->generate_page();
     }
 
-    public function store()
+    function update($id)
     {
-        $this->set_action('new');
-        $this->_perform_validation();
-
-        if($this->form_validation->run()){
-            $trip_ticket = $this->_format_data();
-            $this->trip_ticket->create($trip_ticket);
-            $this->flash_message(FALSE, 'New trip_ticket has been created sucessfully!');
-            $this->generate_response(FALSE)->to_JSON();
-            return;
-        }
-
-        $this->generate_response(TRUE, $this->form_validation->errors())->to_JSON();
-    }
-
-    public function update($id = FALSE)
-    {
-
-        if(!$id || !$trip_ticket = $this->trip_ticket->get($id)){
-            $this->generate_response(TRUE, 'Please select a valid trip_ticket to update.')->to_JSON();
-            return;
-        }
-        if(!can_update($trip_ticket)){
-            $this->generate_response(TRUE, 'You are not allowed to perform the desired action.')->to_JSON();
-            return;
+        if(!$id || !$trip_ticket = $this->trip_ticket->exists($id)){
+            show_404();
         }
         $this->id = $id;
-        $this->_perform_validation();
-        if($this->form_validation->run()){
-            $trip_ticket = $this->_format_data();
-            $this->trip_ticket->update($id, $trip_ticket);
-            $this->generate_response(FALSE)->to_JSON();
-            $this->flash_message(FALSE, 'Update successful!');
-            return;
+        $this->action = 'update';
+        $validation = $this->_validate();
+        if($validation['status']){
+            $id = $this->trip_ticket->update($id, $validation['data']);
+            $this->generate_response(FALSE, '', ['id' => $id])->to_JSON();
+        }else{
+            $this->generate_response(TRUE, $validation['errors'])->to_JSON();
         }
-        $this->generate_response(TRUE, $this->form_validation->errors())->to_JSON();
     }
 
     public function delete($id)
     {
-        if(!$id || !$trip_ticket = $this->trip_ticket->get($id)){
-            $this->generate_response(TRUE, 'Please select a valid trip_ticket to delete.')->to_JSON();
+        if(!$id || !$ticket = $this->trip_ticket->find($id)){
+            $this->generate_response(TRUE, 'Please select a valid tariff to delete.')->to_JSON();
             return;
         }
-        if(!can_delete($trip_ticket)){
+        if(!can_delete($ticket)){
             $this->generate_response(TRUE, 'Cannot perform action')->to_JSON();
             return;
         }
@@ -127,41 +150,200 @@ class Trip_tickets extends PM_Controller_v2
         $this->generate_response(TRUE, 'Cannot perform action due to an unknown error. Please try again later.')->to_JSON();
     }
 
-    public function _perform_validation()
+
+    function do_print($id = FALSE)
     {
-        if($this->action('new')){
-            $this->form_validation->set_rules('name', 'trip_ticket name', 'trim|required|is_unique[sales_trip_ticket.name]');
-            $this->form_validation->set_rules('trip_ticket_code', 'trip_ticket code', 'trim|required|alpha_numeric|is_unique[pm_sales_trip_ticket.trip_ticket_code]');
-        }else{
-            $this->form_validation->set_rules('name', 'trip_ticket name', 'trim|required|callback__validate_trip_ticket_name');
-            $this->form_validation->set_rules('trip_ticket_code', 'trip_ticket code', 'trim|required|alpha_numeric|callback__validate_trip_ticket_code');
+        if(!$id || !$packing_list = $this->packing_list->get($id)){
+            show_404();
         }
-        $this->form_validation->set_rules('area', 'trip_ticket area', 'trim|required');
-        $this->form_validation->set_rules('commission_rate', 'trip_ticket commission rate', 'trim|required|numeric');
-        if(can_set_status()){
-            $this->form_validation->set_rules('status', 'trip_ticket status', 'trim|required|in_list[a,ia]', ['in_list' => 'Please provide a valid %s']);
+        $this->load->view('printables/sales/dressed-pl',  [
+            'details' => $packing_list,
+            'sales_order' => $this->sales_order->fetch_order_details($packing_list['fk_sales_order_id'])
+        ]);
+    }
+    
+    function _validate()
+    {
+
+        $errors = [];
+        if($this->action === 'store'){
+            $this->form_validation->set_rules('fk_sales_customer_id', 'customer', 'required|callback__validate_customer');
         }
-        
+        $this->form_validation->set_rules('fk_sales_trucking_id', 'trucking', 'required|callback__validate_trucking');
+        $this->form_validation->set_rules('fk_trucking_assistant_id', 'trucking assistant', 'required|callback__validate_trucking_assistant');
+        $this->form_validation->set_rules('date', 'departure date and time', 'required|callback__validate_datetime');
+        $this->form_validation->set_rules('trip_type', 'Trip type', 'required|numeric');
+
+        if($this->form_validation->run()){
+
+            $input = $this->input->post();
+
+            if(isset($input['fk_sales_customer_id']) && $fk_sales_customer_id = trim($input['fk_sales_customer_id']))
+                $data['fk_sales_customer_id'] = $fk_sales_customer_id;
+
+            if(isset($input['fk_sales_trucking_id']) && $fk_sales_trucking_id = trim($input['fk_sales_trucking_id']))
+                $data['fk_sales_trucking_id'] = $fk_sales_trucking_id;
+
+            if(isset($input['fk_trucking_assistant_id']) && $fk_trucking_assistant_id = trim($input['fk_trucking_assistant_id']))
+                $data['fk_trucking_assistant_id'] = $fk_trucking_assistant_id;
+
+            if(isset($input['date']) && $date = trim($input['date'])){
+                $date = formatDate($date,'Y-m-d','m/d/Y');
+                $data['date'] = $date;
+            }
+            if(isset($input['remarks']) && $remarks = trim($input['remarks'])){
+                $data['remarks'] = $remarks;
+            }
+
+            if(isset($input['trip_type']) && $trip_type = trim($input['trip_type']))
+                $data['trip_type'] = $trip_type;
+
+            if(isset($input['approved_by'])){
+                $data['approved_by'] = $this->session->userdata('user_id');
+            } else {
+                $data['approved_by'] = NULL;
+            }
+
+            return [
+                    'status' => TRUE,
+                    'data' => $data,
+                ];
+        }
+        return [
+            'status' => FALSE,
+            'errors' => array_merge($this->form_validation->errors(), $errors)
+        ];
     }
 
-    public function _format_data()
+    function _format_input()
     {
-        $input = elements(['name', 'area', 'commission_rate', 'trip_ticket_code', 'status'], $this->input->post());
-        if(!can_set_status()){
-           unset($input['status']);
+        $details = [];
+        $packing_list = elements([
+            'invoice_number', 
+            'fk_sales_trucking_id', 
+            'fk_trucking_assistant_id', 
+            'remarks',
+            'date'
+        ], $this->input->post());
+        if($this->action === 'store'){
+            $packing_list += [
+                'fk_sales_order_id' => $this->input->post('fk_sales_order_id'),
+                'type' => 'd',
+                'status' => M_Status::STATUS_DELIVERED,
+                'created_by' => user_id(),
+                'approved_by' => user_id()
+            ];
         }
-        return $input;
+        $packing_list['date'] = date_create($packing_list['date'])->format('Y-m-d H:i:s');
+        foreach($this->input->post('dd') AS $row){
+            $temp = elements(['delivered_units', 'this_delivery'], $row);
+            $temp['fk_sales_order_detail_id'] = $this->input->post('fk_sales_order_detail_id');
+            if(isset($row['id'])){
+                $temp['id'] = $row['id'];
+            }
+            $details[] = $temp;
+        }
+        return compact(['packing_list', 'details']);
     }
 
-    public function _validate_trip_ticket_name($name)
+    function _validate_customer($customer_id)
     {
-        $this->form_validation->set_message('_validate_unit_description', 'The %s is already in use.');
-        return $this->trip_ticket->has_unique_name($name, $this->id);
+        $this->form_validation->set_message('_validate_customer', 'Please provide a valid %s.');
+        return $this->customer->is_active($customer_id);
     }
 
-    public function _validate_trip_ticket_code($code)
+    function _validate_fk_sales_order_id($so_id)
     {
-        $this->form_validation->set_message('_validate_trip_ticket_code', 'The %s is already in use.');
-        return $this->trip_ticket->has_unique_code($code, $this->id);
+        $customer_id = $this->input->post('fk_sales_customer_id');
+        $unserved = $this->customer->get_undelivered_orders($customer_id);
+        $this->form_validation->set_message('_validate_fk_sales_order_id', 'Please provide a valid %s.');
+        return in_array($so_id, array_column($unserved, 'id'));
     }
+
+    function _validate_fk_sales_order_detail_id($so_detail_id)
+    {   
+        $order_id =  $this->action === 'store' ?$this->input->post('fk_sales_order_id') : $this->packing_list->get_so_number($this->id);
+        $order_details = $this->sales_order->fetch_order_details($order_id);
+        $this->form_validation->set_message('_validate_fk_sales_order_detail_id', 'Please provide a valid %s.');
+        return in_array($so_detail_id, array_column($order_details['items_ordered'], 'id'));
+    }
+
+    function _validate_trucking($trucking_id)
+    {
+        $this->form_validation->set_message('_validate_trucking', 'Please provide a valid %s.');
+        return $this->trucking->exists($trucking_id, TRUE);
+    }
+
+    function _validate_trucking_assistant($trucking_assistant_id)
+    {
+        $this->form_validation->set_message('_validate_trucking_assistant', 'Please provide a valid %s.');
+        return $this->assistant->exists($trucking_assistant_id, TRUE);
+    }
+
+    function _validate_datetime($datetime)
+    {
+        $this->load->helper('pmdate');
+        $this->form_validation->set_message('_validate_datetime', 'Please provide a valid date and time.');
+        return is_valid_date($datetime, 'm/d/Y');
+    }
+
+    function _validate_sales_agent($sales_agent)
+    {
+        $this->form_validation->set_message('_validate_sales_agent', 'Please provide a valid %s');
+        return $this->agent->exists($sales_agent, TRUE);
+    }
+
+    function _check_item_availability($filled_orders, $offset = [])
+    {
+        if(IGNORE_STOCK_PL_ACTION){
+            return [];
+        }
+
+        $unavailable = [];
+
+        $this->load->model('sales/m_sales_order', 'sales_order');
+        $this->load->model('inventory/m_product');
+
+        $ordered_products = $this->sales_order->get_ordered_products(FALSE, [$filled_orders[0]['fk_sales_order_detail_id']]);
+        $product_ids = array_values($ordered_products);
+        $product_details = $this->m_product->identify($product_ids);
+        $stocks = $this->m_product->get_stocks($product_ids);
+
+        $product_id = $ordered_products[$filled_orders[0]['fk_sales_order_detail_id']];
+
+        $available = ['units' => 0, 'pieces' => 0];
+
+        $requested = [
+            'units' => array_sum(array_column($filled_orders, 'this_delivery')), 
+            'pieces' => array_sum(array_column($filled_orders, 'delivered_units')), 
+        ];
+
+        if(isset($stocks[$product_id])){
+            $available['units'] += $stocks[$product_id]['available_units'];
+            $available['pieces'] += $stocks[$product_id]['available_pieces'];
+        }
+
+        if($offset){
+            $available['units'] += $offset['units'];
+            $available['pieces'] += $offset['pieces'];
+        }
+
+        if($available['units'] < $requested['units']){
+            $lacking_units = $requested['units'] - $available['units'];
+            $lacking[] = "{$lacking_units} {$product_details[$product_id]['unit_description']}";
+        }
+
+        if($available['pieces'] < $requested['pieces']){
+            $lacking_pieces = $requested['pieces'] - $available['pieces'];
+            $lacking[] = "{$lacking_pieces} pieces";
+        }
+
+        if(!empty($lacking)){
+            $unavailable[] = "Lacking ". implode(' and ', $lacking). " for: {$product_details[$product_id]['description']}";
+        }
+
+        return $unavailable;
+    }
+
+    
 }

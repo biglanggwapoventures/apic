@@ -1,35 +1,37 @@
-(function($){
-	$(document).ready(function(){	
 
-		var messageBox = $('.callout.callout-danger');
+$(document).ready(function(){	
+	$('.datepicker').datetimepicker({format:'MM/DD/YYYY'});
 
-		$('form').submit(function(e){
+	var messageBox = $('.callout.callout-danger');
 
-			e.preventDefault();
 
-			var that = $(this);
+	$('form').submit(function(e){
 
-			messageBox.addClass('hidden');
+		e.preventDefault();
 
-			$('[type=submit]').attr('disabled', 'disabled');
+		var that = $(this);
 
-			$.post(that.data('action'), that.serialize())
+		messageBox.addClass('hidden');
 
-			.done(function(response){
-				if(response.error_flag){
-					messageBox.removeClass('hidden').find('ul').html('<li>'+response.message.join('</li><li>')+'</li>');
-					$('html, body').animate({scrollTop: 0}, 'slow');
-					return;
-				}
-				window.location.href = $('#cancel').attr('href');
-			})
-			.fail(function(){
-				alert('An internal error has occured. Please try again in a few moment.');
-			})
-			.always(function(){
-				$('[type=submit]').removeAttr('disabled');
-			});
+		$('[type=submit]').attr('disabled', 'disabled');
+
+		$.post(that.data('action'), that.serialize())
+
+		.done(function(response){
+			if(response.error_flag){
+				messageBox.removeClass('hidden').find('ul').html('<li>'+response.message.join('</li><li>')+'</li>');
+				$('html, body').animate({scrollTop: 0}, 'slow');
+				return;
+			}
+			window.location.href = $('#go-back').attr('href');
+		})
+		.fail(function(){
+			alert('An internal error has occured. Please try again in a few moment.');
+		})
+		.always(function(){
+			$('[type=submit]').removeAttr('disabled');
 		});
+	});
 
-	})
-})(jQuery)
+	$('textarea[name=remarks]').attr('rows',3);
+ });

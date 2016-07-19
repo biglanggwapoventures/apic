@@ -269,6 +269,17 @@ if(!function_exists('status_dropdown')){
     }
 }
 
+if(!function_exists('trip_dropdown')){
+    function trip_dropdown($name, $default = '', $attrs = '',$first_option_text = '', $add_all_option = FALSE)
+    {
+        $options = [null=>$first_option_text,1 => 'Chick Van', 2 => 'Harvester', 3 => 'Dressed Chicken'];
+        if($add_all_option === TRUE){
+            $options['all'] = '-All statuses-';
+        }
+        return form_dropdown($name, $options, $default, $attrs);
+    }
+}
+
 if(!function_exists('option_dropdown')){
     function option_dropdown($name, $default = '', $attrs = '',$first_option_text = '', $add_all_option = FALSE)
     {
@@ -335,5 +346,4 @@ if(!function_exists('input_group')){
               </div>";
     }
 }
-
 

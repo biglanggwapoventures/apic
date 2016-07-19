@@ -7,7 +7,7 @@ function generate_customer_dropdown($dropdown_name, $default_val = FALSE, $attrs
     $customers = $CI->m_customer->all(['status' => 'a']);
     $dropdown_format = array('' => $first_option_text);
     array_map(function($var) USE(&$dropdown_format) {
-        $dropdown_format[$var['id']] = "[{$var['customer_code']}] {$var['company_name']}";
+        $dropdown_format[$var['id']] = "{$var['company_name']} [{$var['customer_code']}]";
     }, $customers);
     unset($customers);
     return form_dropdown($dropdown_name, $dropdown_format, $default_val, $attrs);

@@ -200,12 +200,12 @@
                         </table>
                     </div>
                 </div>
-                <?php if(can_set_status()):?>
+                <?php if (can_set_status()): ?>
+                    <?php $checked = $defaults['status'] == M_Status::STATUS_APPROVED ? 'checked="checked"' : '';?>
                     <div class="checkbox">
-                        <?php $checked = $defaults['status'] == M_Status::STATUS_APPROVED ? 'checked="checked"' : '';?>
                         <label><input type="checkbox" name="is_approved" <?= $checked?>/> Mark this sales order as <b>approved</b></label>
                     </div>
-                <?php endif;?>
+                    <?php endif;?>
             </div>
             <div class="box-footer clearfix">
                 <button type="submit" class="btn btn-success btn-flat">Submit</button>

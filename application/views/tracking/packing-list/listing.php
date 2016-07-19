@@ -1,6 +1,6 @@
-<?php $url = base_url('tracking/locations'); ?>
+<?php $url = base_url('tracking/packing_list'); ?>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header bg-light-blue-gradient" style="color:#fff">
                 <h3 class="box-title">Master List</h3>
@@ -10,7 +10,7 @@
                     <div class="btn-group">
                         <button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                         <ul class="dropdown-menu pull-right" role="menu">
-                            <li><a href="<?= "{$url}/create"?>">Create new location</a></li>
+                            <li><a href="<?= "{$url}/create"?>">Create new packing list</a></li>
                             <li><a data-toggle="modal" data-target="#search">Search</a></li>
                         </ul>
                     </div>                 
@@ -19,11 +19,16 @@
 
             <div class="box-body no-padding">
                 <table class="table table-striped"> 
-                    <thead><tr class="info"><th>Location</th><th></th></tr></thead>
+                    <thead><tr class="info"><th>#</th><th>Trip Ticket ID</th><th>Customer</th><th>Date</th><th>Tariff Code</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                         <?php foreach($items AS $row):?>   
                             <tr data-pk="<?= $row['id']?>">
-                                <td><a href="<?= "{$url}/edit/{$row['id']}"?>"><?= $row['name']?></a></td>   
+                                <td><a href="<?= "{$url}/get/{$row['id']}"?>"><?= $row['id']?></a></td>
+                                <td><?= $row['trip_ticket']?></td>   
+                                <td><?= $row['company']?></td>
+                                <td><?= $row['date']?></td>
+                                <td><?= $row['code']?></td>
+                                <td><?php if(!empty($row['approved_by'])) echo '<span class="label label-success">Approved</span>'; else echo '<span class="label label-success">Waiting</span>';?></td>
                                 <td>
                                     <a class="btn btn-xs btn-flat btn-danger _delete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>
                                 </td>
@@ -46,7 +51,7 @@
                 <h4 class="modal-title" id="mySmallModalLabel">Confirm action</h4>
             </div>
             <div class="modal-body">
-                <p class="text-danger text-center text-bold">Do you really want to delete this location?<br> <u>This action cannot be undone.<u></p>
+                <p class="text-danger text-center text-bold">Do you really want to delete this packing list?<br> <u>This action cannot be undone.<u></p>
             </div>
             <div class="modal-footer">
                 <a class="btn btn-flat btn-danger" id="delete-confirmed" data-delete-url="<?= "{$url}/delete/"?>">Yes</a>
@@ -65,8 +70,13 @@
             <form method="GET">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Location</label>
-                        <input type="text" class="form-control" value="<?= $this->input->get('name')?>" name="name"/>
+                        <label>Customer</label>
+                        <?= generate_customer_dropdown('fk_sales_customer_id', FALSE,  'class="form-control"')?>
+                    </div>
+                    <div class="form-group">
+                        <label>Trip Type</label>
+                        <?php $default = $this->input->get('trip_type') ? $this->input->get('trip_type') : 1;?>
+                        <?=trip_dropdown('trip_type', put_value($default, 'trip_type', ''), 'class="form-control option"')?>
                     </div>
                 </div>
                 <div class="modal-footer">

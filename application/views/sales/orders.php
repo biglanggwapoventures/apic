@@ -53,6 +53,7 @@
                                 <?php foreach ($entries as $e): ?>
                                     <?php $status = ''; ?>
                                     <?php $tr_class = ''; ?>
+                                    
                                     <?php if ($e['status'] == M_Status::STATUS_DEFAULT OR $e['status'] == M_Status::STATUS_PENDING): ?>
                                         <?php $status = 'Waiting for admin approval' ?>
                                         <?php $tr_class = 'danger'; ?>

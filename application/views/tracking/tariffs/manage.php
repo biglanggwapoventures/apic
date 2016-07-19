@@ -36,8 +36,8 @@
                     <div class="col-md-12" id="tableData">
                         <table class="table location-details" id="less">
                             <thead>
-                                <tr class="active">
-                                    <th>Location</th><th>Rate</th><th>Kms</th><th>&nbsp;</th>
+                                <tr class="bg-navy">
+                                    <th id="optionVal">Location</th><th>Rate</th><th>Kms</th><th>&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,8 +51,8 @@
                                             <input type="hidden" value="" name="" data-name="" />
                                             <?= form_dropdown("less[{$index}][fk_location_id]", ['' => ''] + array_column($locations, 'name', 'id'), put_value($item, 'fk_location_id', ''), 'class=" form-control" data-name="less[idx][fk_location_id]"')?>
                                         </td>
-                                        <td><?= form_input("less[{$index}][rate]",put_value($item, 'rate',''), 'class="form-control rate" type="number" data-name="less[idx][rate]"')?></td>
-                                        <td><?= form_input("less[{$index}][kms]",put_value($item, 'kms', ''), 'class="form-control kms" type="number" data-name="less[idx][kms]"')?></td>
+                                        <td><?= form_input("less[{$index}][rate]",put_value($item, 'rate',''), 'class="form-control pformat rate text-right" type="number" data-name="less[idx][rate]"')?></td>
+                                        <td><?= form_input("less[{$index}][kms]",put_value($item, 'kms', ''), 'class="form-control pformat kms text-right" type="number" data-name="less[idx][kms]"')?></td>
                                         <td>
                                             <a class="btn btn-danger btn-flat btn-sm remove-line" role="button"><i class="fa fa-times"></i></a>
                                         </td>

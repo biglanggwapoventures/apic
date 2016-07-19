@@ -14,18 +14,44 @@ class Tariffs extends PM_Controller_v2
         $this->set_active_nav(NAV_TRACKING);
         $this->load->model(array('tracking/m_tariffs', 'tracking/m_locations'));
     }
+  
+    function _search_params()
+    {
+        $search = [];
+        $wildcards = [];
+
+        $params = elements(['code','location','option'], $this->input->get(), FALSE);
+        if($params['option'] && in_array($params['option'], ['1', '2'])){
+            $search['p.option'] = $params['option'];
+        }
+
+        if($params['code'] && trim($params['code'])){
+            $wildcards['p.code'] = $params['code'];
+        }
+
+        if($params['location'] && is_numeric($params['location'])){
+            $search['p.fk_location_id'] = $params['location'];
+        }
+        
+        return compact(['search', 'wildcards']);
+    }
 
     function index()
     {
+
+
         $this->add_javascript([
             'plugins/sticky-thead.js',
             'tracking-tariffs/listing.js',
             'plugins/moment.min.js'
         ]);
-        $data = $this->m_tariffs->all();
+
+        $params = $this->_search_params();
+        $data = $this->m_tariffs->all($params['search'], $params['wildcards']);
 
         $this->set_content('tracking/tariffs/listing', [
-            'items' => $data
+            'items' => $data,
+            'locations' => $this->m_locations->all()
         ])->generate_page();
     }
 
@@ -50,7 +76,7 @@ class Tariffs extends PM_Controller_v2
 
     public function create() 
     {
-        $this->add_javascript('tracking-tariffs/manage.js');
+        $this->add_javascript(['tracking-tariffs/manage.js','price-format.js', 'numeral.js']);
         $this->set_content('tracking/tariffs/manage', [
             'title' => 'Create new tariff',
             'action' => base_url('tracking/tariffs/store'),
@@ -64,7 +90,7 @@ class Tariffs extends PM_Controller_v2
         if(!$id || !$tariff = $this->m_tariffs->get($id)){
             show_404();
         }
-        $this->add_javascript('tracking-tariffs/manage.js');
+        $this->add_javascript(['tracking-tariffs/manage.js','price-format.js', 'numeral.js']);
         $this->set_content('tracking/tariffs/manage', [
             'data' => $tariff,
             'title' => "Update tariff #{$tariff['id']}",

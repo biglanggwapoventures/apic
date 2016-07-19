@@ -1,0 +1,711 @@
+<?php
+
+class Packing_list extends PM_Controller_v2
+{
+
+    protected $id = NULL;
+    protected $validation_errors = [];
+    private $viewpage_settings = array();
+
+    function __construct()
+    {
+        parent::__construct();
+        if(!has_access('tracking')) show_error('Authorization error', 401);
+        $this->set_content_title('Tracking');
+        $this->set_content_subtitle('Packing list');
+        $this->set_active_nav(NAV_TRACKING);
+        $this->load->model(array('tracking/m_packing_list', 'tracking/m_tariffs','sales/m_customer'));
+
+        $this->viewpage_settings['defaults'] = array(
+            'fk_sales_customer_id' => '',
+            'fk_trip_ticket_id' => FALSE,
+            'date' => '',
+            'fk_tariff_id' => '',
+            'option' => '',
+            'location' => '',
+            'less' => array(
+                'fk_tariff_details_id' => array(''),
+                'rate' => array(''),
+                'pcs' => array(0),
+                'amount' => array(0)
+            ),
+            'approved_by' => ''
+
+        );
+    }
+  
+    function _search_params()
+    {
+        $search = [];
+        $wildcards = [];
+
+        $params = elements(['code','location','option'], $this->input->get(), FALSE);
+        if($params['option'] && in_array($params['option'], ['1', '2'])){
+            $search['p.option'] = $params['option'];
+        }
+
+        if($params['code'] && trim($params['code'])){
+            $wildcards['p.code'] = $params['code'];
+        }
+
+        if($params['location'] && is_numeric($params['location'])){
+            $search['p.fk_location_id'] = $params['location'];
+        }
+        
+        return compact(['search', 'wildcards']);
+    }
+
+    function index()
+    {
+
+        $this->load->helper('customer');
+        $this->add_javascript([
+            'plugins/sticky-thead.js',
+            'tracking-packing-list/listing.js',
+            'plugins/moment.min.js'
+        ]);
+
+        $params = $this->_search_params();
+        $this->viewpage_settings['items'] = $this->m_packing_list->all();
+        $this->set_content('tracking/packing-list/listing', 
+            $this->viewpage_settings
+        )->generate_page();
+    }
+
+    public function create() 
+    {
+        $this->load->helper('customer');
+        $tariffs = $this->m_tariffs->all();
+        $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_customer->all(['status' => 'a']), 'company_name', 'id');
+        $this->viewpage_settings['tariffs'] = ['' => ''] + array_column($this->m_tariffs->all(), 'code', 'id');
+        $this->viewpage_settings['form_title'] = 'Add new packing list';
+        $this->viewpage_settings['form_action'] = base_url('tracking/packing_list/store');
+
+        $this->add_javascript([
+            'plugins/moment.min.js',
+            'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
+            'jquery-ui.min.js', 
+            'numeral.js',
+            'tracking-packing-list/manage.js',
+            'price-format.js'
+        ]);
+        $this->set_content('tracking/packing-list/manage',
+             $this->viewpage_settings
+        )->generate_page();
+    }
+
+    function master_list()
+    {
+        $params = $this->input->get();
+
+        $items = $this->receiving->all([
+            'limit' => $params['length'] ?: 100,
+            'offset' => $params['start'] ?: 0,
+        ]);
+
+        $count_all = $this->receiving->count_all();
+
+        $this->generate_response([
+            'data' => $items,
+            'draw' => (int)$params['draw'] ?: 1,
+            'recordsFiltered' => $count_all,
+            'recordsTotal' => $count_all
+        ])->to_JSON();
+    }
+
+
+    public function get($packing_id) {
+        $data = $this->m_packing_list->get($packing_id);
+        if(empty($data)){
+            show_404();
+            return;
+        }
+        $this->add_css('jQueryUI/jquery-ui-1.10.3.custom.min.css');
+        $this->add_javascript([
+            'plugins/moment.min.js',
+            'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
+            'jquery-ui.min.js', 
+            'numeral.js',
+            'tracking-packing-list/manage.js',
+            'price-format.js'
+        ]);
+
+        $this->load->helper('customer');
+        $this->load->helper('tariff');
+        $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_customer->all(['status' => 'a']), 'company_name', 'id');
+
+        $this->viewpage_settings['less'] = $this->m_packing_list->get_tariff_detail($data[0]['fk_tariff_id']);
+
+        $this->viewpage_settings['form_action'] = base_url("tracking/packing_list/update/{$packing_id}");
+        $this->viewpage_settings['form_title'] = "Update packing list".$packing_id;
+        $this->viewpage_settings['tariffs'] = ['' => ''] + array_column($this->m_tariffs->all(), 'code', 'id');
+        $ticket = $this->viewpage_settings['trip_ticket'] = ['' => ''] + array_column($this->m_packing_list->get_trip_ticket($data[0]['fk_sales_customer_id']), 'id', 'id');
+        $this->viewpage_settings['defaults']['fk_trip_ticket_id'] = $this->m_packing_list->get_tariff_value($packing_id);
+        $ticket_id = $this->viewpage_settings['defaults']['fk_trip_ticket_id'];
+        $new = [];
+        foreach ($ticket_id as $key) {
+            $value = $key['fk_trip_ticket_id'];
+            $new[$value] = $key['fk_trip_ticket_id'];
+        }
+        $this->viewpage_settings['trip_ticket'] = $this->array_pusher($this->viewpage_settings['trip_ticket'], $value, $value);
+        if ($this->input->post()) {
+            $saved = FALSE;
+            $input = $this->input->post();
+            $input = $this->_validate();
+            if ($input['error_flag']) {
+                $this->viewpage_settings['defaults'] = $this->input->post();
+                $this->viewpage_settings['defaults']['fk_sales_customer_id'] = $data[0]['fk_sales_customer_id'];
+                $this->viewpage_settings['defaults']['fk_trip_ticket_id'] = $data[0]['fk_trip_ticket_id'];
+                $this->viewpage_settings['defaults']['date'] = $data[0]['date'];
+                $this->viewpage_settings['defaults']['fk_tariff_id'] = $order_info[0]['fk_tariff_id'];
+                $this->viewpage_settings['defaults']['approved_by'] = $data[0]['approved_by']; //reset status
+                $this->viewpage_settings['validation_errors'] = $input['message'];
+            } else {
+                $input['data']['status'] = $input['data']['status'] == M_Status::STATUS_DEFAULT ? $order_info[0]['status'] : $input['data']['status'];
+                $saved = $this->m_sales_order->update($order_id, $input['data']);
+            }
+            if ($saved) {
+                $this->session->set_flashdata('form_submission_success', $this->m_message->update_success(self::SUBJECT));
+                redirect('sales/orders');
+            }
+        } else {
+            $this->setTabTitle("Sales - Update S.O. # {$packing_id}");
+            $this->viewpage_settings['defaults'] = $data[0];
+        }
+        $this->set_content('tracking/packing-list/manage', $this->viewpage_settings);
+        $this->generate_page();
+    }
+
+    function array_pusher($array, $key, $value){
+        $array[$key] = $value;
+        return $array;
+    }
+
+    function update($id)
+    {
+        $this->_validation();
+        if(!empty($this->validation_errors)){
+            $this->generate_response(TRUE, $this->validation_errors)->to_JSON();
+            return;
+        }
+        $data = $this->_format_data();
+        $success = $this->m_packing_list->update($id, $data['packing'], $data['order_line']);
+        if($success){
+            $this->generate_response(FALSE)->to_JSON();
+            return;
+        }
+        $this->generate_response(TRUE, 'Unable to perform action due to an unknown error.')->to_JSON();
+    }
+
+    function store()
+    {
+        $this->_validation();
+        if(!empty($this->validation_errors)){
+            $this->generate_response(TRUE, $this->validation_errors)->to_JSON();
+            return;
+        }
+        $data = $this->_format_data();
+        $success = $this->m_packing_list->create($data['packing'], $data['order_line']);
+        if($success){
+            $this->generate_response(FALSE)->to_JSON();
+            return;
+        }
+        $this->generate_response(TRUE, 'Unable to perform action due to an unknown error.')->to_JSON();
+    }
+
+
+public function delete($id)
+    {
+        if(!$id || !$packing_list = $this->m_packing_list->find($id)){
+            $this->generate_response(TRUE, 'Please select a valid tariff to delete.')->to_JSON();
+            return;
+        }
+        if(!can_delete($packing_list)){
+            $this->generate_response(TRUE, 'Cannot perform action')->to_JSON();
+            return;
+        }
+        if($this->m_packing_list->delete($id)){
+            $this->generate_response(FALSE)->to_JSON();
+            return;
+        }
+        $this->generate_response(TRUE, 'Cannot perform action due to an unknown error. Please try again later.')->to_JSON();
+    }
+
+    public function get_trip_ticket()
+    {
+        $this->load->helper('customer');
+        $items = $this->m_packing_list->get_trip_ticket($this->input->get('id'));
+        $set = ['' => ''] + array_column($items, 'id', 'id');
+        $this->output->set_output(form_dropdown('fk_trip_ticket_id', $set, FALSE, 'class="form-control"'));
+
+    }
+
+    public function get_tariff_details()
+    {
+        $this->load->helper('tariff');
+        $items = $this->m_packing_list->getDetails($this->input->get('id'));
+        $this->generate_response([
+            'options' => $items['tariff']['option'],
+            'location' => $items['tariff']['location'],
+            'details' => generate_tariff_dropdown('less[fk_tariff_details_id][]', $items['less'], 'id', 'location', FALSE, FALSE, 'class="form-control tariff_details_list select-clear"')
+        ])->to_JSON();
+    }
+
+    function _validation()
+    {
+        $this->form_validation->set_rules('fk_sales_customer_id', 'customer', 'required|numeric');
+        $this->form_validation->set_rules('fk_trip_ticket_id', 'trip ticket', 'required|numeric');
+        $this->form_validation->set_rules('fk_tariff_id', 'tariff', 'required|numeric');
+        $this->form_validation->set_rules('date', 'Date', 'required');
+
+        if(!$this->form_validation->run()){
+            $this->validation_errors += array_values($this->form_validation->error_array());
+        }
+
+        $less = $this->input->post('less');
+        if(!isset($less['fk_tariff_details_id']) 
+            || !is_array($less['fk_tariff_details_id']) 
+            || empty($less['fk_tariff_details_id'])){
+            $this->validation_errors[] = 'Please select at least one product for the order.';
+            return;
+        }
+        foreach($less['fk_tariff_details_id'] AS $key => $value){
+            $line = $key + 1;
+            if(!isset($less['pcs'][$key]) || !is_numeric($less['pcs'][$key])){
+                $this->validation_errors[] = "Heads / pieces count for line # {$line} has no value";
+            }
+            if(!isset($less['amount'][$key])){
+                $this->validation_errors[] = "Amount for line # {$line} has no value";
+            }
+        }
+    }
+
+    function _format_data()
+    {
+        $packing = elements(['fk_tariff_id', 'fk_trip_ticket_id', 'fk_sales_customer_id','date','approved_by'], $this->input->post());
+
+        if(isset($packing['approved_by']) && $packing['approved_by']=='on' ){
+            $packing['approved_by'] = $this->session->userdata('user_id');
+        } else {
+            $packing['approved_by'] = NULL;
+        }
+
+        $order_line = [];
+        $less = $this->input->post('less');
+        foreach($less['fk_tariff_details_id'] AS $key => $value){
+            $temp = [
+                'fk_tariff_details_id' => $value,
+                'pcs' => $less['pcs'][$key],
+                'amount' => $less['amount'][$key]
+            ];
+            if(isset($less['id'][$key])){
+                $temp['id'] = $less['id'][$key];
+            }
+            $order_line[] = $temp;
+        }
+        return compact(['packing', 'order_line']);
+    }
+
+}
+
+
+// <?php
+
+// class Orders extends PM_Controller_v2 {
+
+//     const TITLE = 'Sales';
+//     const SUBTITLE = 'Orders';
+//     const SUBJECT = 'sales order';
+
+//     private $viewpage_settings = array();
+
+//     protected $validation_errors = [];
+
+//     public function __construct() {
+//         parent::__construct();
+      
+//         if (!has_access('sales')) {
+//             show_error('Authorization error', 401);
+//         }
+//         $this->set_active_nav(NAV_SALES);
+//         $this->set_content_title(self::TITLE);
+//         $this->set_content_subtitle(self::SUBTITLE);
+//         $this->add_javascript(array());
+//         $this->load->model(array('sales/m_sales_order', 'sales/m_customer', 'inventory/m_product', 'sales/m_agent'));
+//         $this->viewpage_settings['defaults'] = array(
+//             'fk_sales_customer_id' => '',
+//             'fk_sales_agent_id' => FALSE,
+//             'po_number' => '',
+//             'date' => '',
+//             'remarks' => '',
+//             'misc_charges' => array(
+//                 'handling' => '',
+//                 'trucking' => '',
+//                 'medication' => '',
+//                 'others' => ''
+//             ),
+//             'details' => array(
+//                 'fk_inventory_product_id' => array(''),
+//                 'product_quantity' => array(''),
+//                 'unit_description' => array(''),
+//                 'unit_price' => array(0),
+//                 'discount' => array(0),
+//                 'total_units' => array(0),
+//             ),
+//             'add_ons' => array(
+//                 'medication_id' => array(''),
+//                 'unit_price' => array(0),
+//                 'quantity' => array('')
+//             ),
+//             'status' => M_Status::STATUS_DEFAULT,
+//             'total_amount' => 0.00
+//         );
+//     }
+
+//     public function index() {
+//         $this->setTabTitle('Sales - Orders');
+//         $this->add_javascript(array('plugins/json2html.js', 'plugins/jquery.json2html.js', 'plugins/sticky-thead.js', 'sales-order/master-list.js'));
+//         $this->viewpage_settings['customers'] = $this->m_customer->get_list();
+//         $this->set_content('sales/orders-new', $this->viewpage_settings);
+//         $this->generate_page();
+//     }
+
+//     function a_get() {
+//         $id = $this->input->get('order_id');
+//         if ($id) {
+//             $data = $this->m_sales_order->get(FALSE, array('s_order.id' => $id));
+//             echo json_encode($this->response(FALSE, 'Successful data fetching.', $data[0]));
+//         } else {
+//             echo json_encode($this->response(TRUE, 'Must provide order id!'));
+//         }
+//         exit();
+//     }
+
+//     public function sample()
+//     {
+//         $this->set_content('sales/sample');
+//         $this->generate_page();
+//     }
+
+//     public function a_fetch_details() {
+//         $this->output->set_content_type('json');
+//         $this->output->set_output(json_encode($this->m_sales_order->fetch_order_details($this->input->get('order_id'), TRUE)));
+//     }
+
+//     public function a_master_list() {
+//         $this->load->helper('array');
+//         $parameters = elements(array('so', 'po', 'customer', 'date', 'page'), $this->input->get(), 0);
+//         $data = $this->m_sales_order->master_list($parameters);
+//         $this->output->set_content_type('json');
+//         $this->output->set_output(json_encode($data ? array('data' => $data) : array()));
+//     }
+
+//     public function update($order_id) {
+//         $order_info = $this->m_sales_order->get(FALSE, array('s_order.id' => $order_id));
+//         if(empty($order_info)){
+//             show_404();
+//             return;
+//         }
+//         $this->load->model(array('inventory/m_product', 'sales/m_customer'));
+//         $this->add_css('jQueryUI/jquery-ui-1.10.3.custom.min.css');
+//         $this->add_javascript(array('manage-sales-orders.js', 'price-format.js', 'numeral.js', 'jquery-ui.min.js'));
+//         $this->load->helper('customer');
+
+//         $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_customer->all(['status' => 'a']), 'company_name', 'id');
+
+//         $this->viewpage_settings['products'] = $this->m_customer->get_customer_products($order_info[0]['fk_sales_customer_id']);
+    
+//         $this->viewpage_settings['agents'] = $this->m_agent->all(['status' => 'a']);
+
+//         $this->viewpage_settings['url'] = base_url("sales/orders/update_order/{$order_id}");
+//         $this->viewpage_settings['form_title'] = 'Update sales order # '.$order_id;
+//         if ($this->input->post()) {
+//             $saved = FALSE;
+//             $input = $this->_validate();
+//             if ($input['error_flag']) {
+//                 $this->viewpage_settings['defaults'] = $this->input->post();
+//                 $this->viewpage_settings['defaults']['fk_sales_customer_id'] = $order_info[0]['fk_sales_customer_id'];
+//                 $this->viewpage_settings['defaults']['customer'] = $order_info[0]['customer'];
+//                 $this->viewpage_settings['defaults']['details'] = $order_info[0]['details'];
+//                 $this->viewpage_settings['defaults']['total_amount'] = $order_info[0]['total_amount'];
+//                 $this->viewpage_settings['defaults']['status'] = $order_info[0]['status']; //reset status
+//                 $this->viewpage_settings['validation_errors'] = $input['message'];
+//             } else {
+//                 $input['data']['status'] = $input['data']['status'] == M_Status::STATUS_DEFAULT ? $order_info[0]['status'] : $input['data']['status'];
+//                 $saved = $this->m_sales_order->update($order_id, $input['data']);
+//             }
+//             if ($saved) {
+//                 $this->session->set_flashdata('form_submission_success', $this->m_message->update_success(self::SUBJECT));
+//                 redirect('sales/orders');
+//             }
+//         } else {
+//             $this->setTabTitle("Sales - Update S.O. # {$order_id}");
+//             $this->viewpage_settings['defaults'] = $order_info[0];
+//         }
+
+//         if($this->m_sales_order->get_max_id()[0]['id'] == $order_id){
+//             $order_next_id = $this->m_sales_order->get_min_id();
+//             if($order_next_id[0]['id'] == $order_id){
+//                 $order_next_id = array();
+//             }
+//         }else{
+//             $order_next_id = $this->m_sales_order->get_next_row_id($order_id, "next");
+//         }
+
+//         if($this->m_sales_order->get_min_id()[0]['id'] == $order_id){
+//             $order_prev_id = $this->m_sales_order->get_max_id();
+//             if($order_prev_id[0]['id'] == $order_id){
+//                 $order_prev_id = array();
+//             }
+//         }else{
+//             $order_prev_id = $this->m_sales_order->get_next_row_id($order_id, "prev");
+//         }
+
+//         if(!empty($order_next_id)){
+//             $id = $order_next_id[0]['id'];
+//             $this->viewpage_settings['order_next_info'] = base_url("sales/orders/update/{$id}");
+//             $this->viewpage_settings['order_next_id'] = $id;
+//         }else{
+//             $this->viewpage_settings['order_next_info'] = 0;
+//         }
+
+//         if(!empty($order_prev_id)){
+//             $id = $order_prev_id[0]['id'];
+//             $this->viewpage_settings['order_prev_info'] = base_url("sales/orders/update/{$id}");
+//             $this->viewpage_settings['order_prev_id'] = $id;
+//         }else{
+//             $this->viewpage_settings['order_prev_info'] = 0;
+//         }
+
+//         $this->set_content('sales/manage-order', $this->viewpage_settings);
+//         $this->generate_page();
+//     }
+
+//     public function add() {
+//         $this->load->model(array('inventory/m_product', 'inventory/m_medications'));
+//         $this->add_css('jQueryUI/jquery-ui-1.10.3.custom.min.css');
+//         $this->add_javascript(array('manage-sales-orders.js', 'price-format.js', 'numeral.js', 'jquery-ui.min.js'));
+//         $this->load->helper('view');
+
+//         $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_customer->all(['status' => 'a']), 'company_name', 'id');
+
+
+//         $this->viewpage_settings['agents'] = $this->m_agent->all(['status' => 'a']);
+        
+//         $this->viewpage_settings['url'] = base_url('sales/orders/store');
+//         $this->viewpage_settings['form_title'] = 'Add new sales order';
+//         if ($this->input->post()) {
+//             $saved = FALSE;
+//             $input = $this->_validate();
+//             if ($input['error_flag']) {
+//                 $this->viewpage_settings['defaults'] = $this->input->post();
+//                 $this->viewpage_settings['status'] = M_Status::STATUS_DEFAULT; //reset status
+//             } else {
+//                 $saved = $this->m_sales_order->add($input['data']);
+//             }
+//             if ($saved) {
+//                 $this->session->set_flashdata('form_submission_success', $this->m_message->add_success(self::SUBJECT));
+//                 redirect('sales/orders');
+//             }
+//         }
+//         $this->set_content('sales/manage-order', $this->viewpage_settings);
+//         $this->generate_page();
+//     }
+    
+   
+
+//     private function _validate() {
+//         $this->form_validation->set_rules('fk_sales_customer_id', 'Customer', 'required');
+//         $this->form_validation->set_rules('date', 'Date', 'required');
+//         $this->form_validation->set_rules('status', 'status', 'callback__validate_status');
+//         $this->form_validation->set_rules('fk_sales_agent_id', 'sales agent', 'required|callback__validate_sales_agent');
+//         if ($this->form_validation->run()) {
+//             $data = $this->input->post();
+//             $data['details'] = $this->_format_details();
+//             return $this->response(FALSE, '', $data);
+//         } else {
+//             return $this->response(TRUE, validation_errors('<li>', '</li>'));
+//         }
+//     }
+    
+//     private function _format_details() {
+//         $details = $this->input->post('details');
+//         $formatted_details = array();
+//         for ($x = 0; $x < count($details['fk_inventory_product_id']); $x++) {
+//             if ($details['fk_inventory_product_id'][$x]) {
+//                 $unit_price = str_replace(",", "", $details['unit_price'][$x]);
+//                 $discount = str_replace(",", "", $details['discount'][$x]);
+//                 $quantity = $details['product_quantity'][$x];
+//                 $amount = ($unit_price * $quantity) - $discount;
+
+//                 $formatted_details[$x] = array(
+//                     'fk_inventory_product_id' => $details['fk_inventory_product_id'][$x],
+//                     'product_quantity' => $quantity,
+//                     'unit_price' => $unit_price,
+//                     'discount' => $discount
+//                 );
+                
+//                 if(is_numeric($details['total_units'][$x]) && (float)abs($details['total_units'][$x])){
+//                     $formatted_details[$x]['total_units'] = abs($details['total_units'][$x]);
+//                 }else{
+//                     $formatted_details[$x]['total_units'] = NULL;
+//                 }
+//             }
+//             if ($details['fk_inventory_product_id'][$x] && isset($details['id'][$x])) {
+//                 $formatted_details[$x]['id'] = $details['id'][$x];
+//             }
+//         }
+//         return $formatted_details;
+//     }
+
+
+//     function update_order($id)
+//     {
+//         $this->load->model('sales/sales_order_model', 'order');
+//         $this->_perform_validation();
+//         if(!empty($this->validation_errors)){
+//             $this->generate_response(TRUE, $this->validation_errors)->to_JSON();
+//             return;
+//         }
+//         $data = $this->_format_data();
+//         $success = $this->order->update($id, $data['sales_order'], $data['order_line']);
+//         if($success){
+//             $this->generate_response(FALSE)->to_JSON();
+//             return;
+//         }
+//         $this->generate_response(TRUE, 'Unable to perform action due to an unknown error.')->to_JSON();
+//     }
+
+//     function store()
+//     {
+//         $this->load->model('sales/sales_order_model', 'order');
+//         $this->_perform_validation();
+//         if(!empty($this->validation_errors)){
+//             $this->generate_response(TRUE, $this->validation_errors)->to_JSON();
+//             return;
+//         }
+//         $data = $this->_format_data();
+//         $success = $this->order->create($data['sales_order'], $data['order_line']);
+//         if($success){
+//             $this->generate_response(FALSE)->to_JSON();
+//             return;
+//         }
+//         $this->generate_response(TRUE, 'Unable to perform action due to an unknown error.')->to_JSON();
+//     }
+
+    
+//     function _perform_validation()
+//     {
+//         $this->form_validation->set_rules('fk_sales_customer_id', 'customer', 'required|callback__validate_customer');
+//         $this->form_validation->set_rules('date', 'Date', 'required|callback__validate_date');
+//         $this->form_validation->set_rules('fk_sales_agent_id', 'sales agent', 'required|callback__validate_sales_agent');
+//         if(!$this->form_validation->run()){
+//             $this->validation_errors += array_values($this->form_validation->error_array());
+//         }
+//         $details = $this->input->post('details');
+//         if(!isset($details['fk_inventory_product_id']) 
+//             || !is_array($details['fk_inventory_product_id']) 
+//             || empty($details['fk_inventory_product_id'])
+//             || !$this->m_product->is_valid($details['fk_inventory_product_id'])){
+//             $this->validation_errors[] = 'Please select at least one product for the order.';
+//             return;
+//         }
+//         foreach($details['fk_inventory_product_id'] AS $key => $value){
+//             $line = $key + 1;
+//             if(!isset($details['product_quantity'][$key]) || !is_numeric($details['product_quantity'][$key])){
+//                 $this->validation_errors[] = "Please provide an order quantity for line # {$line}";
+//             }
+//             if(!isset($details['total_units'][$key]) || ($details['total_units'][$key] && !is_numeric($details['total_units'][$key]))){
+//                 $this->validation_errors[] = "Heads / pieces count for line # {$line} must be numeric";
+//             }
+//             if(!isset($details['unit_price'][$key]) || !is_numeric(str_replace(',', '', $details['unit_price'][$key]))){
+//                 $this->validation_errors[] = "Unit price for line # {$line} must be numeric";
+//             }
+//             if(!isset($details['discount'][$key]) || ($details['discount'][$key] && !is_numeric(str_replace(',', '', $details['discount'][$key])))){
+//                 $this->validation_errors[] = "Discount for line # {$line} must be numeric";
+//             }
+//         }
+//     }
+
+//     function _format_data()
+//     {
+//         $sales_order = elements(['po_number', 'date', 'remarks', 'fk_sales_agent_id', 'fk_sales_customer_id'], $this->input->post());
+//         if(can_set_status()){
+//             $sales_order['status'] = $this->input->post('is_approved') ? M_Status::STATUS_APPROVED : M_Status::STATUS_DEFAULT;
+//         }
+//         $order_line = [];
+//         $details = $this->input->post('details');
+//         foreach($details['fk_inventory_product_id'] AS $key => $value){
+//             $temp = [
+//                 'fk_inventory_product_id' => $value,
+//                 'product_quantity' => $details['product_quantity'][$key],
+//                 'total_units' => $details['total_units'][$key] ?: 0,
+//                 'unit_price' => str_replace(',', '', $details['unit_price'][$key]),
+//                 'discount' => str_replace(',', '', $details['discount'][$key]) ?: 0,
+//             ];
+//             if(isset($details['id'][$key])){
+//                 $temp['id'] = $details['id'][$key];
+//             }
+//             $order_line[] = $temp;
+//         }
+//         return compact(['sales_order', 'order_line']);
+//     }
+
+
+//     function _validate_customer($customer)
+//     {
+//         $this->form_validation->set_message('_validate_customer', 'Please select a valid %s');
+//         return $this->m_customer->exists($customer, TRUE);
+//     }
+//     function _validate_sales_agent($sales_agent)
+//     {
+//         $this->form_validation->set_message('_validate_sales_agent', 'Please select a valid %s');
+//         return $this->m_agent->exists($sales_agent, TRUE);
+//     }
+
+//     function _validate_date($date)
+//     {
+//         $this->load->helper('pmdate');
+//         $this->form_validation->set_message('validate_date', 'Date must be in format YYYY-MM-DD');
+//         return is_valid_date($date, 'Y-m-d');
+//     }
+
+//     public function set_agent()
+//     {
+//         if(TOGGLE_SALES_AGENT){
+//             $this->load->model('sales/m_agent', 'agent');
+//             $this->load->model('sales/sales_order_model', 'order');
+//             $data = elements(['pk', 'value'], $this->input->post());
+//             if($this->agent->exists($data['value'], TRUE)){
+//                 $success = $this->order->set_agent($data['pk'], $data['value']);
+//                 $this->generate_response(!$success)->to_JSON();
+//             }else{
+//                 $this->generate_response(TRUE, ['Please provide a valid sales agent'])->to_JSON();
+//             }
+//         }
+//     }
+
+
+
+
+//     public function create() {
+//         if ($this->input->post()) {
+            
+//         } else {
+//             $this->add_javascript(array('plugins/json2html.js', 'plugins/jquery.json2html.js', 'sales-order/view-edit.js'));
+//             $viewpage_extras['form_title'] = 'Create new sales order';
+//             $this->set_content('sales/manage-order-new', $viewpage_extras);
+//             $this->generate_page();
+//         }
+//     }
+
+//     public function a_delete() {
+//         $this->output->set_content_type('json');
+//         if ($this->session->userdata('type_id') == M_Account::TYPE_ADMIN) {
+//             $id = $this->input->post('pk');
+//             $this->output->set_output(json_encode($this->m_sales_order->delete($id) ? $this->response(FALSE, "Successfully delete S.O. # {$id}") : $this->response(TRUE, "Error on S.O. deletion.")));
+//         }
+//         return FALSE;
+//     }
+
+// }

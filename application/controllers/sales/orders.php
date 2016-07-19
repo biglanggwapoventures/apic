@@ -167,7 +167,6 @@ class Orders extends PM_Controller_v2 {
         }else{
             $this->viewpage_settings['order_prev_info'] = 0;
         }
-
         $this->set_content('sales/manage-order', $this->viewpage_settings);
         $this->generate_page();
     }

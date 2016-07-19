@@ -69,17 +69,18 @@
             <form method="GET">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" class="form-control" value="<?= $this->input->get('name')?>" name="name"/>
+                        <label>Code</label>
+                        <input type="text" class="form-control" value="<?= $this->input->get('code')?>" name="code"/>
                     </div>
                     <div class="form-group">
-                        <label>Area</label>
-                        <input type="text" class="form-control" value="<?= $this->input->get('area')?>" name="area"/>
+                        <label>Location</label>
+                        <?php $type_default = $this->input->get('location') ? $this->input->get('location') : 'all';?>
+                         <?= form_dropdown('location', ['' => ''] + array_column($locations, 'name', 'id'),  $type_default, 'class="form-control"')?>
                     </div>
                     <div class="form-group">
                         <label>Status</label>
-                        <?php $default = $this->input->get('status') ? $this->input->get('status') : 'a';?>
-                        <?= status_dropdown('status', $default, 'class="form-control"', TRUE)?>
+                        <?php $option_default = $this->input->get('option') ? $this->input->get('option') : '';?>
+                        <?=option_dropdown('option', $option_default, 'class="form-control option"')?>
                     </div>
                 </div>
                 <div class="modal-footer">
