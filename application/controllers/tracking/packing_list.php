@@ -56,7 +56,8 @@ class Packing_list extends PM_Controller_v2
         $this->add_javascript([
             'plugins/sticky-thead.js',
             'tracking-packing-list/listing.js',
-            'plugins/moment.min.js'
+            'plugins/moment.min.js',
+            'price-format.js'
         ]);
 
         $params = $this->_search_params();

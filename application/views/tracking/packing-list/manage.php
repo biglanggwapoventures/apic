@@ -107,15 +107,15 @@
                                             <input class="locationH" name="less[fk_location_id][]" value="<?= $defaults['less']['fk_location_id'][0] ?>" hidden></input>
                                         <?php endif; ?>
                                     </td>
-                                    <td >
-                                        <span class="rate center"> <?= $defaults['less']['rate'][0] ?></span>
+                                    <td class="text-right">
+                                        <span class="rate"><?= $defaults['less']['rate'][0] ?></span>
                                         <input class="rateH" name="less[rate][]" value="<?= $defaults['less']['rate'][0] ?>" hidden></input>
                                     </td>
                                     <td>
-                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control input-clear for-calculation pcs text-right', 'value' => (float)$defaults['less']['pcs'][0] ?: '')); ?>
+                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control input-clear pformat for-calculation pcs text-right', 'value' => $defaults['less']['pcs'][0] ?: '')); ?>
                                     </td>
-                                    <td>
-                                    <span class="amount center"></span>
+                                    <td class="text-right">
+                                    <span class="amount"></span>
                                     <input class="amountH" name="less[amount][]" value="<?= $defaults['less']['amount'][0] ?>" class="hidden" hidden></input>
 
                          
@@ -142,15 +142,15 @@
                                             
 
                                         </td>
-                                        <td>
-                                        <span class="rate center"> <?= $defaults['less']['rate'][$x] ?></span>
+                                        <td class="text-right">
+                                        <span class="rate right-align"> <?= $defaults['less']['rate'][$x] ?></span>
                                         <input class="rateH" name="less[rate][]" value="<?= $defaults['less']['rate'][$x] ?>" hidden></input>
                                         </td>
                                         <td>
-                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control input-clear for-calculation pcs text-right', 'value' => (float)$defaults['less']['pcs'][$x] ?: '')); ?>
+                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control input-clear pformat for-calculation pcs text-right', 'value' => $defaults['less']['pcs'][$x] ?: '')); ?>
                                         </td>
-                                        <td>
-                                            <span class="amount center"></span>
+                                        <td class="text-right">
+                                            <span class="amount right-align"></span>
                                             <input class="amountH" value="<?= $defaults['less']['amount'][$x] ?>" name="less[amount][]" class="hidden" hidden></input>
                                         </td>
                                         <td><button type='button' class='btn btn-danger btn-flat btn-sm remove-line'><i class='fa fa-times'></i></button></td>

@@ -19,7 +19,7 @@
 
             <div class="box-body no-padding">
                 <table class="table table-striped"> 
-                    <thead><tr class="info"><th>#</th><th>Trip Ticket ID</th><th>Customer</th><th>Date</th><th>Tariff Code</th><th>Status</th><th></th></tr></thead>
+                    <thead><tr class="info"><th>#</th><th>Trip Ticket #</th><th>Customer</th><th>Date</th><th>Tariff Code</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                         <?php foreach($items AS $row):?>   
                             <tr data-pk="<?= $row['id']?>">

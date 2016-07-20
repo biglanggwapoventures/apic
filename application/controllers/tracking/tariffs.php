@@ -152,9 +152,9 @@ public function delete($id)
         $errors = [];
 
         if($this->action('new')){
-            $this->form_validation->set_rules('code', 'tariff code', 'trim|required|alpha_numeric|is_unique[tracking_tariff.code]');
+            $this->form_validation->set_rules('code', 'tariff code', 'trim|required|is_unique[tracking_tariff.code]');
         }else{
-            $this->form_validation->set_rules('code', 'tariff code', 'trim|required|alpha_numeric|callback__validate_code_name');
+            $this->form_validation->set_rules('code', 'tariff code', 'trim|required|callback__validate_code_name');
         }
         $this->form_validation->set_rules('option', 'option name', 'required|numeric');
         $this->form_validation->set_rules('fk_location_id', 'location name', 'required');

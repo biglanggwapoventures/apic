@@ -5,6 +5,7 @@
 	        $(".datepicker").datepicker("setDate", new Date());
 	    }
 
+        $('.pformat').priceFormat({prefix:''})
 		var messageBox = $('.callout.callout-danger');
 
         $('form').submit(function(e){
@@ -128,7 +129,8 @@
             // template.find(".locationH").val(0);
             template.find(".amountH").val(0);
             template.find(".amount").text('');
-            template.find('.pcs').val('');
+            template.find('.pformat').priceFormat({prefix: ''});
+            // template.find('.pcs').val('');
             template.find('.text-clear').text('0.00');
             template.find(".rate").text("");
             $("tbody").append(template);
