@@ -131,6 +131,7 @@ class Locations extends PM_Controller_v2
     public function _format_data()
     {
         $input = elements(['name'], $this->input->post());
+        $input['last_updated_by'] = $this->session->userdata('user_id');
         return $input;
     }
 

@@ -20,14 +20,15 @@
 
     <div class="box-body no-padding">
                 <table class="table table-striped"> 
-                    <thead><tr class="info"><th>Tariff code</th><th>Option</th><th>Location </th><th></th></tr></thead>
+                    <thead><tr class="info"><th>Tariff code</th><th>Option</th><th>Location </th><th>Status</th><th></th></tr></thead>
                     <tbody>
                         <?php foreach($items AS $row):?>   
                             <tr data-pk="<?= $row['id']?>">
 
                                 <td><a href="<?= "{$url}/edit/{$row['id']}"?>"><?= $row['code']?></a></td>
                                 <td><?php if($row['option']==1) echo "Origin";else echo "Destination"; ?></td> 
-                                <td><?= $row['location_tariff']?></td>   
+                                <td><?= $row['location_tariff']?></td>  
+                                <td><?php if(!empty($row['approved_by'])) echo '<span class="label label-success">Approved</span>'; else echo '<span class="label label-success">Waiting</span>';?></td> 
                                 <td>
                                     <a class="btn btn-xs btn-flat btn-danger toDelete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>
                                 </td>
@@ -37,6 +38,10 @@
                             <tr><td colspan="5" class="text-center">No data to show.</td></tr>
                         <?php endif;?>
                     </tbody>
+
+
+
+                    
                 </table>
             </div> 
         </div>

@@ -52,9 +52,11 @@
                     </div>  
                 </div>
             </div>
-                <div class="checkbox">
+            <?php if (can_set_status()): ?>
+                 <div class="checkbox">
                     <label><input type="checkbox" name="approved_by"<?= ($data['approved_by'])?" checked":"";?>/> Mark this trip ticket as <b>approved</b></label>
                 </div>
+            <?php endif;?>
             <hr>
             <button class="btn btn-flat btn-success">Submit</button>
             <a class="btn btn-default btn-flat" id="go-back" href="<?= base_url('tracking/trip_tickets')?>" role="button">Go back</a>

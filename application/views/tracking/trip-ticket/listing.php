@@ -19,7 +19,7 @@
 
             <div class="box-body no-padding">
                 <table class="table table-striped"> 
-                    <thead><tr class="info"><th>#</th><th>Trip Date</th><th>Customer</th><th>Truck</th><th>Trucking Assistant</th><th>Trip Type</th><th>Status</th><th> </th></tr></thead>
+                    <thead><tr class="info"><th>#</th><th>Trip Date</th><th>Customer</th><th>Truck</th><th>Trucking Assistant</th><th>Trip Type</th><th>Status</th><th></th><th></th></tr></thead>
                     <tbody>
                         <?php foreach($items AS $row):?>   
                             <tr data-pk="<?= $row['id']?>">
@@ -40,6 +40,11 @@
                             <tr><td colspan="5" class="text-center">No data to show.</td></tr>
                         <?php endif;?>
                     </tbody>
+
+
+
+
+                    
                 </table>
             </div><!-- /.box-body -->  
         </div>

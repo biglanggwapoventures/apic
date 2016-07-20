@@ -81,7 +81,7 @@ class Tariffs extends PM_Controller_v2
             'title' => 'Create new tariff',
             'action' => base_url('tracking/tariffs/store'),
             'locations' => $this->m_locations->all(),
-            'data' => []
+            'data' => ['approved_by'=> NULL],
         ])->generate_page();
     }
 
@@ -90,12 +90,13 @@ class Tariffs extends PM_Controller_v2
         if(!$id || !$tariff = $this->m_tariffs->get($id)){
             show_404();
         }
+
         $this->add_javascript(['tracking-tariffs/manage.js','price-format.js', 'numeral.js']);
         $this->set_content('tracking/tariffs/manage', [
             'data' => $tariff,
             'title' => "Update tariff #{$tariff['id']}",
             'action' => base_url("tracking/tariffs/update/{$tariff['id']}"),
-            'locations' => $this->m_locations->all()
+            'locations' => $this->m_locations->all(),
         ])->generate_page();
     }
 
@@ -170,11 +171,8 @@ public function delete($id)
                     // echo "lol";
                     $errors[] = "Provide location for item in line # {$line}";
                 }
-                if(!isset($item['rate']) || !is_numeric($item['rate'])){
+                if(!isset($item['rate'])){
                     $errors[] = "Provide rate for item in line # {$line}";
-                }
-                if(!isset($item['kms']) || !is_numeric($item['kms'])){
-                    $errors[] = "Provide kms for item in line # {$line}";
                 }
             }
         } else{
@@ -193,12 +191,20 @@ public function delete($id)
                 $data['tariff']['fk_location_id'] = $fk_location_id;
 
 
+            if(can_set_status()){
+                $set = elements(['approved_by'], $this->input->post());
+                if(isset($set['approved_by']) && $set['approved_by']=='on' ){
+                    $data['tariff']['approved_by'] = $this->session->userdata('user_id');
+                } else {
+                    $data['tariff']['approved_by'] = NULL;
+                }
+            }
             if(!empty($input['less'])){
                 foreach($input['less'] AS $less){
                     $temp = [
                         'fk_location_id' => $less['fk_location_id'],
-                        'rate' => $less['rate'],
-                        'kms' => $less['kms']
+                        'rate' => abs($less['rate']),
+                        'kms' => abs($less['kms'])
                     ];
                     if(isset($less['id'])){
                         $temp['id'] = $less['id'];
@@ -206,7 +212,7 @@ public function delete($id)
                     $data['tariff_details'][] = $temp;
                 }
             }
-
+            $data['tariff']['last_updated_by'] = $this->session->userdata('user_id');
             return [
                     'status' => TRUE,
                     'data' => $data

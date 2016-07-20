@@ -8,7 +8,9 @@ class M_Tariffs extends CI_Model {
     function create($data)
     {
 
+
         $this->db->trans_start();
+
 
         $this->db->insert('tracking_tariff', $data['tariff']);
 
@@ -33,23 +35,37 @@ class M_Tariffs extends CI_Model {
 
         $this->db->update('tracking_tariff', $data['tariff'], ['id' => $id]);
 
-        foreach($data['tariff_details'] AS &$less){
-                $less['fk_tariff_id'] = $id;
+        $temp = ['new' => [], 'updated' => [], 'updated_ids' => []];
+
+        foreach($data['tariff_details'] AS &$row){
+            if(isset($row['id'])){
+                $temp['updated'][] = $row;
+                $temp['updated_ids'][] = $row['id'];
+            }else{
+                $row['fk_tariff_id'] = $id;
+                $temp['new'][] = $row;
             }
-
-        if(!empty($data['tariff_details'])){
-        $this->sync('tracking_tariff_details', $data['tariff_details'], 'id', 'fk_tariff_id', $id);
-            // $this->db->update_batch('tracking_tariff_details', $data['tariff_details'],'rate');
-
-        }else{
-            $this->db->update('tracking_tariff_details', ['deleted_at' => NULL], ['fk_tariff_id' => $id]);
         }
+
+        unset($data['tariff_details']);
+        if(empty($temp['updated_ids'])){
+            $this->db->delete('tracking_tariff_details', ['fk_tariff_id' => $id]);
+        }else{
+            $this->db->where('fk_tariff_id', $id)->where_not_in('id', $temp['updated_ids'])->delete('tracking_tariff_details');
+            $this->db->update_batch('tracking_tariff_details', $temp['updated'], 'id');
+        }
+
+        if(!empty($temp['new'])){
+            $this->db->insert_batch('tracking_tariff_details', $temp['new']);
+        }
+
 
         $this->db->trans_complete();
 
         return $this->db->trans_status() ? $id : FALSE;
 
     }
+
 function sync($table, $value_array, $table_pk_column_name, $table_fk_column_name, $table_fk_column_value)
     {
         $temp = ['new' => [], 'updated' => [], 'updated_ids' => []];
@@ -67,22 +83,24 @@ function sync($table, $value_array, $table_pk_column_name, $table_fk_column_name
         unset($value_array);
 
         if(empty($temp['updated_ids'])){
-            $this->db->where([
-                $table_fk_column_name => $table_fk_column_value
-            ]);
-            $this->db->delete($table);
-            // $this->db->delete($table, ['deleted_at' => NULL], [
+            $this->db->delete($table, [$table_fk_column_name => $table_fk_column_value]);
+            // $this->db->update($table, ['deleted_at' => NULL], [
             //     $table_fk_column_name => $table_fk_column_value,
             //     'deleted_at' => 0
             // ]);
         }else{
-            $this->db->where([
-                    $table_fk_column_name => $table_fk_column_value
-                ])
-                ->where_not_in($table_pk_column_name, $temp['updated_ids'])
-                ->delete($table);
-
+             $this->db->where([$table_fk_column_name => $table_fk_column_value])->where_not_in($table_pk_column_name, $temp['updated_ids'])->delete($table);
             $this->db->update_batch($table, $temp['updated'], $table_pk_column_name);
+
+            // $this->db->where([
+            //         $table_fk_column_name => $table_fk_column_value,
+            //         'deleted_at' => 0
+            //     ])
+            //     ->where_not_in($table_pk_column_name, $temp['updated_ids'])
+            //     ->set('deleted_at', NULL)
+            //     ->update($table);
+
+            // $this->db->update_batch($table, $temp['updated'], $table_pk_column_name);
         }
 
         if(!empty($temp['new'])){
@@ -133,7 +151,7 @@ function sync($table, $value_array, $table_pk_column_name, $table_fk_column_name
         $this->db->from('tracking_tariff AS tt');
         $this->db->join('tracking_location AS tl', 'tl.id = tt.fk_location_id');
         $data['tariff'] = $this->db->get()->row_array();
-        $data['less'] = $this->db->get_where('tracking_tariff_details', ['fk_tariff_id' => $id])->result_array();
+        $data['less'] = $this->db->get_where('tracking_tariff_details', ['fk_tariff_id' => $id, 'deleted_at' => 0])->result_array();
 
         return $data;
     }

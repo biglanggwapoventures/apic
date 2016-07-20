@@ -46,7 +46,7 @@
                                     <tr>
                                         <td>
                                         <?php if(isset($item['id'])):?>
-                                            <?= form_hidden("less[{$index}]['id']", $item['id'])?>
+                                            <?= form_hidden("less[{$index}][id]", $item['id'])?>
                                             <?php endif;?>
                                             <input type="hidden" value="" name="" data-name="" />
                                             <?= form_dropdown("less[{$index}][fk_location_id]", ['' => ''] + array_column($locations, 'name', 'id'), put_value($item, 'fk_location_id', ''), 'class=" form-control" data-name="less[idx][fk_location_id]"')?>
@@ -69,7 +69,11 @@
                         </table>
                     </div>   
                 </fieldset>
-
+            <?php if (can_set_status()): ?>
+                 <div class="checkbox">
+                    <label><input type="checkbox" name="approved_by"<?= ($data['approved_by'])?" checked":"";?>/> Mark this tariff as <b>approved</b></label>
+                </div>
+            <?php endif;?>
                 <div class="box-body">
                     <button id="send" class="btn btn-flat btn-success <?= can_update($data) ? '' : 'disabled'?>">Submit</button>
                     <a class="btn btn-flat btn-warning" id="cancel" href="<?= $url?>">Cancel</a>

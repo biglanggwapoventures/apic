@@ -52,8 +52,6 @@ var idx = $('#less tbody tr').length;
             return $(this).data('name').replace('idx', idx);
         });
         clone.find('.pformat').priceFormat({prefix: ''});
-        // clone.find('.rate').val('');
-        // clone.find('.kms').val('');
         idx++;
 
         clone.appendTo('#less tbody');

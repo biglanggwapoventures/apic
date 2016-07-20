@@ -198,12 +198,14 @@ class Trip_tickets extends PM_Controller_v2
             if(isset($input['trip_type']) && $trip_type = trim($input['trip_type']))
                 $data['trip_type'] = $trip_type;
 
-            if(isset($input['approved_by'])){
-                $data['approved_by'] = $this->session->userdata('user_id');
-            } else {
-                $data['approved_by'] = NULL;
+            if(can_set_status()){
+                if(isset($input['approved_by']) && $input['approved_by']=='on'){
+                    $data['approved_by'] = $this->session->userdata('user_id');
+                } else {
+                    $data['approved_by'] = NULL;
+                }
             }
-
+            $data['last_updated_by'] = $this->session->userdata('user_id');
             return [
                     'status' => TRUE,
                     'data' => $data,

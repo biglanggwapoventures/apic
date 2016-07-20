@@ -35,9 +35,13 @@
                             </tr>
                         <?php endforeach;?>
                         <?php if(empty($items)):?>
-                            <tr><td colspan="5" class="text-center">No data to show.</td></tr>
+                            <tr><td colspan="7" class="text-center">No data to show.</td></tr>
                         <?php endif;?>
                     </tbody>
+
+
+
+
                 </table>
             </div><!-- /.box-body -->  
         </div>
@@ -72,11 +76,6 @@
                     <div class="form-group">
                         <label>Customer</label>
                         <?= generate_customer_dropdown('fk_sales_customer_id', FALSE,  'class="form-control"')?>
-                    </div>
-                    <div class="form-group">
-                        <label>Trip Type</label>
-                        <?php $default = $this->input->get('trip_type') ? $this->input->get('trip_type') : 1;?>
-                        <?=trip_dropdown('trip_type', put_value($default, 'trip_type', ''), 'class="form-control option"')?>
                     </div>
                 </div>
                 <div class="modal-footer">

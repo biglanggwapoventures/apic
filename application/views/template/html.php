@@ -174,13 +174,13 @@
                         <?php if ($is_admin || (int) $mod_access['tracking'] === 1): ?>
                             <li class="treeview <?= $data_nav === NAV_TRACKING ? 'active' : '' ?>">
                                 <a href="#">
-                                    <i class="fa fa-gears"></i> <span>Trucking</span>
+                                    <i class="fa fa-car"></i> <span>Trucking</span>
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
                                 <ul class="treeview-menu">
                                     <li><a href='<?= $base_url . 'tracking/locations' ?>' ><i class="fa fa-angle-double-right"></i> Locations</a></li>
-                                    <li><a href='<?= $base_url . 'tracking/trip_tickets' ?>' ><i class="fa fa-angle-double-right"></i> Trip Tickets</a></li>
                                     <li><a href='<?= $base_url . 'tracking/tariffs' ?>' ><i class="fa fa-angle-double-right"></i> Tariffs</a></li>
+                                    <li><a href='<?= $base_url . 'tracking/trip_tickets' ?>' ><i class="fa fa-angle-double-right"></i> Trip Tickets</a></li>
                                     <li><a href='<?= $base_url . 'tracking/packing_list' ?>' ><i class="fa fa-angle-double-right"></i> Trip Ticket PL</a></li>
                                 </ul>
                             </li>

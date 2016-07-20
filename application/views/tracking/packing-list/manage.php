@@ -85,7 +85,7 @@
                     <div class="col-md-12 table-responsive">
                         <table class="table table-bordered table-condensed table-hover" style="border-bottom: none;border-left: none;border-right: none;">
                             <thead>
-                                <tr class="info">
+                                <tr class="bg-navy">
                                     <th width="19%">Location</th>
                                     <th>Rate</th>
                                     <th>Heads/pieces</th>
@@ -101,50 +101,57 @@
                                         <?php if(isset($defaults['less']['id'][0])): ?>
                                             <input type="hidden" name="less[id][]" class="detail-id" value="<?= $defaults['less']['id'][0] ?>"/>
                                         <?php endif; ?>
-                                        <?php if(isset($less)): ?>
-                                             <?php if(in_array($defaults['less']['fk_tariff_details_id'][0], $ids)):?>
-                                                <?= generate_tariff_dropdown('less[fk_tariff_details_id][]', $less, 'detail_id', 'location', $defaults['less']['fk_tariff_details_id'][0], FALSE, 'class="form-control tariff_details_list select-clear"') ?>
-                                             <?php else:?>
-                                                <?= form_hidden('less[fk_tariff_details_id][]', $defaults['less']['fk_tariff_details_id'][0]); ?>
-                                                <p class="form-control-static"><?= "{$defaults['less']['location'][0]}"?><span class="text-danger"> ** INACTIVE **</span></p>
-                                            <?php endif;?>
+
+                                        <?php if (isset($less)):?>
+                                            <span class="location"><p class="form-control-static center"><?= $defaults['less']['location'][0] ?></p></span>
+                                            <input class="locationH" name="less[fk_location_id][]" value="<?= $defaults['less']['fk_location_id'][0] ?>" hidden></input>
                                         <?php endif; ?>
                                     </td>
                                     <td >
-                                        <span class="rate"> <?= $defaults['less']['rate'][0] ?></span>
+                                        <span class="rate center"> <?= $defaults['less']['rate'][0] ?></span>
+                                        <input class="rateH" name="less[rate][]" value="<?= $defaults['less']['rate'][0] ?>" hidden></input>
                                     </td>
                                     <td>
-                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control  pformat input-clear for-calculation pcs text-right', 'value' => number_format($defaults['less']['pcs'][0], 2))); ?>
+                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control input-clear for-calculation pcs text-right', 'value' => (float)$defaults['less']['pcs'][0] ?: '')); ?>
                                     </td>
                                     <td>
-                                       <?= form_input(array('name' => 'less[amount][]', 'class' => 'form-control pformat input-clear for-calculation amount text-right', 'value' => number_format($defaults['less']['amount'][0], 2))); ?>
+                                    <span class="amount center"></span>
+                                    <input class="amountH" name="less[amount][]" value="<?= $defaults['less']['amount'][0] ?>" class="hidden" hidden></input>
+
+                         
                                     </td>
                                     <td><button type='button' class='btn btn-danger btn-sm btn-flat remove-line'><i class='fa fa-times'></i></button></td>
                                 </tr>
                                  
-                                <?php for ($x = 1; $x < count($defaults['less']['fk_tariff_details_id']); $x++): ?>
+                                <?php for ($x = 1; $x < count($defaults['less']['fk_location_id']); $x++): ?>
                                     <tr>
                                         <td>
                                             <?php if(isset($defaults['less']['id'][$x])): ?>
                                                 <?= form_hidden('less[id][]', $defaults['less']['id'][$x]); ?>
                                             <?php endif; ?>
-                                            <?php if(in_array($defaults['less']['fk_tariff_details_id'][$x], $ids)):?>
-                                                <?= generate_tariff_dropdown('less[fk_tariff_details_id][]', $less, 'detail_id', 'location', $defaults['less']['fk_tariff_details_id'][$x], FALSE, 'class="form-control tariff_details_list select-clear"') ?>
+
+                                            <span class="location"><p class="form-control-static"><?= $defaults['less']['location'][$x] ?><p></span>
+                                            <input class="locationH" name="less[fk_location_id][]" value="<?= $defaults['less']['fk_location_id'][$x] ?>" hidden></input>
+
+                                            <!-- <?php if(in_array($defaults['less']['fk_location_id'][$x], $ids)):?>
+                                                <?= generate_tariff_dropdown('less[fk_location_id][]', $less, 'detail_id', 'location', $defaults['less']['fk_tariff_details_id'][$x], FALSE, 'class="form-control tariff_details_list select-clear"') ?>
                                             <?php else:?>
-                                                <?= form_hidden('details[fk_tariff_details_id][]', $defaults['less']['fk_tariff_details_id'][$x]); ?>
-                                                <p class="form-control-static"><?= "{$defaults['less']['location'][$x]}"?><span class="text-danger"> ** INACTIVE **</span></p>
-                                            <?php endif;?>
+                                                <?= form_hidden('details[fk_location_id][]', $defaults['less']['fk_tariff_details_id'][$x]); ?>
+                                                <p class="form-control-static"><?= "{$defaults['less']['location'][$x]}"?><span class="text-danger"> ** Pending Approval **</span></p>
+                                            <?php endif;?> -->
                                             
 
                                         </td>
                                         <td>
-                                            <?= $defaults['less']['rate'][$x] ?>
+                                        <span class="rate center"> <?= $defaults['less']['rate'][$x] ?></span>
+                                        <input class="rateH" name="less[rate][]" value="<?= $defaults['less']['rate'][$x] ?>" hidden></input>
                                         </td>
                                         <td>
-                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control  pcs text-right has-amount for-calculation input-clear pformat', 'value' => number_format($defaults['less']['pcs'][$x], 2))); ?>
+                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control input-clear for-calculation pcs text-right', 'value' => (float)$defaults['less']['pcs'][$x] ?: '')); ?>
                                         </td>
                                         <td>
-                                            <?= form_input(array('name' => 'less[amount][]', 'class' => 'form-control  amount text-right has-amount for-calculation input-clear pformat', 'value' => number_format($defaults['less']['amount'][$x], 2))); ?>
+                                            <span class="amount center"></span>
+                                            <input class="amountH" value="<?= $defaults['less']['amount'][$x] ?>" name="less[amount][]" class="hidden" hidden></input>
                                         </td>
                                         <td><button type='button' class='btn btn-danger btn-flat btn-sm remove-line'><i class='fa fa-times'></i></button></td>
                                     </tr>
@@ -156,9 +163,11 @@
                         </table>
                     </div>
                 </div>
-                <div class="checkbox">
+            <?php if (can_set_status()): ?>
+                 <div class="checkbox">
                     <label><input type="checkbox" name="approved_by"<?= ($defaults['approved_by'])?" checked":"";?>/> Mark this packing list as <b>approved</b></label>
                 </div>
+            <?php endif;?>
             </div>
             <div class="box-footer clearfix">
                 <button type="submit" class="btn btn-success btn-flat">Submit</button>
