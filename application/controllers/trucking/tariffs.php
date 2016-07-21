@@ -8,11 +8,11 @@ class Tariffs extends PM_Controller_v2
     function __construct()
     {
         parent::__construct();
-        if(!has_access('tracking')) show_error('Authorization error', 401);
-        $this->set_content_title('Tracking');
+        if(!has_access('trucking')) show_error('Authorization error', 401);
+        $this->set_content_title('Trucking');
         $this->set_content_subtitle('Tariffs');
-        $this->set_active_nav(NAV_TRACKING);
-        $this->load->model(array('tracking/m_tariffs', 'tracking/m_locations'));
+        $this->set_active_nav(NAV_TRUCKING);
+        $this->load->model(array('trucking/m_tariffs', 'trucking/m_locations'));
     }
   
     function _search_params()
@@ -42,14 +42,14 @@ class Tariffs extends PM_Controller_v2
 
         $this->add_javascript([
             'plugins/sticky-thead.js',
-            'tracking-tariffs/listing.js',
+            'trucking-tariffs/listing.js',
             'plugins/moment.min.js'
         ]);
 
         $params = $this->_search_params();
         $data = $this->m_tariffs->all($params['search'], $params['wildcards']);
 
-        $this->set_content('tracking/tariffs/listing', [
+        $this->set_content('trucking/tariffs/listing', [
             'items' => $data,
             'locations' => $this->m_locations->all()
         ])->generate_page();
@@ -76,10 +76,10 @@ class Tariffs extends PM_Controller_v2
 
     public function create() 
     {
-        $this->add_javascript(['tracking-tariffs/manage.js','price-format.js', 'numeral.js']);
-        $this->set_content('tracking/tariffs/manage', [
+        $this->add_javascript(['trucking-tariffs/manage.js','price-format.js', 'numeral.js']);
+        $this->set_content('trucking/tariffs/manage', [
             'title' => 'Create new tariff',
-            'action' => base_url('tracking/tariffs/store'),
+            'action' => base_url('trucking/tariffs/store'),
             'locations' => $this->m_locations->all(),
             'data' => ['approved_by'=> NULL],
         ])->generate_page();
@@ -91,11 +91,11 @@ class Tariffs extends PM_Controller_v2
             show_404();
         }
 
-        $this->add_javascript(['tracking-tariffs/manage.js','price-format.js', 'numeral.js']);
-        $this->set_content('tracking/tariffs/manage', [
+        $this->add_javascript(['trucking-tariffs/manage.js','price-format.js', 'numeral.js']);
+        $this->set_content('trucking/tariffs/manage', [
             'data' => $tariff,
             'title' => "Update tariff #{$tariff['id']}",
-            'action' => base_url("tracking/tariffs/update/{$tariff['id']}"),
+            'action' => base_url("trucking/tariffs/update/{$tariff['id']}"),
             'locations' => $this->m_locations->all(),
         ])->generate_page();
     }

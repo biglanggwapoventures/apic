@@ -6,11 +6,11 @@ class Locations extends PM_Controller_v2
 	public function __construct()
 	{
 		parent::__construct();
-        if(!has_access('tracking')) show_error('Authorization error', 401);
-        $this->set_active_nav(NAV_TRACKING);
-        $this->set_content_title('Tracking');
+        if(!has_access('trucking')) show_error('Authorization error', 401);
+        $this->set_active_nav(NAV_TRUCKING);
+        $this->set_content_title('Trucking');
         $this->set_content_subtitle('Locations');
-        $this->load->model('tracking/m_locations', 'location');
+        $this->load->model('trucking/m_locations', 'location');
 	}
 
     public function _search_params()
@@ -30,21 +30,21 @@ class Locations extends PM_Controller_v2
 
 	public function index() 
 	{
-        $this->add_javascript(['tracking-locations/listing.js', 'plugins/sticky-thead.js']);
+        $this->add_javascript(['trucking-locations/listing.js', 'plugins/sticky-thead.js']);
 
         $params = $this->_search_params();
 
-        $this->set_content('tracking/locations/listing', [
+        $this->set_content('trucking/locations/listing', [
             'items' => $this->location->all(null,$params['wildcards'])
         ])->generate_page();
     }
 
     public function create() 
     {
-        $this->add_javascript('tracking-locations/manage.js');
-        $this->set_content('tracking/locations/manage', [
+        $this->add_javascript('trucking-locations/manage.js');
+        $this->set_content('trucking/locations/manage', [
             'title' => 'Create new location',
-            'action' => base_url('tracking/locations/store'),
+            'action' => base_url('trucking/locations/store'),
             'data' => []
         ])->generate_page();
     }
@@ -54,10 +54,10 @@ class Locations extends PM_Controller_v2
         if(!$id || !$location = $this->location->get($id)){
             show_404();
         }
-        $this->add_javascript('tracking-locations/manage.js');
-        $this->set_content('tracking/locations/manage', [
+        $this->add_javascript('trucking-locations/manage.js');
+        $this->set_content('trucking/locations/manage', [
             'title' => "Update location name: {$location['name']}",
-            'action' => base_url("tracking/locations/update/{$id}"),
+            'action' => base_url("trucking/locations/update/{$id}"),
             'data' => $location
         ])->generate_page();
     }

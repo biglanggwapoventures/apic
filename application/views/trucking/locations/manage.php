@@ -1,4 +1,4 @@
-<?php $url = base_url('tracking/locations'); ?>
+<?php $url = base_url('trucking/locations'); ?>
 <div class="row">
     <div class="col-md-6">
         <div class="box box-solid">

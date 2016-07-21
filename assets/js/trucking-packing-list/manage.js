@@ -72,12 +72,12 @@
         });
     }
 
-    $("table").on('change', 'select.tariff_details_list', function () {
-        var $this = $(this);
-        $this.closest("tr").find(".rate").text($this.find("option:selected").data('rate'));
-        $this.closest("tr").find(".rateH").val($this.find("option:selected").data('rate'));
-        doCalculation();
-    });
+    // $("table").on('change', 'select.tariff_details_list', function () {
+    //     var $this = $(this);
+    //     $this.closest("tr").find(".rate").text($this.find("option:selected").data('rate'));
+    //     $this.closest("tr").find(".rateH").val($this.find("option:selected").data('rate'));
+    //     doCalculation();
+    // });
 
     function doCalculation() {
         $("tbody tr").each(function () {
@@ -97,6 +97,10 @@
         doCalculation();
     });
     $("table").on('blur', '.for-calculation', function () {
+        $("tbody tr").each(function(){
+            $this = $(this);
+            $this.closest("tr").find('.pformat').priceFormat({prefix: ''});
+        });
         doCalculation();
     });
     $("table").on('change', '.for-calculation', function () {
@@ -114,44 +118,45 @@
         doCalculation();
     });
     $(".add-line").click(function () {
+        newLine();
+    });
+
+    function newLine(){
         var template = $("tr#template").clone().removeAttr("id");
         var tariffId = $('#tariff').val();
         $.get($("input[name=data-tariff-detail-url]").val(), {id: tariffId}).done(function (response) {
-            
-            // $('tr#template td:first').find('select').remove();
             template.find('select').remove();
             template.find('.locationH').remove()
             template.find('td:first span').remove();
             template.find('td:first').prepend(response.details);
             template.find(".detail-id").remove();
-            template.find('.select-clear,.input-clear').val('');
             template.find(".rateH").val(0);
-            // template.find(".locationH").val(0);
             template.find(".amountH").val(0);
             template.find(".amount").text('');
-            template.find('.pformat').priceFormat({prefix: ''});
-            // template.find('.pcs').val('');
+            template.find('.pcs').val('');
             template.find('.text-clear').text('0.00');
+            template.find('.pformat').priceFormat({prefix: ''});
             template.find(".rate").text("");
             $("tbody").append(template);
         }).fail(function (jqxhr, textStatus, error) {
             alert('fail');
         });
 
-
-        // resetLine(template);
-        // $("tbody").append(template);
-
-    });
+        $("tbody tr").each(function(){
+            $this = $(this);
+            $this.closest("tr").find('.pformat').priceFormat({prefix: ''});
+        });
+    }
 
     function resetLine(line) {
         line.find(".detail-id").remove();
         line.find('.select-clear,.input-clear').val('');
         line.find(".amountH").val(0);
         line.find(".amount").text('');
-        line.find('.pcs').val('');
+        line.find('.pformat').priceFormat({prefix: ''});
         line.find('.text-clear').text('0.00');
         line.find(".rate").text("");
+        line.find(".rateH").val(0);
     }
 
     $(document).load(function () {

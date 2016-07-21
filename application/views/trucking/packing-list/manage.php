@@ -1,4 +1,4 @@
-<?php $url = base_url('tracking/packing_list'); ?>
+<?php $url = base_url('trucking/packing_list'); ?>
 <style type="text/css">
     .text-white-important{
         color:#FFFFFF!important;
@@ -38,7 +38,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="customer-name">Customer</label>
-                            <input type="hidden" name="data-trip-ticket-url" disabled="disabled" value="<?= base_url('tracking/packing_list/get_trip_ticket') ?>"/>
+                            <input type="hidden" name="data-trip-ticket-url" disabled="disabled" value="<?= base_url('trucking/packing_list/get_trip_ticket') ?>"/>
                             <?= form_dropdown('fk_sales_customer_id', $customers, $defaults['fk_sales_customer_id'], 'class="form-control" id="customer-name"') ?>
                         </div> 
                     </div>
@@ -61,7 +61,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="tariff">Tariff</label>
-                            <input type="hidden" name="data-tariff-detail-url" disabled="disabled" value="<?= base_url('tracking/packing_list/get_tariff_details') ?>"/>
+                            <input type="hidden" name="data-tariff-detail-url" disabled="disabled" value="<?= base_url('trucking/packing_list/get_tariff_details') ?>"/>
                             <?= form_dropdown('fk_tariff_id', $tariffs, $defaults['fk_tariff_id'], 'class="form-control" id="tariff"');?>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
 
                                 <?php $ids = isset($less) ? array_column(json_decode(json_encode($less), TRUE), 'detail_id') : [];?>
                                 <tr id="template">
-                                    <td>
+                                    <td class="text-center">
                                         <?php if(isset($defaults['less']['id'][0])): ?>
                                             <input type="hidden" name="less[id][]" class="detail-id" value="<?= $defaults['less']['id'][0] ?>"/>
                                         <?php endif; ?>
@@ -112,7 +112,7 @@
                                         <input class="rateH" name="less[rate][]" value="<?= $defaults['less']['rate'][0] ?>" hidden></input>
                                     </td>
                                     <td>
-                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control input-clear pformat for-calculation pcs text-right', 'value' => $defaults['less']['pcs'][0] ?: '')); ?>
+                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control pformat for-calculation pcs text-right', 'value' => $defaults['less']['pcs'][0] ?: 0)); ?>
                                     </td>
                                     <td class="text-right">
                                     <span class="amount"></span>
@@ -125,7 +125,7 @@
                                  
                                 <?php for ($x = 1; $x < count($defaults['less']['fk_location_id']); $x++): ?>
                                     <tr>
-                                        <td>
+                                        <td class="text-center">
                                             <?php if(isset($defaults['less']['id'][$x])): ?>
                                                 <?= form_hidden('less[id][]', $defaults['less']['id'][$x]); ?>
                                             <?php endif; ?>
@@ -143,14 +143,14 @@
 
                                         </td>
                                         <td class="text-right">
-                                        <span class="rate right-align"> <?= $defaults['less']['rate'][$x] ?></span>
+                                        <span class="rate"> <?= $defaults['less']['rate'][$x] ?></span>
                                         <input class="rateH" name="less[rate][]" value="<?= $defaults['less']['rate'][$x] ?>" hidden></input>
                                         </td>
                                         <td>
-                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control input-clear pformat for-calculation pcs text-right', 'value' => $defaults['less']['pcs'][$x] ?: '')); ?>
+                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control pformat for-calculation pcs text-right', 'value' => $defaults['less']['pcs'][$x] ?: '')); ?>
                                         </td>
                                         <td class="text-right">
-                                            <span class="amount right-align"></span>
+                                            <span class="amount"></span>
                                             <input class="amountH" value="<?= $defaults['less']['amount'][$x] ?>" name="less[amount][]" class="hidden" hidden></input>
                                         </td>
                                         <td><button type='button' class='btn btn-danger btn-flat btn-sm remove-line'><i class='fa fa-times'></i></button></td>
@@ -171,7 +171,7 @@
             </div>
             <div class="box-footer clearfix">
                 <button type="submit" class="btn btn-success btn-flat">Submit</button>
-                <a class="btn btn-default btn-flat" href="<?= base_url('tracking/packing_list')?>" id="cancel">Go back</a>
+                <a class="btn btn-default btn-flat" href="<?= base_url('trucking/packing_list')?>" id="cancel">Go back</a>
             </div>
             <?= form_close() ?>
         </div>

@@ -1,4 +1,4 @@
-<?php $url = base_url('tracking/tariffs'); ?>
+<?php $url = base_url('trucking/tariffs'); ?>
 <div class="row" id="form">
     <div class="col-md-12">
         <div class="box box-solid">

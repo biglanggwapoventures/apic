@@ -10,11 +10,11 @@ class Packing_list extends PM_Controller_v2
     function __construct()
     {
         parent::__construct();
-        if(!has_access('tracking')) show_error('Authorization error', 401);
-        $this->set_content_title('Tracking');
+        if(!has_access('trucking')) show_error('Authorization error', 401);
+        $this->set_content_title('Trucking');
         $this->set_content_subtitle('Packing list');
-        $this->set_active_nav(NAV_TRACKING);
-        $this->load->model(array('tracking/m_packing_list', 'tracking/m_tariffs','sales/m_customer'));
+        $this->set_active_nav(NAV_TRUCKING);
+        $this->load->model(array('trucking/m_packing_list', 'trucking/m_tariffs','sales/m_customer'));
 
         $this->viewpage_settings['defaults'] = array(
             'fk_sales_customer_id' => '',
@@ -41,7 +41,6 @@ class Packing_list extends PM_Controller_v2
         $wildcards = [];
 
         $params = elements(['fk_sales_customer_id'], $this->input->get(), FALSE);
-
         if($params['fk_sales_customer_id'] && is_numeric($params['fk_sales_customer_id'])){
             $search['pl.fk_sales_customer_id'] = $params['fk_sales_customer_id'];
         }
@@ -55,14 +54,14 @@ class Packing_list extends PM_Controller_v2
         $this->load->helper('customer');
         $this->add_javascript([
             'plugins/sticky-thead.js',
-            'tracking-packing-list/listing.js',
+            'trucking-packing-list/listing.js',
             'plugins/moment.min.js',
             'price-format.js'
         ]);
 
         $params = $this->_search_params();
         $this->viewpage_settings['items'] = $this->m_packing_list->all($params['search']);
-        $this->set_content('tracking/packing-list/listing', 
+        $this->set_content('trucking/packing-list/listing', 
             $this->viewpage_settings
         )->generate_page();
     }
@@ -74,17 +73,18 @@ class Packing_list extends PM_Controller_v2
         $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_customer->all(['status' => 'a']), 'company_name', 'id');
         $this->viewpage_settings['tariffs'] = ['' => ''] + array_column($this->m_tariffs->all(['p.approved_by !=' => 'NULL']), 'code', 'id');
         $this->viewpage_settings['form_title'] = 'Add new packing list';
-        $this->viewpage_settings['form_action'] = base_url('tracking/packing_list/store');
+        $this->viewpage_settings['form_action'] = base_url('trucking/packing_list/store');
 
+        $this->add_css('jQueryUI/jquery-ui-1.10.3.custom.min.css');
         $this->add_javascript([
             'plugins/moment.min.js',
             'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
             'jquery-ui.min.js', 
             'numeral.js',
-            'tracking-packing-list/manage.js',
+            'trucking-packing-list/manage.js',
             'price-format.js'
         ]);
-        $this->set_content('tracking/packing-list/manage',
+        $this->set_content('trucking/packing-list/manage',
              $this->viewpage_settings
         )->generate_page();
     }
@@ -121,7 +121,7 @@ class Packing_list extends PM_Controller_v2
             'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
             'jquery-ui.min.js', 
             'numeral.js',
-            'tracking-packing-list/manage.js',
+            'trucking-packing-list/manage.js',
             'price-format.js'
         ]);
 
@@ -131,7 +131,7 @@ class Packing_list extends PM_Controller_v2
 
         $this->viewpage_settings['less'] = $this->m_packing_list->get_tariff_detail($data[0]['fk_tariff_id']);
 
-        $this->viewpage_settings['form_action'] = base_url("tracking/packing_list/update/{$packing_id}");
+        $this->viewpage_settings['form_action'] = base_url("trucking/packing_list/update/{$packing_id}");
         $this->viewpage_settings['form_title'] = "Update packing list".$packing_id;
         $this->viewpage_settings['tariffs'] = ['' => ''] + array_column($this->m_tariffs->all(), 'code', 'id');
         $ticket = $this->viewpage_settings['trip_ticket'] = ['' => ''] + array_column($this->m_packing_list->get_trip_ticket($data[0]['fk_sales_customer_id']), 'id', 'id');
@@ -167,7 +167,7 @@ class Packing_list extends PM_Controller_v2
             $this->setTabTitle("Paking List # {$packing_id}");
             $this->viewpage_settings['defaults'] = $data[0];
         }
-        $this->set_content('tracking/packing-list/manage', $this->viewpage_settings);
+        $this->set_content('trucking/packing-list/manage', $this->viewpage_settings);
         $this->generate_page();
     }
 
@@ -238,6 +238,16 @@ public function delete($id)
     public function get_tariff_details()
     {
         $this->load->helper('tariff');
+        $this->add_css('jQueryUI/jquery-ui-1.10.3.custom.min.css');
+        $this->add_javascript([
+            'plugins/moment.min.js',
+            'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
+            'jquery-ui.min.js', 
+            'numeral.js',
+            'trucking-packing-list/manage.js',
+            'price-format.js'
+        ]);
+        
         $items = $this->m_packing_list->getDetails($this->input->get('id'));
         $this->generate_response([
             'options' => $items['tariff']['option'],

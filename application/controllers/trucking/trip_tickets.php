@@ -13,13 +13,13 @@ class Trip_tickets extends PM_Controller_v2
     function __construct()
     {
         parent::__construct();
-        if(!has_access('tracking')) show_error('Authorization error', 401);
-        $this->set_content_title('Tracking');
+        if(!has_access('trucking')) show_error('Authorization error', 401);
+        $this->set_content_title('Trucking');
         $this->set_content_subtitle('Trip Tickets');
-        $this->set_active_nav(NAV_TRACKING);
+        $this->set_active_nav(NAV_TRUCKING);
 
 
-        $this->load->model('tracking/m_trip_tickets','trip_ticket');
+        $this->load->model('trucking/m_trip_tickets','trip_ticket');
         $this->load->model('sales/m_trucking', 'trucking');
         $this->load->model('sales/trucking_assistant_model', 'assistant');
         $this->load->model('sales/m_customer', 'customer');
@@ -47,14 +47,14 @@ class Trip_tickets extends PM_Controller_v2
         $this->load->helper('customer');
         $this->add_javascript([
             'plugins/sticky-thead.js',
-            'tracking-trip-tickets/listing.js',
+            'trucking-trip-tickets/listing.js',
             'plugins/moment.min.js'
         ]);
 
         $params = $this->_search_params();
         $data = $this->trip_ticket->all($params['search'], $params['wildcards']);
 
-        $this->set_content('tracking/trip-ticket/listing', [
+        $this->set_content('trucking/trip-ticket/listing', [
             'items' => $data
         ])->generate_page();
     }
@@ -70,11 +70,11 @@ class Trip_tickets extends PM_Controller_v2
             'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
             'jquery-ui.min.js', 
             'numeral.js',
-            'tracking-trip-tickets/manage.js'
+            'trucking-trip-tickets/manage.js'
         ]);
-        $this->set_content('tracking/trip-ticket/manage', [
+        $this->set_content('trucking/trip-ticket/manage', [
             'section_title' => 'Create new trip ticket', 
-            'form_action' => base_url('tracking/trip_tickets/store'),
+            'form_action' => base_url('trucking/trip_tickets/store'),
             'truckings' => dropdown_format($truckings, 'id', ['trucking_name', 'plate_number'], ' ', '(', ')'),
             'trucking_assistants' => ['' => ''] + array_column($trucking_assistants, 'name', 'id'),
             'data' => ['approved_by'=> NULL]
@@ -106,11 +106,11 @@ class Trip_tickets extends PM_Controller_v2
             'plugins/bootstrap-datetimepicker/bs-datetimepicker.min.js',
             'jquery-ui.min.js',
             'numeral.js',
-            'tracking-trip-tickets/manage.js'
+            'trucking-trip-tickets/manage.js'
         ]);
-        $this->set_content('tracking/trip-ticket/manage', [
+        $this->set_content('trucking/trip-ticket/manage', [
             'section_title' => "Update trip-ticket for # {$id}", 
-            'form_action' => base_url("tracking/trip_tickets/update/{$id}"),
+            'form_action' => base_url("trucking/trip_tickets/update/{$id}"),
             'truckings' => dropdown_format($truckings, 'id', ['trucking_name', 'plate_number'], ' ', '(', ')'),
             'trucking_assistants' => ['' => ''] + array_column($trucking_assistants, 'name', 'id'),
             'data' => $trip_ticket

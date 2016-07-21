@@ -73,7 +73,7 @@ define('NAV_ACCOUNTING', 028);
 define('NAV_WAREHOUSING', 030);
 define('NAV_MAINTAINABLE', 031);
 define('NAV_SPECIAL_REPORTS', 032);
-define('NAV_TRACKING', 033);
+define('NAV_TRUCKING', 033);
 
 define('SUPERUSER', 'su');
 define('STANDARD', 's');

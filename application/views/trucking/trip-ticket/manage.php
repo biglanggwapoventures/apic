@@ -1,4 +1,4 @@
-<?php $url = base_url('tracking/trip_tickets'); ?>
+<?php $url = base_url('trucking/trip_tickets'); ?>
 <div class="box box-solid">
     <div class="box-header with-border"><h3 class="box-title"><?= $section_title ?></h3></div>
     <div class="box-body">
@@ -59,7 +59,7 @@
             <?php endif;?>
             <hr>
             <button class="btn btn-flat btn-success">Submit</button>
-            <a class="btn btn-default btn-flat" id="go-back" href="<?= base_url('tracking/trip_tickets')?>" role="button">Go back</a>
+            <a class="btn btn-default btn-flat" id="go-back" href="<?= base_url('trucking/trip_tickets')?>" role="button">Go back</a>
         </form>
     </div>
 </div>
