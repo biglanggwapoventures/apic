@@ -201,10 +201,13 @@ public function delete($id)
             }
             if(!empty($input['less'])){
                 foreach($input['less'] AS $less){
+                    $rate = str_replace(",", "", $less['rate']);
+                    $kms = str_replace(",", "", $less['kms']);
+
                     $temp = [
                         'fk_location_id' => $less['fk_location_id'],
-                        'rate' => abs($less['rate']),
-                        'kms' => abs($less['kms'])
+                        'rate' => $rate,
+                        'kms' => $kms
                     ];
                     if(isset($less['id'])){
                         $temp['id'] = $less['id'];
