@@ -6,6 +6,9 @@ class Packing_list extends PM_Controller_v2
     protected $id = NULL;
     protected $validation_errors = [];
     private $viewpage_settings = array();
+    private $customer;
+    public $trip;
+    public $action;
 
     function __construct()
     {
@@ -23,6 +26,9 @@ class Packing_list extends PM_Controller_v2
             'fk_tariff_id' => '',
             'option' => '',
             'location' => '',
+            'net_amount' => 0,
+            'km_reading_start' => 0,
+            'km_reading_end' => 0,
             'less' => array(
                 'fk_location_id' => array(''),
                 'location' => '',
@@ -56,9 +62,10 @@ class Packing_list extends PM_Controller_v2
             'plugins/sticky-thead.js',
             'trucking-packing-list/listing.js',
             'plugins/moment.min.js',
-            'price-format.js'
+            'price-format.js',
+            'numeral.js'
         ]);
-
+        
         $params = $this->_search_params();
         $this->viewpage_settings['items'] = $this->m_packing_list->all($params['search']);
         $this->set_content('trucking/packing-list/listing', 
@@ -70,7 +77,7 @@ class Packing_list extends PM_Controller_v2
     {
         $this->load->helper('customer');
         $tariffs = $this->m_tariffs->all();
-        $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_customer->all(['status' => 'a']), 'company_name', 'id');
+        $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_packing_list->getCustomer(), 'company_name', 'id');
         $this->viewpage_settings['tariffs'] = ['' => ''] + array_column($this->m_tariffs->all(['p.approved_by !=' => 'NULL']), 'code', 'id');
         $this->viewpage_settings['form_title'] = 'Add new packing list';
         $this->viewpage_settings['form_action'] = base_url('trucking/packing_list/store');
@@ -110,6 +117,7 @@ class Packing_list extends PM_Controller_v2
 
 
     public function get($packing_id) {
+        $this->action=1;
         $data = $this->m_packing_list->get($packing_id);
         if(empty($data)){
             show_404();
@@ -127,14 +135,14 @@ class Packing_list extends PM_Controller_v2
 
         $this->load->helper('customer');
         $this->load->helper('tariff');
-        $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_customer->all(['status' => 'a']), 'company_name', 'id');
+        $this->viewpage_settings['customers'] = ['' => ''] + array_column($this->m_packing_list->getCustomerNew(['tt.id' => $data[0]['id']]), 'company_name', 'id');
 
         $this->viewpage_settings['less'] = $this->m_packing_list->get_tariff_detail($data[0]['fk_tariff_id']);
-
         $this->viewpage_settings['form_action'] = base_url("trucking/packing_list/update/{$packing_id}");
         $this->viewpage_settings['form_title'] = "Update packing list".$packing_id;
         $this->viewpage_settings['tariffs'] = ['' => ''] + array_column($this->m_tariffs->all(), 'code', 'id');
-        $ticket = $this->viewpage_settings['trip_ticket'] = ['' => ''] + array_column($this->m_packing_list->get_trip_ticket($data[0]['fk_sales_customer_id']), 'id', 'id');
+        $ticket = $this->viewpage_settings['trip_ticket'] = ['' => ''] + array_column($this->m_packing_list->get_trip_value($data[0]['fk_trip_ticket_id']), 'id', 'id');
+
         $this->viewpage_settings['defaults']['fk_trip_ticket_id'] = $this->m_packing_list->get_tariff_value($packing_id);
         $ticket_id = $this->viewpage_settings['defaults']['fk_trip_ticket_id'];
         $new = [];
@@ -142,31 +150,13 @@ class Packing_list extends PM_Controller_v2
             $value = $key['fk_trip_ticket_id'];
             $new[$value] = $key['fk_trip_ticket_id'];
         }
+        // $customer = $data[0]['fk_sales_customer_id'];
+        // $this->trip = $ticket_id[0]['fk_trip_ticket_id'];
+        // $trip = $ticket_id[0]['fk_trip_ticket_id'];
         $this->viewpage_settings['trip_ticket'] = $this->array_pusher($this->viewpage_settings['trip_ticket'], $value, $value);
-        if ($this->input->post()) {
-            $saved = FALSE;
-            $input = $this->input->post();
-            $input = $this->_validate();
-            if ($input['error_flag']) {
-                $this->viewpage_settings['defaults'] = $this->input->post();
-                $this->viewpage_settings['defaults']['fk_sales_customer_id'] = $data[0]['fk_sales_customer_id'];
-                $this->viewpage_settings['defaults']['fk_trip_ticket_id'] = $data[0]['fk_trip_ticket_id'];
-                $this->viewpage_settings['defaults']['date'] = $data[0]['date'];
-                $this->viewpage_settings['defaults']['fk_tariff_id'] = $order_info[0]['fk_tariff_id'];
-                $this->viewpage_settings['defaults']['approved_by'] = $data[0]['approved_by']; //reset status
-                $this->viewpage_settings['validation_errors'] = $input['message'];
-            } else {
-                $input['data']['status'] = $input['data']['status'] == M_Status::STATUS_DEFAULT ? $order_info[0]['status'] : $input['data']['status'];
-                $saved = $this->m_sales_order->update($order_id, $input['data']);
-            }
-            if ($saved) {
-                $this->session->set_flashdata('form_submission_success', $this->m_message->update_success(self::SUBJECT));
-                redirect('sales/orders');
-            }
-        } else {
-            $this->setTabTitle("Paking List # {$packing_id}");
-            $this->viewpage_settings['defaults'] = $data[0];
-        }
+
+        $this->setTabTitle("Paking List # {$packing_id}");
+        $this->viewpage_settings['defaults'] = $data[0];
         $this->set_content('trucking/packing-list/manage', $this->viewpage_settings);
         $this->generate_page();
     }
@@ -194,6 +184,7 @@ class Packing_list extends PM_Controller_v2
 
     function store()
     {
+        $this->action=0;
         $this->_validation();
         if(!empty($this->validation_errors)){
             $this->generate_response(TRUE, $this->validation_errors)->to_JSON();
@@ -287,7 +278,7 @@ public function delete($id)
 
     function _format_data()
     {
-        $packing = elements(['fk_tariff_id', 'fk_trip_ticket_id', 'fk_sales_customer_id','date','approved_by'], $this->input->post());
+        $packing = elements(['km_reading_end','km_reading_start','net_amount','adjustments','other_charges','fk_tariff_id', 'fk_trip_ticket_id', 'fk_sales_customer_id','date','approved_by'], $this->input->post());
 
         if(can_set_status()){
             if(isset($packing['approved_by']) && $packing['approved_by']=='on' ){
@@ -296,16 +287,23 @@ public function delete($id)
                 $packing['approved_by'] = NULL;
             }
         }
+        $packing['km_reading_end'] = str_replace(",", "", $packing['km_reading_end']);
+        $packing['km_reading_start'] = str_replace(",", "", $packing['km_reading_start']);
+        $packing['adjustments'] = str_replace(",", "", $packing['adjustments']);
+        $packing['other_charges'] = str_replace(",", "", $packing['other_charges']);
+        $packing['net_amount'] = str_replace(",", "", $packing['net_amount']);
         $packing['last_updated_by'] = $this->session->userdata('user_id');
-
         $order_line = [];
+
+        $net_amount = 0;
         $less = $this->input->post('less');
         foreach($less['fk_location_id'] AS $key => $value){
             $amount = str_replace(",", "", $less['amount'][$key]);
-
+            $pcs = str_replace(",", "", $less['pcs'][$key]);
+            $net_amount = $net_amount + $amount;
             $temp = [
                 'fk_location_id' => $value,
-                'pcs' => abs($less['pcs'][$key]),
+                'pcs' => $pcs,
                 'rate' => $less['rate'][$key],
                 'amount' => $amount
             ];
@@ -314,6 +312,20 @@ public function delete($id)
             }
             $order_line[] = $temp;
         }
+
+        $net_amount = ($net_amount + $packing['other_charges']) - $packing['adjustments'];
+        $packing['net_amount'] = str_replace(",", "", $net_amount);
+        // print_r($packing['fk_trip_ticket_id']);
+        // print_r($this->trip);
+        // print_r($this->trip);
+        // print_r($this->action);
+        // if($this->action==1){
+        //     print_r($this->trip);
+        //     if($this->trip != $packing['fk_trip_ticket_id']){
+        //         $this->m_packing_list->reset($this->trip);
+        //     }
+        // }
+
         return compact(['packing', 'order_line']);
     }
 

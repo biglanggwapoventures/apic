@@ -9,9 +9,9 @@
                     <div class="form-group">
                         <label>Customer</label>
                         <?php if(!isset($data['company_name'])):?>
-                            <?= generate_customer_dropdown('fk_sales_customer_id', FALSE,  'class="form-control"')?>
+                            <?= trip_ticket_customer_dropdown('fk_sales_customer_id', FALSE,  'class="form-control"')?>
                         <?php else:?>
-                            <?= generate_customer_dropdown('fk_sales_customer_id', $data['fk_sales_customer_id'],  'class="form-control"')?>
+                            <?= trip_ticket_customer_dropdown('fk_sales_customer_id', $data['fk_sales_customer_id'],  'class="form-control"')?>
                         <?php endif;?>
                     </div>
                 </div>

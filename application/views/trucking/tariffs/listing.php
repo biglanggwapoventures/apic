@@ -16,8 +16,6 @@
                     </div>                 
                 </div><!-- /. tools -->
             </div><!-- /.box-header -->
-
-
     <div class="box-body no-padding">
                 <table class="table table-striped"> 
                     <thead><tr class="info"><th>Tariff code</th><th>Option</th><th>Location </th><th>Status</th><th></th></tr></thead>

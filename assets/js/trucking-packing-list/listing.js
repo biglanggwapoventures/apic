@@ -28,6 +28,26 @@
 
 		});
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		$('table').stickyTableHeaders({fixedOffset: $('.content-header')});
 
 

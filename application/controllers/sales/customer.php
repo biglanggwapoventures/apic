@@ -53,7 +53,8 @@ class Customer extends PM_Controller_v2
         $this->set_content('sales/customers/manage', [
             'title' => 'Create new customer',
             'action' => base_url('sales/customer/store'),
-            'data' => []
+            'data' => ['for_trucking'=> NULL],
+
         ])->generate_page();
     }
 
@@ -183,6 +184,12 @@ class Customer extends PM_Controller_v2
     function _format_data()
     {
         $input = elements(['customer_code', 'company_name', 'address', 'contact_number', 'contact_person', 'credit_limit', 'credit_term', 'customer_status'], $this->input->post());
+        $set = elements(['for_trucking'], $this->input->post());
+                if(isset($set['for_trucking']) && $set['for_trucking']=='on'){
+                    $input['for_trucking'] = 1;
+                } else {
+                    $input['for_trucking'] = NULL;
+                }
         $input['credit_limit'] = str_replace(',', '', $input['credit_limit']);
         if(!can_set_status()){
            unset($input['customer_status']);

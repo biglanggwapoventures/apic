@@ -53,7 +53,6 @@ class Trip_tickets extends PM_Controller_v2
 
         $params = $this->_search_params();
         $data = $this->trip_ticket->all($params['search'], $params['wildcards']);
-
         $this->set_content('trucking/trip-ticket/listing', [
             'items' => $data
         ])->generate_page();

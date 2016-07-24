@@ -47,6 +47,13 @@
                             <?= status_dropdown('customer_status', put_value($data, 'customer_status', ''), 'class="form-control"')?>
                         </div>
                     <?php endif;?>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="for_trucking"<?= ($data['for_trucking'])?" checked":"";?>/> For <b>trucking</b></label>
+                        </div>
+
+                        <!-- <?= status_dropdown('for_trucking', put_value($data, 'for_trucking', ''), 'class="form-control"')?> -->
+                    </div>
                 </div><!-- /.box-body -->  
 
                 <div class="box-body">

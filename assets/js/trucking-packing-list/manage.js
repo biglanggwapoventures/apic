@@ -71,27 +71,35 @@
      
         });
     }
-
-    // $("table").on('change', 'select.tariff_details_list', function () {
-    //     var $this = $(this);
-    //     $this.closest("tr").find(".rate").text($this.find("option:selected").data('rate'));
-    //     $this.closest("tr").find(".rateH").val($this.find("option:selected").data('rate'));
-    //     doCalculation();
-    // });
-
-    function doCalculation() {
+ 
+   function doCalculation() {
+    var Adjustments = 0, Charges= 0, NetAmount = 0, Net,totalAmount = 0;
+    totalAmount = numeral();
+    Adjustments = numeral();
+    Charges = numeral();
+    NetAmount = numeral();
         $("tbody tr").each(function () {
             $this = $(this);
-            var lineUnitPrice = $this.closest("tr").find(".rate").text();
-            var pcs = $this.closest("tr").find(".pcs").val();
+            var lineNet = numeral();
+            var lineUnitPrice = numeral().unformat($this.closest("tr").find(".rate").text());
+            var pcs = numeral().unformat($this.closest("tr").find(".pcs").val());
             $this.closest("tr").find(".amountH").val(numeral(parseFloat(lineUnitPrice) * parseFloat(pcs)).format('0,0.00'));
             $this.closest("tr").find(".amount").text(numeral(parseFloat(lineUnitPrice) * parseFloat(pcs)).format('0,0.00'));
-        });
+            lineNet = numeral(parseFloat(lineUnitPrice) * parseFloat(pcs));
+            totalAmount.add(lineNet);
+        })
+
+        Charges = numeral($(".other-charges").val());
+        Adjustments = numeral($(".adjustments").val());
+        NetAmount = numeral(totalAmount - Adjustments);
+        NetAmount = numeral(NetAmount + Charges);
+        $("#total-amount").html('<strong>' + totalAmount.format("0,00.00") + '</strong>');
+        $("#net-amount-due").html('<strong>' + NetAmount.format("0,00.00") + '</strong>');
+        $("#net-amountH").val(123);
     }
 
     $("table").on('change', 'select.tariff_details_list', function () {
         var $this = $(this);
-        // $this.closest("tr").find(".locationH").val($this.find("option:selected").data('rate'));
         $this.closest("tr").find(".rateH").val($this.find("option:selected").data('rate'));
         $this.closest("tr").find(".rate").text($this.find("option:selected").data('rate'));
         doCalculation();
@@ -114,7 +122,6 @@
         } else {
             $(this).closest("tr").remove();
         }
-
         doCalculation();
     });
     $(".add-line").click(function () {
@@ -137,7 +144,7 @@
             template.find('.text-clear').text('0.00');
             template.find('.pformat').priceFormat({prefix: ''});
             template.find(".rate").text("");
-            $("tbody").append(template);
+            $("#order-line").append(template);
         }).fail(function (jqxhr, textStatus, error) {
             alert('fail');
         });

@@ -3,9 +3,6 @@
     .text-white-important{
         color:#FFFFFF!important;
     }
-    table tbody td:last-child{
-        text-align: center;
-    }
     table tbody td:nth-child(7),td:nth-child(8),td:nth-child(6){
         text-align: right;
     }
@@ -40,6 +37,7 @@
                             <label for="customer-name">Customer</label>
                             <input type="hidden" name="data-trip-ticket-url" disabled="disabled" value="<?= base_url('trucking/packing_list/get_trip_ticket') ?>"/>
                             <?= form_dropdown('fk_sales_customer_id', $customers, $defaults['fk_sales_customer_id'], 'class="form-control" id="customer-name"') ?>
+                          
                         </div> 
                     </div>
                     <div class="col-sm-3">
@@ -77,6 +75,20 @@
                             <label>Location</label>
                              <p class="form-control-static text-center bg-green" id="location">
                             <?= $defaults['location'];?></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Km reading start</label>
+                            <?= form_input('km_reading_start', put_value($defaults, 'km_reading_start',0), 'class="form-control text-right pformat"')?>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Km reading end</label>
+                            <?= form_input('km_reading_end', put_value($defaults, 'km_reading_end',0), 'class="form-control text-right pformat"')?>
                         </div>
                     </div>
                 </div>
@@ -120,7 +132,7 @@
 
                          
                                     </td>
-                                    <td><button type='button' class='btn btn-danger btn-sm btn-flat remove-line'><i class='fa fa-times'></i></button></td>
+                                    <td class="text-center"><button type='button' class='btn btn-danger btn-sm btn-flat remove-line'><i class='fa fa-times'></i></button></td>
                                 </tr>
                                  
                                 <?php for ($x = 1; $x < count($defaults['less']['fk_location_id']); $x++): ?>
@@ -131,15 +143,7 @@
                                             <?php endif; ?>
 
                                             <span class="location"><p class="form-control-static"><?= $defaults['less']['location'][$x] ?><p></span>
-                                            <input class="locationH" name="less[fk_location_id][]" value="<?= $defaults['less']['fk_location_id'][$x] ?>" hidden></input>
-
-                                            <!-- <?php if(in_array($defaults['less']['fk_location_id'][$x], $ids)):?>
-                                                <?= generate_tariff_dropdown('less[fk_location_id][]', $less, 'detail_id', 'location', $defaults['less']['fk_tariff_details_id'][$x], FALSE, 'class="form-control tariff_details_list select-clear"') ?>
-                                            <?php else:?>
-                                                <?= form_hidden('details[fk_location_id][]', $defaults['less']['fk_tariff_details_id'][$x]); ?>
-                                                <p class="form-control-static"><?= "{$defaults['less']['location'][$x]}"?><span class="text-danger"> ** Pending Approval **</span></p>
-                                            <?php endif;?> -->
-                                            
+                                            <input class="locationH" name="less[fk_location_id][]" value="<?= $defaults['less']['fk_location_id'][$x] ?>" hidden></input>      
 
                                         </td>
                                         <td class="text-right">
@@ -153,7 +157,7 @@
                                             <span class="amount"></span>
                                             <input class="amountH" value="<?= $defaults['less']['amount'][$x] ?>" name="less[amount][]" class="hidden" hidden></input>
                                         </td>
-                                        <td><button type='button' class='btn btn-danger btn-flat btn-sm remove-line'><i class='fa fa-times'></i></button></td>
+                                        <td class="text-center"><button type='button' class='btn btn-danger btn-flat btn-sm remove-line'><i class='fa fa-times'></i></button></td>
                                     </tr>
                                 <?php endfor; ?>
                             </tbody>
@@ -163,6 +167,36 @@
                         </table>
                     </div>
                 </div>
+                <hr>
+                <div class="row">
+                   <div class="col-md-6 col-md-offset-3">
+                        <table class="table table-bordered tabel-condensed">
+                            <tbody>
+                                 <tr>
+                                    <td colspan="2" class="text-center active"><strong>SUMMARY</strong></td>
+                                </tr>
+                                 <tr>
+                                    <td class="bg-teal"><strong>TOTAL AMOUNT</strong></td>
+                                    <td class="text-right" id="total-amount"></td>
+                                </tr>
+                                <tr>
+                                    <td  class="warning"><strong>LESS ADJUSTMENTS</strong></td>
+                                    <td><?= form_input('adjustments', put_value($defaults, 'adjustments',0), 'class="form-control text-right for-calculation pformat adjustments"')?></td>
+                                </tr>
+                                <tr>
+                                    <td  class="bg-aqua"><strong>OTHER CHARGES</strong></td>
+                                    <td><?= form_input('other_charges', put_value($defaults, 'other_charges',0), 'class="form-control text-right for-calculation pformat other-charges"')?></td>
+                                </tr>
+                                <tr>
+                                    <td  class="bg-green"><strong>NET AMOUNT DUE</strong></td>
+                                    <td class="text-right" class="net-amount" id="net-amount-due">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <hr>
             <?php if (can_set_status()): ?>
                  <div class="checkbox">
                     <label><input type="checkbox" name="approved_by"<?= ($defaults['approved_by'])?" checked":"";?>/> Mark this packing list as <b>approved</b></label>

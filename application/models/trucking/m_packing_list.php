@@ -3,7 +3,7 @@
 class M_Packing_list extends CI_Model {
 
     protected $table = 'tracking_packing_list';
-
+    public $trip_ticket;
     function create($packing, $order_line)
     {
         $this->db->trans_start();
@@ -19,6 +19,11 @@ class M_Packing_list extends CI_Model {
         $this->db->insert_batch('tracking_packing_list_details', $order_line);
 
         $this->db->trans_complete();
+        $data['packinglist_created'] = 1;
+        $this->db->from('tracking_trip_ticket as tt');
+        $this->db->where(['tracking_trip_ticket.id' => $packing['fk_trip_ticket_id']]);
+        $this->db->update('tracking_trip_ticket', $data);
+
         return $this->db->trans_status();
     }
 
@@ -32,6 +37,7 @@ class M_Packing_list extends CI_Model {
 
         $this->db->order_by('tpl.id', 'DESC');
         $data = $this->db->get()->result_array();
+
         foreach ($data as &$o) {
             $formatted_details = array();
             $this->db->select('tpld.*');
@@ -78,12 +84,48 @@ class M_Packing_list extends CI_Model {
     return $this->db->get()->result();
     }
 
+    function getCustomer($search = []){
+        $this->db->select('tt.*, sc.company_name AS company_name, sc.id AS id', FALSE);
+        $this->db->from('tracking_trip_ticket as tt');
+        $this->db->join('sales_customer as sc', 'sc.id = tt.fk_sales_customer_id');
+        $this->db->where('tt.packinglist_created',0);
+        $this->db->order_by('sc.company_name', 'ASC');
+        return $this->db->get()->result_array();
+    }
+
+    function getCustomerNew($search = []){
+        $this->db->select('tt.*, sc.company_name AS company_name, sc.id AS id', FALSE);
+        $this->db->from('tracking_packing_list as tt');
+        $this->db->join('sales_customer as sc', 'sc.id = tt.fk_sales_customer_id');
+        $this->db->where($search);
+        $this->db->order_by('sc.company_name', 'ASC');
+        $res1 = $this->db->get()->result_array();
+        // if(!empty($search)){
+        //     $this->db->select('pl.*, sd.company_name AS company_name, sd.id AS id', FALSE);
+        //     $this->db->from('tracking_packing_list as pl');
+        //     $this->db->join('sales_customer as sd', 'sd.id = pl.fk_sales_customer_id');
+        //     $this->db->where($search);
+        //     $res2 = $this->db->get()->result_array();
+        // }
+        // $result = array_merge($res1 , $res2);
+
+        return $res1;
+    }
 
     function update($id, $packing, $order_line)
     {
         $this->db->trans_start();
-
+        print_r($this->trip_ticket);
         $this->db->update($this->table, $packing, ['id' => $id]);
+        $data['packinglist_created'] = 1;
+        $this->db->from('tracking_trip_ticket as tt');
+        $this->db->where(['tracking_trip_ticket.id' => $packing['fk_trip_ticket_id']]);
+        $this->db->update('tracking_trip_ticket', $data);
+
+        $this->db->from('tracking_trip_ticket as ttt');
+        $this->db->where(['tracking_trip_ticket.id' => $this->trip_ticket]);
+        $this->db->update('tracking_trip_ticket', ['packinglist_created' => 0]);
+
 
         $temp = ['new' => [], 'updated' => [], 'updated_ids' => []];
 
@@ -190,7 +232,17 @@ function sync($table, $value_array, $table_pk_column_name, $table_fk_column_name
         }
         return $this->db->get()->result_array();
     }
-
+    public function get_trip_value($id)
+    {
+        if($id){
+            $this->db->select('tt.*');
+            $this->db->from('tracking_trip_ticket AS tt');
+            $this->db->where('tt.id', $id);
+            // $this->db->where('approved_by IS NOT NULL', null, false);
+            // $this->db->where('tt.id NOT IN (SELECT fk_trip_ticket_id FROM `pm_tracking_packing_list`)', NULL, FALSE);
+        }
+        return $this->db->get()->result_array();
+    }
       public function get_tariff_detail($tariff_id) {
         $this->db->select('tt.*, tll.name AS location, ttd.id AS detail_id,ttd.rate');
         $this->db->from('tracking_tariff AS tt');
@@ -203,13 +255,22 @@ function sync($table, $value_array, $table_pk_column_name, $table_fk_column_name
 
     }
 
+    public function reset($id){
+        $data['packinglist_created'] = 0;
+        $this->db->from('tracking_trip_ticket as tt');
+        $this->db->where(['tracking_trip_ticket.id' => $id]);
+        $this->db->update('tracking_trip_ticket', $data);
+    }
     public function get_tariff_value($id) {
         if($id){
             $this->db->select('tpl.fk_trip_ticket_id');
             $this->db->from('tracking_packing_list AS tpl');
             $this->db->where('tpl.id', $id);
         }
-        return $this->db->get()->result_array();
+        $query = $this->db->get()->result_array();
+
+        $this->trip_ticket = $query[0]['fk_trip_ticket_id'];
+        return $query;
 
     }
     public function find($id)

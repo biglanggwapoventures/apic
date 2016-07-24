@@ -19,15 +19,16 @@
 
             <div class="box-body no-padding">
                 <table class="table table-striped"> 
-                    <thead><tr class="info"><th>#</th><th>Trip Ticket #</th><th>Customer</th><th>Date</th><th>Tariff Code</th><th>Status</th><th></th></tr></thead>
+                    <thead><tr class="info"><th>#</th><th>Trip Ticket #</th><th>Customer</th><th>Date</th><th>Tariff Code</th><th>Net Amount Due</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                         <?php foreach($items AS $row):?>   
                             <tr data-pk="<?= $row['id']?>">
                                 <td><a href="<?= "{$url}/get/{$row['id']}"?>"><?= $row['id']?></a></td>
-                                <td><?= $row['trip_ticket']?></td>   
+                                <td class="text-center"><?= $row['trip_ticket']?></td>   
                                 <td><?= $row['company']?></td>
                                 <td><?= $row['date']?></td>
                                 <td><?= $row['code']?></td>
+                                <td class="text-right"><span class="amount"><?= number_format($row['net_amount'],2)?></span></td>
                                 <td><?php if(!empty($row['approved_by'])) echo '<span class="label label-success">Approved</span>'; else echo '<span class="label label-warning">Pending Approval</span>';?></td>
                                 <td>
                                     <a class="btn btn-xs btn-flat btn-danger _delete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>

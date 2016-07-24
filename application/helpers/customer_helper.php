@@ -30,6 +30,19 @@ function format_customer_editable($return_as_json = FALSE) {
     return $return_as_json ? json_encode($format) : $format;
 }
 
+
+function trip_ticket_customer_dropdown($dropdown_name, $default_val = FALSE, $attrs = FALSE, $first_option_text = '') {
+    $CI = &get_instance();
+    $CI->load->helper('form');
+    $CI->load->model('sales/m_customer');
+    $customers = $CI->m_customer->all(['status' => 'a','for_trucking' => 1]);
+    $dropdown_format = array('' => $first_option_text);
+    array_map(function($var) USE(&$dropdown_format) {
+        $dropdown_format[$var['id']] = "{$var['company_name']} [{$var['customer_code']}]";
+    }, $customers);
+    unset($customers);
+    return form_dropdown($dropdown_name, $dropdown_format, $default_val, $attrs);
+}
 //function generate_customer_product_dropdown($customer_id, $select_name, $select_attr = '', $remove_select = FALSE){
 //    $CI = &get_instance();
 //    $CI->load->model('sales/m_customer');

@@ -14,9 +14,9 @@ class M_Trip_tickets extends CI_Model {
         $this->db->select('DISTINCT tt.*, sc.company_name AS company, st.trucking_name AS trucking , ta.name AS trucking_assistant', FALSE);
         $this->db->from('tracking_trip_ticket AS tt');
         $this->db->join('sales_customer AS sc', 'sc.id = tt.fk_sales_customer_id');
+        // $this->db->where('sc.for_trucking',1);
         $this->db->join('sales_trucking AS st', 'st.id = tt.fk_sales_trucking_id');
         $this->db->join('trucking_assistants AS ta', 'ta.id = tt.fk_trucking_assistant_id');
-
         if(!empty($search)){
            $this->db->where($search);
         }
