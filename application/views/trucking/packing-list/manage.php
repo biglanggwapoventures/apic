@@ -124,7 +124,7 @@
                                         <input class="rateH" name="less[rate][]" value="<?= $defaults['less']['rate'][0] ?>" hidden></input>
                                     </td>
                                     <td>
-                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control pformat for-calculation pcs text-right', 'value' => $defaults['less']['pcs'][0] ?: 0)); ?>
+                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control pformat for-calculation pcs text-right', 'value' => number_format($defaults['less']['pcs'][0],2))); ?>
                                     </td>
                                     <td class="text-right">
                                     <span class="amount"></span>
@@ -151,7 +151,7 @@
                                         <input class="rateH" name="less[rate][]" value="<?= $defaults['less']['rate'][$x] ?>" hidden></input>
                                         </td>
                                         <td>
-                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control pformat for-calculation pcs text-right', 'value' => $defaults['less']['pcs'][$x] ?: '')); ?>
+                                        <?= form_input(array('name' => 'less[pcs][]', 'class' => 'form-control pformat for-calculation pcs text-right', 'value' => number_format($defaults['less']['pcs'][$x],2))); ?>
                                         </td>
                                         <td class="text-right">
                                             <span class="amount"></span>

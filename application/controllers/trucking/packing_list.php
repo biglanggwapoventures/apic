@@ -65,7 +65,7 @@ class Packing_list extends PM_Controller_v2
             'price-format.js',
             'numeral.js'
         ]);
-        
+
         $params = $this->_search_params();
         $this->viewpage_settings['items'] = $this->m_packing_list->all($params['search']);
         $this->set_content('trucking/packing-list/listing', 
@@ -157,6 +157,7 @@ class Packing_list extends PM_Controller_v2
 
         $this->setTabTitle("Paking List # {$packing_id}");
         $this->viewpage_settings['defaults'] = $data[0];
+        print_r($this->viewpage_settings);
         $this->set_content('trucking/packing-list/manage', $this->viewpage_settings);
         $this->generate_page();
     }
