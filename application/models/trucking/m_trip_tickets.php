@@ -30,9 +30,11 @@ class M_Trip_tickets extends CI_Model {
 
     public function get($id)
     {   
-        $this->db->select('DISTINCT tt.*, sc.company_name AS company_name, sc.company_name AS customer_code', FALSE);
+        $this->db->select('tt.*, cust.company_name AS customer, truck.trucking_name AS truck_name, truck.driver AS truck_driver, assistant.name AS truck_assistant');
         $this->db->from('tracking_trip_ticket AS tt');
-        $this->db->join('sales_customer AS sc', 'sc.id = tt.fk_sales_customer_id');
+        $this->db->join('sales_customer AS cust', 'cust.id = tt.fk_sales_customer_id');
+        $this->db->join('sales_trucking AS truck', 'truck.id = tt.fk_sales_trucking_id');
+        $this->db->join('trucking_assistants AS assistant', 'assistant.id = tt.fk_trucking_assistant_id');
 
         return $this->db->get_where($this->table, ['tt.id' => $id])->row_array();
     }
