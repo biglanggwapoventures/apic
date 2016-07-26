@@ -60,10 +60,11 @@ class Packing_list extends PM_Controller_v2
         $this->load->helper('customer');
         $this->add_javascript([
             'plugins/sticky-thead.js',
-            'trucking-packing-list/listing.js',
+            'printer/printer.js',
             'plugins/moment.min.js',
             'price-format.js',
-            'numeral.js'
+            'numeral.js',
+            'trucking-packing-list/listing.js',
         ]);
 
         $params = $this->_search_params();
@@ -327,6 +328,14 @@ public function delete($id)
         // }
 
         return compact(['packing', 'order_line']);
+    }
+
+    function do_print($id = FALSE)
+    {
+        $data = $this->m_packing_list->get($id);
+        $this->load->view('printables/sales/trip-ticket-pl', [
+            'data' => $data[0]
+        ]);
     }
 
 }

@@ -8,7 +8,7 @@
                 <div class="col-sm-4">
                     <div class="form-group">
                         <label>Customer</label>
-                        <?php if(!isset($data['company_name'])):?>
+                        <?php if(!put_value($data, 'fk_sales_customer_id', FALSE)):?>
                             <?= trip_ticket_customer_dropdown('fk_sales_customer_id', FALSE,  'class="form-control"')?>
                         <?php else:?>
                             <?= trip_ticket_customer_dropdown('fk_sales_customer_id', $data['fk_sales_customer_id'],  'class="form-control"')?>

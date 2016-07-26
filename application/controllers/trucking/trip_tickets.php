@@ -47,8 +47,10 @@ class Trip_tickets extends PM_Controller_v2
         $this->load->helper('customer');
         $this->add_javascript([
             'plugins/sticky-thead.js',
+            'plugins/moment.min.js',
+            'printer/printer.js',
             'trucking-trip-tickets/listing.js',
-            'plugins/moment.min.js'
+            
         ]);
 
         $params = $this->_search_params();
@@ -152,12 +154,12 @@ class Trip_tickets extends PM_Controller_v2
 
     function do_print($id = FALSE)
     {
-        if(!$id || !$packing_list = $this->packing_list->get($id)){
+        if(!$this->trip_ticket->exists($id)){
             show_404();
+            return;
         }
-        $this->load->view('printables/sales/dressed-pl',  [
-            'details' => $packing_list,
-            'sales_order' => $this->sales_order->fetch_order_details($packing_list['fk_sales_order_id'])
+        $this->load->view('printables/sales/trip-ticket', [
+            'data' => $this->trip_ticket->get($id)
         ]);
     }
     

@@ -32,7 +32,8 @@
                                 <td><?php if(!empty($row['approved_by'])) echo '<span class="label label-success">Approved</span>'; else echo '<span class="label label-warning">Pending Approval</span>';?></td>
                                 <td>
                                 <td>
-                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>
+                                    <a href="<?= "{$url}/do_print/{$row['id']}"?>" class="btn btn-xs btn-flat btn-default print"><i class="fa fa-print"></i></a>
+                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach;?>
@@ -40,11 +41,6 @@
                             <tr><td colspan="5" class="text-center">No data to show.</td></tr>
                         <?php endif;?>
                     </tbody>
-
-
-
-
-                    
                 </table>
             </div><!-- /.box-body -->  
         </div>

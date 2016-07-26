@@ -44,7 +44,7 @@
                         <div class="form-group" id="trip-ticket">
                             <label for="trip-ticket">Trip Ticket</label>
                             <?php if($defaults['fk_trip_ticket_id']){?>
-                            <?= form_dropdown('fk_trip_ticket_id', $trip_ticket, $defaults['fk_trip_ticket_id'], 'class="form-control" id="default-trip"');?>
+                                <?= form_dropdown('fk_trip_ticket_id', $trip_ticket, $defaults['fk_trip_ticket_id'], 'class="form-control" id="default-trip"');?>
                             <?php }?>
                         </div>  
                     </div>
