@@ -74,7 +74,21 @@ if(!function_exists('can_delete')){
         return TRUE;
     }
 }
+
+if(!function_exists('is_approved')){
     
+    function is_approved($resource, $status_key = FALSE)
+    {
+        $CI = &get_instance();
+        // !empty($resource['approved_by']
+        // $status_key = is_string($status_key) ? $status_key : 'status';
+        if(!empty($resource['approved_by'])){
+            return FALSE;
+        }
+        return TRUE;
+    }
+}
+
 if(!function_exists('check_access')){
     function check_access($module)
     {

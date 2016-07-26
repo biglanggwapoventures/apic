@@ -31,7 +31,7 @@
                                 <td class="text-right"><span class="amount"><?= number_format($row['net_amount'],2)?></span></td>
                                 <td><?php if(!empty($row['approved_by'])) echo '<span class="label label-success">Approved</span>'; else echo '<span class="label label-warning">Pending Approval</span>';?></td>
                                 <td>
-                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>
+                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= is_approved($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>
                                 </td>
                             </tr>
                         <?php endforeach;?>

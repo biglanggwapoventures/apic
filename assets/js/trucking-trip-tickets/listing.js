@@ -1,6 +1,6 @@
 (function($){
 	$(document).ready(function(){	
-
+		$('.datepicker').datepicker({dateFormat:'mm/dd/yy'})
 		var selectedId ;
 
 		$('._delete').click(function(){

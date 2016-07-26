@@ -32,7 +32,7 @@
                                 <td><?php if(!empty($row['approved_by'])) echo '<span class="label label-success">Approved</span>'; else echo '<span class="label label-warning">Pending Approval</span>';?></td>
                                 <td>
                                 <td>
-                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>
+                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= is_approved($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i> Delete</a>
                                 </td>
                             </tr>
                         <?php endforeach;?>
@@ -84,6 +84,14 @@
                         <label>Trip Type</label>
                         <?php $default = $this->input->get('trip_type') ? $this->input->get('trip_type') : 1;?>
                         <?=trip_dropdown('trip_type', put_value($default, 'trip_type', ''), 'class="form-control option"')?>
+                    </div>
+                    <div class="form-group">
+                        <label>Start date</label>
+                        <input type="text" class="form-control datepicker" name="start_date" placeholder="Start date">
+                    </div>
+                    <div class="form-group">
+                        <label>End date</label>
+                        <input type="text" class="form-control datepicker" name="end_date" placeholder="End date">
                     </div>
                 </div>
                 <div class="modal-footer">

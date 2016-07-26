@@ -17,7 +17,7 @@ class Trip_tickets extends PM_Controller_v2
         $this->set_content_title('Trucking');
         $this->set_content_subtitle('Trip Tickets');
         $this->set_active_nav(NAV_TRUCKING);
-
+        $this->load->helper('pmdate');
 
         $this->load->model('trucking/m_trip_tickets','trip_ticket');
         $this->load->model('sales/m_trucking', 'trucking');
@@ -30,7 +30,7 @@ class Trip_tickets extends PM_Controller_v2
         $search = [];
         $wildcards = [];
 
-        $params = elements(['fk_sales_customer_id','truck','trip_type'], $this->input->get(), FALSE);
+        $params = elements(['fk_sales_customer_id','truck','trip_type','start_date','end_date'], $this->input->get(), FALSE);
         if($params['trip_type'] && in_array($params['trip_type'], ['1', '2','3'])){
             $search['tt.trip_type'] = $params['trip_type'];
         }
@@ -39,6 +39,14 @@ class Trip_tickets extends PM_Controller_v2
             $search['tt.fk_sales_customer_id'] = $params['fk_sales_customer_id'];
         }
         
+        if($params['start_date'] && is_valid_date($params['start_date'], 'm/d/Y'))
+        {
+            $search['tt.date >='] = date('Y-m-d', strtotime($params['start_date']));
+        }
+        if($params['end_date'] && is_valid_date($params['end_date'], 'm/d/Y'))
+        {
+            $search['tt.date <='] = date('Y-m-d', strtotime($params['end_date']));
+        }
         return compact(['search', 'wildcards']);
     }
 
@@ -48,7 +56,8 @@ class Trip_tickets extends PM_Controller_v2
         $this->add_javascript([
             'plugins/sticky-thead.js',
             'trucking-trip-tickets/listing.js',
-            'plugins/moment.min.js'
+            'plugins/moment.min.js',
+            'jquery-ui.js'
         ]);
 
         $params = $this->_search_params();
