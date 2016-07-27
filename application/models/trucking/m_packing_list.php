@@ -30,8 +30,13 @@ class M_Packing_list extends CI_Model {
       public function get($id, $limit = 999, $offset = 0) {
         // $this->load->model('inventory/m_product');
         $this->db->select('tpl.*, tt.option, tl.name AS location');
-        $this->db->select('customer.company_name AS customer, CASE tt.option WHEN 1 THEN "Departure" ELSE "Arrival" END AS trip_point, CASE tt.option WHEN 1 THEN "Arrival" ELSE "Departure" END AS service_point, tl.name AS trip_point_location, trip_t.id AS trip_ticket_id, trip_t.date AS trip_ticket_date,
-            CASE trip_t.trip_type WHEN 1 THEN "Chick Van" WHEN 2 THEN "Harvester" ELSE "Dressed Chicken" END AS trip_type', FALSE);
+        $this->db->select('customer.company_name AS customer, 
+            CASE tt.option WHEN 1 THEN "From (source)" ELSE "Destination" END AS trip_point, 
+            CASE tt.option WHEN 1 THEN "Destination" ELSE "From (source)" END AS service_point, 
+            CASE trip_t.trip_type WHEN 1 THEN "Chick Van" WHEN 2 THEN "Harvester" ELSE "Dressed Chicken" END AS trip_type,
+            CASE trip_t.trip_type WHEN 1 THEN "HEADS" WHEN 2 THEN "HEADS" ELSE "PIECES" END AS unit_description,
+            tl.name AS trip_point_location, trip_t.id AS trip_ticket_id, trip_t.date AS trip_ticket_date,
+            ', FALSE);
 
         $this->db->from('tracking_packing_list as tpl');
         $this->db->join('tracking_trip_ticket as trip_t', 'trip_t.id = tpl.fk_trip_ticket_id');

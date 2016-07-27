@@ -187,6 +187,7 @@ class Trip_tickets extends PM_Controller_v2
         $this->form_validation->set_rules('fk_trucking_assistant_id', 'trucking assistant', 'required|callback__validate_trucking_assistant');
         $this->form_validation->set_rules('date', 'departure date and time', 'required|callback__validate_datetime');
         $this->form_validation->set_rules('trip_type', 'Trip type', 'required|numeric');
+        $this->form_validation->set_rules('destination', 'destination', 'required');
 
         if($this->form_validation->run()){
 
@@ -200,6 +201,9 @@ class Trip_tickets extends PM_Controller_v2
 
             if(isset($input['fk_trucking_assistant_id']) && $fk_trucking_assistant_id = trim($input['fk_trucking_assistant_id']))
                 $data['fk_trucking_assistant_id'] = $fk_trucking_assistant_id;
+
+            if(isset($input['destination']) && $destination = trim($input['destination']))
+                $data['destination'] = $destination;
 
             if(isset($input['date']) && $date = trim($input['date'])){
                 $date = formatDate($date,'Y-m-d','m/d/Y');

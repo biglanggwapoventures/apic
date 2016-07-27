@@ -4,6 +4,10 @@
 	<title></title>
 	<link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css')?>" />
 	<style type="text/css">
+		html,body{
+			font-family: 'Tahoma';
+			color: #000!important;
+		}
 		small{
 			display:block;
 			color: #000!important;
@@ -23,6 +27,9 @@
     		padding-bottom: 0px; 
     		display: table-cell;
     		vertical-align: middle;
+    		text-overflow: ellipsis;
+    		white-space: nowrap;
+
 		}
 		.form-group p.form-control-static.empty {
 		  border:1px solid black;
@@ -30,7 +37,6 @@
 		  padding: 0px 3px;
 		  height: 30px;
 		}
-
 		.form-group p.form-control-static.empty.signatory {
 		  height: 80px;
 		  border:0;
@@ -38,15 +44,12 @@
 		  vertical-align: bottom;
 		  text-decoration: overline;
 		}
-
-
 		.form.details{
 			border-radius:10px;
 			border:1px solid black;
 			padding: 0px 10px;
 			overflow: hidden;
 		}
-
 		.form.details > .row:nth-child(2),
 		.form.details > 	.row:nth-child(3){
 			border-top: 1px solid black;
@@ -149,16 +152,16 @@
 							<div class="row">
 								<div class="col-xs-12">
 									<div class="form-group">
-										<label>Departure:</label>
+										<label>Departure time:</label>
 										<p class="form-control-static empty"><?= $trip['departure_place'] ?> @ </p>
 									</div>
 								</div>
 							</div>
-							<div class="row invisible">
+							<div class="row">
 								<div class="col-xs-12">
 									<div class="form-group">
-										<label>&nbsp;</label>
-										<p class="form-control-static empty">&nbsp;</p>
+										<label>No. OF <?= $trip['unit'] ?>:</label>
+										<p class="form-control-static empty"></p>
 									</div>
 								</div>
 							</div>
@@ -183,16 +186,16 @@
 							<div class="row">
 								<div class="col-xs-12">
 									<div class="form-group">
-										<label>Arrival:</label>
+										<label>Arrival time:</label>
 										<p class="form-control-static empty"><?= $trip['arrival_place'] ?> @ </p>
 									</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-xs-12">
-									<div class="form-group">
-										<label>No. OF <?= $trip['unit'] ?>:</label>
-										<p class="form-control-static empty"></p>
+									<div class="form-group" style="margin-top:12px">
+										<label>Destination:</label>
+										<p class="form-control-static"><?= put_value($data, 'destination', 'DESTINATION')?></p>
 									</div>
 								</div>
 							</div>

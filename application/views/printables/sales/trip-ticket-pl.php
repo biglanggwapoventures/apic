@@ -4,6 +4,13 @@
 	<title></title>
 	<link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css')?>" />
 	<style type="text/css">
+		html, body{
+			color: #000!important;
+		}
+		.table-bordered th,
+		.table-bordered td {
+		  border: 1px solid #000 !important;
+		}
 		small{
 			display:block;
 			color: #000!important;
@@ -32,7 +39,6 @@
 		  padding: 0px 3px;
 		  height: 30px;
 		}
-
 		.form-group p.form-control-static.empty.signatory {
 		  height: 80px;
 		  border:0;
@@ -40,8 +46,6 @@
 		  vertical-align: bottom;
 		  text-decoration: overline;
 		}
-
-
 		.form.details{
 			border-radius:10px;
 			border:1px solid black;
@@ -52,13 +56,12 @@
 		.form.details .row:nth-child(2){
 			border-top: 1px solid black;
 		}
-
 		table{
 			border-bottom:0!important;
 			border-left:0!important;
 		}
 
-		tfoot td:nth-child(1){
+		tfoot td:nth-child(1),tfoot td:nth-child(2){
 			border:0!important;
 		}
 
@@ -66,9 +69,37 @@
 			font-weight: bold;
 			text-align: right;
 		}
-		tfoot td:nth-child(3){
+		tfoot td:nth-child(3),tfoot td:nth-child(2){
 			text-align: right;
 		}
+
+		tfoot tr:nth-child(2) td,
+		tfoot tr:nth-child(4) td{
+			border:1px solid black!important;
+		}
+
+
+		tfoot tr:nth-child(2) td:first-child,
+		tfoot tr:nth-child(4) td:first-child{
+			text-align: right;
+			font-weight: bold;
+		}
+
+		tfoot tr:nth-child(1) td:nth-child(3),
+		tfoot tr:nth-child(3) td:nth-child(3){
+			font-weight: bold;
+		}
+
+		tfoot tr:nth-child(2) td:nth-child(2),
+		tfoot tr:nth-child(4) td:nth-child(2){
+			font-weight: normal;
+		}
+
+		tfoot tr:nth-child(1) td:nth-child(4),
+		tfoot tr:nth-child(3) td:nth-child(4){
+			text-align: right;
+		}
+
 
 		tbody td:nth-child(1),thead th:nth-child(1){
 			text-align: center;
@@ -116,7 +147,7 @@
 							<div class="row">
 								<div class="col-xs-4">
 									<div class="form-group">
-										<label>Trip TICKET #:</label>
+										<label>Trip TKT #:</label>
 										<p class="form-control-static"><?= put_value($data, 'trip_ticket_id', 0)?></p>
 									</div>
 								</div>
@@ -137,12 +168,12 @@
 						</div>
 					</div>
 				</form>
-				<table class="table table-bordered table-condensed" style="margin-top:10px;table-layout:fixed">
+				<table class="table table-bordered table-condensed" style="margin-top:10px;table-layout:fixed;width:100%">
 					<thead>
 						<tr class="active">
 							<th><?= put_value($data, 'service_point', 'Arrival/Departure')?></th>
 							<th>RATE</th>
-							<th>HEADS</th>
+							<th><?= put_value($data, 'unit_description', 'HDS/PCS')?></th>
 							<th>AMOUNT</th>
 						</tr>
 					</thead>
@@ -167,22 +198,22 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="2"></td>
+							<td rowspan="2" style="vertical-align:bottom" class="text-center">PREPARED BY:</td>
+							<td rowspan="2" style="vertical-align:bottom;text-align:center;"><?= $this->session->userdata('name')?></td>
 							<td>TOTAL AMOUNT</td>
 							<td><?= number_format($totalAmount, 2)?></td>
 						</tr>
 						<tr>
-							<td colspan="2"></td>
 							<td>LESS ADJUSTMENTS</td>
 							<td><?= number_format($lessAdjustments, 2)?></td>
 						</tr>
 						<tr>
-							<td colspan="2"></td>
+							<td rowspan="2" style="vertical-align:bottom" class="text-center">RECEIVED BY:</td>
+							<td rowspan="2" style="vertical-align:bottom;text-align:center;overflow:hidden" class="text-center">___________________</td>
 							<td>OTHER CHARGES</td>
 							<td><?= number_format($otherCharges, 2)?></td>
 						</tr>
 						<tr>
-							<td colspan="2"></td>
 							<td>NET AMOUNT DUE</td>
 							<td><?= number_format($totalAmount - $lessAdjustments + $otherCharges, 2)?></td>
 						</tr>

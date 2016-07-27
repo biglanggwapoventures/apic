@@ -23,6 +23,12 @@
 
                         </div> 
                 </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Trip Type</label>
+                        <?=trip_dropdown('trip_type', put_value($data, 'trip_type', ''), 'class="form-control option"')?>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-sm-3">
@@ -37,10 +43,10 @@
                         <?= form_dropdown('fk_trucking_assistant_id', $trucking_assistants, put_value($data, 'fk_trucking_assistant_id', FALSE), 'class="form-control"');?>
                     </div>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-5">
                     <div class="form-group">
-                        <label>Trip Type</label>
-                        <?=trip_dropdown('trip_type', put_value($data, 'trip_type', ''), 'class="form-control option"')?>
+                        <label>Destination</label>
+                        <?= form_input('destination', put_value($data, 'destination', ''), 'class="form-control"')?>
                     </div>
                 </div>
             </div>
