@@ -58,12 +58,9 @@ class Trip_tickets extends PM_Controller_v2
             'plugins/moment.min.js',
             'printer/printer.js',
             'trucking-trip-tickets/listing.js',
-<<<<<<< HEAD
             'plugins/moment.min.js',
             'jquery-ui.js'
-=======
             
->>>>>>> 0d1275dc58de25fa6bba760bc8b013945d7955f0
         ]);
 
         $params = $this->_search_params();

@@ -1,12 +1,5 @@
-<<<<<<< HEAD
-(function($){
-	$(document).ready(function(){	
-		$('.datepicker').datepicker({dateFormat:'mm/dd/yy'})
-		var selectedId ;
-=======
 
 $(document).ready(function(){	
->>>>>>> 0d1275dc58de25fa6bba760bc8b013945d7955f0
 
 	var selectedId ;
 
