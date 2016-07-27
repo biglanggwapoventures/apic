@@ -194,8 +194,8 @@
 							<div class="row">
 								<div class="col-xs-12">
 									<div class="form-group">
-										<label>Destination:</label>
-										<p class="form-control-static empty"><?= put_value($data, 'destination', 'DESTINATION')?></p>
+										<label><?= put_value($data, 'instruction_type', 's') === 's' ? 'Source' : 'Destination'?></label>
+										<p class="form-control-static empty"><?= put_value($data, 'instruction', 'SOURCE/DESTINATION')?></p>
 									</div>
 								</div>
 							</div>

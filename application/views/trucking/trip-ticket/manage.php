@@ -5,7 +5,7 @@
         <div class="callout callout-danger hidden"><ul class="list-unstyled"></ul></div>
         <form data-action="<?= $form_action ?>">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <div class="form-group">
                         <label>Customer</label>
                         <?php if(!put_value($data, 'fk_sales_customer_id', FALSE)):?>
@@ -15,7 +15,7 @@
                         <?php endif;?>
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                         <div class="form-group">
                             <label for="date">Date</label>
                             <?php $date = isset($data['date']) ? date_create($data['date'])->format('m/d/Y'): ''?>
@@ -43,10 +43,25 @@
                         <?= form_dropdown('fk_trucking_assistant_id', $trucking_assistants, put_value($data, 'fk_trucking_assistant_id', FALSE), 'class="form-control"');?>
                     </div>
                 </div>
-                <div class="col-sm-5">
-                    <div class="form-group">
-                        <label>Destination</label>
-                        <?= form_input('destination', put_value($data, 'destination', ''), 'class="form-control"')?>
+               
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="well well-sm">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Instruction</label>
+                                    <?= form_dropdown('instruction_type', ['' => '', 's' => 'Source', 'd' => 'Destination'], put_value($data, 'instruction_type', ''), 'class="form-control"');?>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <?= form_input('instruction', put_value($data, 'instruction', ''), 'class="form-control"');?>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

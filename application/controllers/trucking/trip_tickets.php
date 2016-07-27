@@ -184,7 +184,8 @@ class Trip_tickets extends PM_Controller_v2
         $this->form_validation->set_rules('fk_trucking_assistant_id', 'trucking assistant', 'required|callback__validate_trucking_assistant');
         $this->form_validation->set_rules('date', 'departure date and time', 'required|callback__validate_datetime');
         $this->form_validation->set_rules('trip_type', 'Trip type', 'required|numeric');
-        $this->form_validation->set_rules('destination', 'destination', 'required');
+        $this->form_validation->set_rules('instruction_type', 'instruction', 'required');
+        $this->form_validation->set_rules('instruction', 'instruction', 'required');
 
         if($this->form_validation->run()){
 
@@ -210,8 +211,10 @@ class Trip_tickets extends PM_Controller_v2
                 $data['remarks'] = $remarks;
             }
 
-            if(isset($input['trip_type']) && $trip_type = trim($input['trip_type']))
-                $data['trip_type'] = $trip_type;
+            $data['instruction_type'] = isset($input['instruction_type']) && trim($input['instruction_type']) ? $input['instruction_type'] : NULL;
+            $data['instruction'] = isset($input['instruction']) && trim($input['instruction']) ? $input['instruction'] : NULL;
+            
+                
 
             if(can_set_status()){
                 if(isset($input['approved_by']) && $input['approved_by']=='on'){
