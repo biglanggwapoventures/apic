@@ -209,7 +209,7 @@
 						</tr>
 						<tr>
 							<td rowspan="2" style="vertical-align:bottom" class="text-center">RECEIVED BY:</td>
-							<td rowspan="2" style="vertical-align:bottom;text-align:center;overflow:hidden" class="text-center">___________________</td>
+							<td rowspan="2" style="vertical-align:bottom;text-align:center;overflow:hidden;text-decoration:overline;" class="text-center">Name and signature</td>
 							<td>OTHER CHARGES</td>
 							<td><?= number_format($otherCharges, 2)?></td>
 						</tr>

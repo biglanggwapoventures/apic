@@ -193,9 +193,9 @@
 							</div>
 							<div class="row">
 								<div class="col-xs-12">
-									<div class="form-group" style="margin-top:12px">
+									<div class="form-group">
 										<label>Destination:</label>
-										<p class="form-control-static"><?= put_value($data, 'destination', 'DESTINATION')?></p>
+										<p class="form-control-static empty"><?= put_value($data, 'destination', 'DESTINATION')?></p>
 									</div>
 								</div>
 							</div>
