@@ -211,6 +211,9 @@ class Trip_tickets extends PM_Controller_v2
             if(isset($input['destination']) && $destination = trim($input['destination']))
                 $data['destination'] = $destination;
 
+            if(isset($input['trip_type']) && $destination = trim($input['trip_type']))
+                $data['trip_type'] = $destination;
+
             if(isset($input['date']) && $date = trim($input['date'])){
                 $date = formatDate($date,'Y-m-d','m/d/Y');
                 $data['date'] = $date;
