@@ -33,7 +33,7 @@
                                 <td>
 
                                     <a href="<?= "{$url}/do_print/{$row['id']}" ?>" class="btn btn-xs btn-flat btn-default print <?= !$row['approved_by'] ? 'disabled' : ''?>"><i class="fa fa-print"></i></a>
-                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i></a>
+                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= is_approved($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i></a>
 
                                 </td>
                             </tr>
@@ -42,10 +42,9 @@
                             <tr><td colspan="7" class="text-center">No data to show.</td></tr>
                         <?php endif;?>
                     </tbody>
-
-
-
-
+                    <tfoot>
+                        <tr class="hidden"><td id="view-more-section" colspan="8" class="text-center"><span class="notification"></span><button id="btn-view-more" class="btn btn-flat btn-xs btn-default" type="button">Click to view more</button></td></tr>
+                    </tfoot>
                 </table>
             </div><!-- /.box-body -->  
         </div>

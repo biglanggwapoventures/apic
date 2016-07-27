@@ -33,6 +33,9 @@
                             <tr><td colspan="5" class="text-center">No data to show.</td></tr>
                         <?php endif;?>
                     </tbody>
+                    <tfoot>
+                        <tr class="hidden"><td id="view-more-section" colspan="8" class="text-center"><span class="notification"></span><button id="btn-view-more" class="btn btn-flat btn-xs btn-default" type="button">Click to view more</button></td></tr>
+                    </tfoot>
                 </table>
             </div><!-- /.box-body -->  
         </div>

@@ -70,6 +70,14 @@ class Trip_tickets extends PM_Controller_v2
         ])->generate_page();
     }
 
+    public function ajax_master_list(){
+        if($this->input->is_ajax_request()){
+            $offset = $this->input->get('page');
+            $page = $offset ? $offset : 1;
+            $data = $this->trip_ticket->all($page, $this->search_params());
+            $this->generate_response($data ? ['data' => $data] : [])->to_JSON();
+        }
+    }
 
     function create()
     {

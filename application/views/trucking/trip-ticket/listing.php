@@ -18,7 +18,11 @@
             </div><!-- /.box-header -->
 
             <div class="box-body no-padding">
-                <table class="table table-striped"> 
+                <!-- <table class="table table-striped">  -->
+                <table id="master-list" class="table table-striped table-condensed promix" data-edit-url="<?= $url . '/manage?do=update-purchase-order&id=' ?>"
+                       data-master-list-url='<?= $url . '/ajax_master_list' ?>'
+                       data-print-url='<?= $url . '/do_print?id=' ?>'
+                       data-delete-url='<?= $url . '/a_do_action/delete' ?>'>
                     <thead><tr class="info"><th>#</th><th>Trip Date</th><th>Customer</th><th>Truck</th><th>Trucking Assistant</th><th>Trip Type</th><th>Status</th><th></th><th></th></tr></thead>
                     <tbody>
                         <?php foreach($items AS $row):?>   
@@ -33,7 +37,8 @@
                                 <td>
                                 <td>
                                     <a href="<?= "{$url}/do_print/{$row['id']}"?>" class="btn btn-xs btn-flat btn-default print <?= !$row['approved_by'] ? 'disabled' : ''?>"><i class="fa fa-print"></i></a>
-                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= can_delete($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i></a>
+
+                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= is_approved($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i></a>
 
                                 </td>
                             </tr>
@@ -42,6 +47,9 @@
                             <tr><td colspan="5" class="text-center">No data to show.</td></tr>
                         <?php endif;?>
                     </tbody>
+                    <tfoot>
+                        <tr class="hidden"><td id="view-more-section" colspan="8" class="text-center"><span class="notification"></span><button id="btn-view-more" class="btn btn-flat btn-xs btn-default" type="button">Click to view more</button></td></tr>
+                    </tfoot>
                 </table>
             </div><!-- /.box-body -->  
         </div>
