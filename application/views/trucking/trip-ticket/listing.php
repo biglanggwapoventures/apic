@@ -18,11 +18,7 @@
             </div><!-- /.box-header -->
 
             <div class="box-body no-padding">
-                <!-- <table class="table table-striped">  -->
-                <table id="master-list" class="table table-striped table-condensed promix" data-edit-url="<?= $url . '/manage?do=update-purchase-order&id=' ?>"
-                       data-master-list-url='<?= $url . '/ajax_master_list' ?>'
-                       data-print-url='<?= $url . '/do_print?id=' ?>'
-                       data-delete-url='<?= $url . '/a_do_action/delete' ?>'>
+                <table class="table table-striped"> 
                     <thead><tr class="info"><th>#</th><th>Trip Date</th><th>Customer</th><th>Truck</th><th>Trucking Assistant</th><th>Trip Type</th><th>Status</th><th></th><th></th></tr></thead>
                     <tbody>
                         <?php foreach($items AS $row):?>   
