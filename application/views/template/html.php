@@ -182,6 +182,7 @@
                                     <li><a href='<?= $base_url . 'trucking/tariffs' ?>' ><i class="fa fa-angle-double-right"></i> Tariffs</a></li>
                                     <li><a href='<?= $base_url . 'trucking/trip_tickets' ?>' ><i class="fa fa-angle-double-right"></i> Trip Tickets</a></li>
                                     <li><a href='<?= $base_url . 'trucking/packing_list' ?>' ><i class="fa fa-angle-double-right"></i> Trip Ticket PL</a></li>
+                                    <li><a href='<?= $base_url . 'trucking/payments' ?>' ><i class="fa fa-angle-double-right"></i> Payment</a></li>
                                 </ul>
                             </li>
                         <?php endif; ?>
