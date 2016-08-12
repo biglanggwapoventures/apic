@@ -1,3 +1,13 @@
+<style type="text/css">
+    table.promix tbody td:nth-child(5){
+        text-align: right;
+    }
+    table.promix tbody td:nth-child(6),
+    table.promix thead th:nth-child(6){
+        text-align: center;
+    }
+
+</style>
 <?php $url = base_url('trucking/packing_list'); ?>
 <div class="row">
     <div class="col-md-12">
@@ -10,71 +20,55 @@
                     <div class="btn-group">
                         <button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
                         <ul class="dropdown-menu pull-right" role="menu">
-                            <li><a href="<?= "{$url}/create"?>">Create new packing list</a></li>
-                            <li><a data-toggle="modal" data-target="#search">Search</a></li>
+                            <li><a href="<?= $url . '/create/' ?>">Add new packing list</a></li>
+                            <li><a href="#" data-toggle="modal" data-target=".advanced-search-modal">Advanced search</a></li>
                         </ul>
                     </div>                 
                 </div><!-- /. tools -->
             </div><!-- /.box-header -->
+            <div class="box-body no-padding" style="display: block;">
+                <div class="row">
+                    <div class="col-xs-12">
 
-            <div class="box-body no-padding">
-                <table class="table table-striped"> 
-                    <thead><tr class="info"><th>#</th><th>Trip Ticket #</th><th>Customer</th><th>Date</th><th>Tariff Code</th><th>Net Amount Due</th><th>Status</th><th></th></tr></thead>
-                    <tbody>
-                        <?php foreach($items AS $row):?>   
-                            <tr data-pk="<?= $row['id']?>">
-                                <td><a href="<?= "{$url}/get/{$row['id']}"?>"><?= $row['id']?></a></td>
-                                <td class="text-center"><?= $row['trip_ticket']?></td>   
-                                <td><?= $row['company']?></td>
-                                <td><?= $row['date']?></td>
-                                <td><?= $row['code']?></td>
-                                <td class="text-right"><span class="amount"><?= number_format($row['net_amount'],2)?></span></td>
-                                <td><?php if(!empty($row['approved_by'])) echo '<span class="label label-success">Approved</span>'; else echo '<span class="label label-warning">Pending Approval</span>';?></td>
-                                <td>
+                        <table id="master-list" class="table table-hover table-condensed promix" data-edit-url='<?= $url . '/get/' ?>' 
+                               data-master-list-url='<?= $url . '/ajax_master_list' ?>'
+                               data-print-url='<?= $url . '/do_print/' ?>'
+                               data-delete-url='<?= $url . '/delete/' ?>'>
+                            <thead>
+                                <tr class="info">
+                                    <th>#</th>
+                                    <th>Trip Ticket #</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Tariff Code</th>
+                                    <th>Net Amount Due</th>
+                                    <th>Status</th>
+                                    <th class="text-right"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                    <a href="<?= "{$url}/do_print/{$row['id']}" ?>" class="btn btn-xs btn-flat btn-default print <?= !$row['approved_by'] ? 'disabled' : ''?>"><i class="fa fa-print"></i></a>
-                                    <a class="btn btn-xs btn-flat btn-danger _delete <?= is_approved($row) ? '' : 'disabled'?>"><i class="fa fa-times"></i></a>
-
-                                </td>
-                            </tr>
-                        <?php endforeach;?>
-                        <?php if(empty($items)):?>
-                            <tr><td colspan="7" class="text-center">No data to show.</td></tr>
-                        <?php endif;?>
-                    </tbody>
-                    <tfoot>
-                        <tr class="hidden"><td id="view-more-section" colspan="8" class="text-center"><span class="notification"></span><button id="btn-view-more" class="btn btn-flat btn-xs btn-default" type="button">Click to view more</button></td></tr>
-                    </tfoot>
-                </table>
+                            </tbody>
+                            <tfoot>
+                                <tr ><td id="view-more-section" colspan="8" class="text-center"><span class="notification"></span><button id="btn-view-more" class="btn btn-flat btn-xs btn-default" type="button">Click to view more</button></td></tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div><!-- /.box-body -->  
+
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade advanced-search-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="mySmallModalLabel">Confirm action</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="mySmallModalLabel">Advanced search</h4>
             </div>
-            <div class="modal-body">
-                <p class="text-danger text-center text-bold">Do you really want to delete this packing list?<br> <u>This action cannot be undone.<u></p>
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-flat btn-danger" id="delete-confirmed" data-delete-url="<?= "{$url}/delete/"?>">Yes</a>
-                <a data-dismiss="modal" class="btn btn-flat btn-default">No</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="search" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="mySmallModalLabel">Search</h4>
-            </div>
-            <form method="GET">
+            <form id="advanced-search">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Customer</label>
@@ -82,8 +76,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-flat btn-danger" type="submit">Search</button>
-                    <a data-dismiss="modal" class="btn btn-flat btn-default">Cancel</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </div>
              </form>
         </div>

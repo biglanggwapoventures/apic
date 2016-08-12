@@ -210,24 +210,22 @@ function sync($table, $value_array, $table_pk_column_name, $table_fk_column_name
         return FALSE;
     }
 
-    function all($search=[] ,$wildcards = [])
+    function all($page = 1, $params = FALSE)
     {
+        $limit = 100;
+        $offset = ($page <= 1 ? 0 : ($page-1)*$limit);
         $data = [];
         $this->db->select('DISTINCT pl.*, sc.company_name AS company, ttt.id AS trip_ticket , tt.code AS code', FALSE);
         $this->db->from('tracking_packing_list AS pl');
         $this->db->join('tracking_tariff AS tt', 'tt.id = pl.fk_tariff_id');
         $this->db->join('tracking_trip_ticket AS ttt', 'ttt.id = pl.fk_trip_ticket_id');
         $this->db->join('sales_customer AS sc', 'sc.id = pl.fk_sales_customer_id');
-
-        if(!empty($search)){
-           $this->db->where($search);
+        if($params !== FALSE)
+        {
+            $this->db->where($params);
         }
-        if(!empty($wildcards)){
-            $this->db->like($wildcards);
-        }
-
         $this->db->order_by('pl.id', 'DESC');
-
+        $this->db->limit($limit, $offset)->group_by('pl.id')->order_by('pl.id', 'DESC');
         $data = $this->db->get($this->table)->result_array();
         return $data;
     }

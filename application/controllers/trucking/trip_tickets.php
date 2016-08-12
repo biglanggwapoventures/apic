@@ -47,36 +47,49 @@ class Trip_tickets extends PM_Controller_v2
         {
             $search['tt.date <='] = date('Y-m-d', strtotime($params['end_date']));
         }
-        return compact(['search', 'wildcards']);
+        return empty($search) ? FALSE : $search;
     }
 
     function index()
     {
         $this->load->helper('customer');
+        $this->setTabTitle('Trucking - Trip Ticket');
         $this->add_javascript([
             'plugins/sticky-thead.js',
             'plugins/moment.min.js',
             'printer/printer.js',
-            'trucking-trip-tickets/listing.js',
+            'trucking-trip-tickets/master-list.js',
             'plugins/moment.min.js',
             'jquery-ui.js'
-            
         ]);
-
-        $params = $this->_search_params();
-        $data = $this->trip_ticket->all($params['search'], $params['wildcards']);
-        $this->set_content('trucking/trip-ticket/listing', [
-            'items' => $data
-        ])->generate_page();
+        $this->set_content('trucking/trip-ticket/listing');
+        $this->generate_page();
     }
 
     public function ajax_master_list(){
         if($this->input->is_ajax_request()){
             $offset = $this->input->get('page');
             $page = $offset ? $offset : 1;
-            $data = $this->trip_ticket->all($page, $this->search_params());
-            $this->generate_response($data ? ['data' => $data] : [])->to_JSON();
+            $data = $this->trip_ticket->all($page, $this->_search_params());
+            $this->output->set_content_type('json')->set_output(json_encode($data ? ['data' => $data] : []));
         }
+    }
+
+    public function ajax_delete()
+    {
+        if(!$id || !$ticket = $this->trip_ticket->find($id)){
+            $this->generate_response(TRUE, 'Please select a valid tariff to delete.')->to_JSON();
+            return;
+        }
+        if(!can_delete($ticket)){
+            $this->generate_response(TRUE, 'Cannot perform action')->to_JSON();
+            return;
+        }
+        if($this->trip_ticket->delete($id)){
+            $this->generate_response(FALSE)->to_JSON();
+            return;
+        }
+        $this->generate_response(TRUE, 'Cannot perform action due to an unknown error. Please try again later.')->to_JSON();
     }
 
     function create()
@@ -114,6 +127,7 @@ class Trip_tickets extends PM_Controller_v2
 
     function get($id  = FALSE)
     {
+        print_r($id);
         if(!$id || !$trip_ticket = $this->trip_ticket->get($id)){
             show_404();
         }
@@ -152,21 +166,15 @@ class Trip_tickets extends PM_Controller_v2
         }
     }
 
-    public function delete($id)
+    public function delete()
     {
-        if(!$id || !$ticket = $this->trip_ticket->find($id)){
-            $this->generate_response(TRUE, 'Please select a valid tariff to delete.')->to_JSON();
-            return;
-        }
-        if(!can_delete($ticket)){
-            $this->generate_response(TRUE, 'Cannot perform action')->to_JSON();
-            return;
-        }
-        if($this->trip_ticket->delete($id)){
+        $deleted = $this->trip_ticket->delete($this->input->post('id'));
+        if($deleted)
+        {
             $this->generate_response(FALSE)->to_JSON();
             return;
         }
-        $this->generate_response(TRUE, 'Cannot perform action due to an unknown error. Please try again later.')->to_JSON();
+        $this->generate_response(TRUE)->to_JSON();
     }
 
 

@@ -9,22 +9,21 @@ class M_Trip_tickets extends CI_Model {
         parent::__construct();
     }
 
-    public function all($search = [], $wildcards = [])
+    public function all($page = 1, $params = FALSE)
     {
+        $limit = 100;
+        $offset = ($page <= 1 ? 0 : ($page-1)*$limit);
         $this->db->select('DISTINCT tt.*, sc.company_name AS company, st.trucking_name AS trucking , ta.name AS trucking_assistant', FALSE);
         $this->db->from('tracking_trip_ticket AS tt');
         $this->db->join('sales_customer AS sc', 'sc.id = tt.fk_sales_customer_id');
         // $this->db->where('sc.for_trucking',1);
         $this->db->join('sales_trucking AS st', 'st.id = tt.fk_sales_trucking_id');
         $this->db->join('trucking_assistants AS ta', 'ta.id = tt.fk_trucking_assistant_id');
-        if(!empty($search)){
-           $this->db->where($search);
+        if($params !== FALSE)
+        {
+            $this->db->where($params);
         }
-        if(!empty($wildcards)){
-            $this->db->like($wildcards);
-        }
-
-        $this->db->order_by('tt.id', 'DESC');
+        $this->db->limit($limit, $offset)->group_by('tt.id')->order_by('tt.id', 'DESC');
         return $this->db->get($this->table)->result_array();
     }
 

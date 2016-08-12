@@ -51,7 +51,7 @@ class Packing_list extends PM_Controller_v2
             $search['pl.fk_sales_customer_id'] = $params['fk_sales_customer_id'];
         }
         
-        return compact(['search', 'wildcards']);
+        return empty($search) ? FALSE : $search;
     }
 
     function index()
@@ -64,14 +64,10 @@ class Packing_list extends PM_Controller_v2
             'plugins/moment.min.js',
             'price-format.js',
             'numeral.js',
-            'trucking-packing-list/listing.js',
+            'trucking-packing-list/master-list.js',
         ]);
-
-        $params = $this->_search_params();
-        $this->viewpage_settings['items'] = $this->m_packing_list->all($params['search']);
-        $this->set_content('trucking/packing-list/listing', 
-            $this->viewpage_settings
-        )->generate_page();
+        $this->set_content('trucking/packing-list/listing');
+        $this->generate_page();
     }
 
     public function create() 
@@ -97,23 +93,13 @@ class Packing_list extends PM_Controller_v2
         )->generate_page();
     }
 
-    function master_list()
-    {
-        $params = $this->input->get();
-
-        $items = $this->receiving->all([
-            'limit' => $params['length'] ?: 100,
-            'offset' => $params['start'] ?: 0,
-        ]);
-
-        $count_all = $this->receiving->count_all();
-
-        $this->generate_response([
-            'data' => $items,
-            'draw' => (int)$params['draw'] ?: 1,
-            'recordsFiltered' => $count_all,
-            'recordsTotal' => $count_all
-        ])->to_JSON();
+    public function ajax_master_list(){
+        if($this->input->is_ajax_request()){
+            $offset = $this->input->get('page');
+            $page = $offset ? $offset : 1;
+            $data = $this->m_packing_list->all($page, $this->_search_params());
+            $this->output->set_content_type('json')->set_output(json_encode($data ? ['data' => $data] : []));
+        }
     }
 
 
@@ -201,21 +187,15 @@ class Packing_list extends PM_Controller_v2
     }
 
 
-public function delete($id)
+public function delete()
     {
-        if(!$id || !$packing_list = $this->m_packing_list->find($id)){
-            $this->generate_response(TRUE, 'Please select a valid tariff to delete.')->to_JSON();
-            return;
-        }
-        if(!can_delete($packing_list)){
-            $this->generate_response(TRUE, 'Cannot perform action')->to_JSON();
-            return;
-        }
-        if($this->m_packing_list->delete($id)){
+        $deleted = $this->m_packing_list->delete($this->input->post('id'));
+        if($deleted)
+        {
             $this->generate_response(FALSE)->to_JSON();
             return;
         }
-        $this->generate_response(TRUE, 'Cannot perform action due to an unknown error. Please try again later.')->to_JSON();
+        $this->generate_response(TRUE)->to_JSON();
     }
 
     public function get_trip_ticket()
