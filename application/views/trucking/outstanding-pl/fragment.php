@@ -12,11 +12,11 @@
             <td class="text-center" colspan="2" rowspan="<?= $payment_count ?>"><?= $row['date'] ?></td>
             <td class="text-center" rowspan="<?= $payment_count ?>"><a target="_blank" href="<?="{$pl_link}/{$row['fk_tracking_packing_list_id']}"?>"><?= $row['fk_tracking_packing_list_id'] ?></a></td>
 <!--             <td class="text-center" rowspan="<?= $payment_count ?>"><?=$row['invoice_number'] ?></td> -->
-            <td class="text-right" colspan="2"><?= number_format($row['total_amount'], 2) ?></td>
+            <td class="text-right" rowspan="<?= $payment_count ?>" colspan="3"><?= number_format($row['total_amount'], 2) ?></td>
             <?php if ($has_payment): ?>
                 <?php foreach ($row['payments'] as $index => $payment): ?>
                     <?php if ($index != 0): ?>
-                    <tr><td colspan="2">&nbsp;</td>
+                    <tr>
                     <?php endif; ?>
                     <?php $td_class=''?>
                     <?php if(strtotime($payment['deposit_date']) > strtotime(date('Y-m-d'))):?>
@@ -34,16 +34,14 @@
                     <td class="text-center<?=$td_class?>"><?= $payment['check_number'] ?></td>
                     <td class="text-center<?=$td_class?>"><?= $payment['check_date'] ?></td>
                     <td class="text-center<?=$td_class?>"><?= $payment['deposit_date'] ?></td>
-                    <td class="text-right<?=$td_class?>">
+                    <td class="text-right<?=$td_class?>" colspan="2">
                         <?php if((double) $payment['check_payment'] > 0):?>
                             <?= number_format($payment['check_payment'], 2)?>
                         <?php elseif((double) $payment['cash_payment'] > 0):?>
                             <?= number_format($payment['cash_payment'], 2)?>
                         <?php endif;?>
                     </td>
-<!--                     <td class="text-right">
-                        <?= isset($payment['whtax_amount']) ? number_format($payment['whtax_amount'], 2) : ''?>
-                    </td> -->
+
                     <?php if ($index == $payment_count - 1): ?>
                         <td class="text-right">
                             <?= number_format($row['balance'], 2) ?>
@@ -56,7 +54,7 @@
                     <?php endif; ?>
                 <?php endforeach; ?>
             <?php else: ?>
-                <td class="text-center"></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="text-right"></td>
+                <td class="text-center"></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="text-right" colspan="2"></td>
                 <td></td>
                 <td class="text-right">
                     <?= number_format($row['balance'], 2) ?>
