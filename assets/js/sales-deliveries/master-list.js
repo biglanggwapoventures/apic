@@ -77,8 +77,13 @@ $(document).ready(function(){
                             [{
                                 tag: 'a', 
                                 class: function(){
-                                    if(this.type === 'd' && ((parseInt(this.status) === 6 && parseInt(this.is_printed) === 0) || isAdmin)){
-                                        return 'btn btn-primary btn-xs btn-flat print-doc-dressed';
+                                    if(((parseInt(this.status) === 6 && parseInt(this.is_printed) === 0) || isAdmin)){
+                                        if(this.type === 'd'){
+                                            return 'btn btn-primary btn-xs btn-flat print-doc-dressed';
+                                        }else{
+                                            return 'btn btn-primary btn-xs btn-flat print-doc';
+                                        }
+                                        
                                     }
                                     return 'btn btn-primary btn-xs btn-flat disabled';
                                 }, 
@@ -98,7 +103,7 @@ $(document).ready(function(){
             /*=====================
              FOR PRINTING
              =====================*/
-            $(".print-doc-").each(function () {
+            $(".print-doc").each(function () {
                 $(this).printPage({
                     url: $('table.promix').data('print-url') + '?id=' + $(this).closest('tr').data('pk'),
                     message: "Your document is being created"

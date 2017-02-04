@@ -397,23 +397,18 @@ class Deliveries extends PM_Controller
     {
         $id = (int) $this->input->get('id');
         $data = $this->m_delivery->get(TRUE, FALSE, ['delivery.id' => $id]);
-        if (!$data)
-        { //invalid input
-            show_404();
-        }
+        if (!$data) show_404();
         $packing_list = $data[0];
-        if ($packing_list['is_printed'] == 1 && $this->session->userdata('type_id') != M_Account::TYPE_ADMIN)
-        { //already printed
+        if ($packing_list['is_printed'] == 1 && $this->session->userdata('type_id') != M_Account::TYPE_ADMIN){ //already printed
             echo "Sorry, this packing list has already been printed. Please contact administrator should you request for a reprinting.";
             return;
         }
-        if ($packing_list['status'] != M_Status::STATUS_DELIVERED)
-        {
+        if ($packing_list['status'] != M_Status::STATUS_DELIVERED){
             echo "This packing list is not yet approved. Hence, printing not necessary.";
             return;
         }
-        $this->merge_addon($packing_list['details'], $this->m_delivery->get_addon_delivery($packing_list['id']));
-        $this->m_delivery->mark_printed($packing_list['id']); //mark as printed
+        // $this->merge_addon($packing_list['details']);
+        // $this->m_delivery->mark_printed($packing_list['id']); //mark as printed
         $this->load->view('printables/sales/packing-list', array('details' => $packing_list));
     }
 
