@@ -341,17 +341,15 @@ class Deliveries extends PM_Controller
         $this->form_validation->set_rules('fk_sales_order_id', 'S.O. No.', 'required');
         $this->form_validation->set_rules('date', 'Date', 'required');
         $this->form_validation->set_rules('fk_sales_trucking_id', 'Delivered by', 'required');
-        if ($this->form_validation->run())
-        {
+        $this->form_validation->set_rules('print_header', 'Print header', 'required|in_list[APIC,AGE]');
+
+        if ($this->form_validation->run()){
             $this->load->helper('pmdate');
-            $data = elements(array('fk_sales_order_id', 'date', 'fk_sales_trucking_id', 'invoice_number', 'remarks'), $this->input->post(), '');
+            $data = elements(array('fk_sales_order_id', 'date', 'fk_sales_trucking_id', 'invoice_number', 'remarks', 'print_header'), $this->input->post(), '');
             $data['details'] = $this->_format_details();
             unset($data['details']['total_amount']);
             return $this->response(FALSE, '', $data);
-        }
-        else
-        {
-
+        }else{
             return $this->response(TRUE, array_values($this->form_validation->error_array()));
         }
     }

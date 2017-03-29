@@ -92,10 +92,20 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="remarks">
+                        
+                        <div class="form-group">
                             <label for="date">Remarks</label>
                             <?= form_textarea(array('name' => 'remarks', 'class' => 'form-control', 'id' => 'remarks', 'rows' => 3, 'resizable-x' => 'none', 'value' => $defaults['remarks'])); ?>
-                        </div>  
+                        </div> 
+                        <div class="form-group">
+                            <p style="margin-bottom:0"><strong>Print header</strong></p>
+                            <label class="radio-inline">
+                                 <?= form_radio('print_header', 'APIC', element('print_header', $defaults, 'APIC') === 'APIC')?> APIC
+                            </label>
+                            <label class="radio-inline">
+                                 <?= form_radio('print_header', 'AGE', element('print_header', $defaults) === 'AGE')?> AGE
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="row">

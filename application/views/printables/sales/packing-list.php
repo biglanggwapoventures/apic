@@ -76,9 +76,11 @@
             <div class="container-fluid content">
                 <div class="row header">
                     <div class="col-xs-12 text-center">
-                        <strong>ARDITEZZA POULTRY INTEGRATION CORPORATION</strong><br>
-                        Ultima Residences Tower 3, Unit 1018, Osmena Blvrd., Cebu City<br>
-                        Tel/Fax Nos.: (032) 253-4570 to 71 / 414-3312 / 512-3067<br>
+                        <?php if($details['print_header'] == 'APIC'):?>
+                            <?php $this->load->view('partials/apic-print-head')?>
+                        <?php else:?>
+                            <?php $this->load->view('partials/age-print-head')?>
+                        <?php endif;?>
                         <h4>P A C K I N G&nbsp;&nbsp;L I S T</h4>
                     </div>
                 </div> 
